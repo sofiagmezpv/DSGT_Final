@@ -48,6 +48,7 @@ function wireGuiUpEvents() {
   var signInButton = document.getElementById("btnSignIn");
   var signUpButton = document.getElementById("btnSignUp");
   var logoutButton = document.getElementById("btnLogout");
+  var winterPackButton = document.getElementById("winterPackButton"); // Get reference to winterPackButton
 
   // Add event listeners to the sign in and sign up buttons
   signInButton.addEventListener("click", function () {
@@ -55,7 +56,6 @@ function wireGuiUpEvents() {
 
     signInWithEmailAndPassword(getAuth(), email.value, password.value)
       .then(function () {
-
         console.log("signedin");
       })
       .catch(function (error) {
@@ -88,7 +88,30 @@ function wireGuiUpEvents() {
     } catch (err) { }
   });
 
+  // Add event listener to winterPackButton
+  winterPackButton.addEventListener("click", function () {
+    // Trigger the REST call when winterPackButton is clicked
+    fetch('/trigger-rest-call', {
+      method: 'POST', // Send a POST request
+      headers: {
+        'Content-Type': 'application/json' // Set the content type header
+      }
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json(); // Assuming the response is JSON
+      })
+      .then(data => {
+        console.log(data); // Handle the response data
+      })
+      .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+      });
+  });
 }
+
 
 function wireUpAuthChange() {
 

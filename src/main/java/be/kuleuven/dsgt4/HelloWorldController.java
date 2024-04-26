@@ -26,6 +26,8 @@ class HelloWorldController {
         return "hello world!";
     }
 
+
+
     @GetMapping("/api/whoami")
     public User whoami() throws InterruptedException, ExecutionException {
         var user = WebSecurityConfig.getUser();

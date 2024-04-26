@@ -19,8 +19,6 @@ import java.util.Objects;
 @SpringBootApplication
 public class Dsgt4Application {
 
-
-
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args)  {
 		//System.setProperty("server.port", System.getenv().getOrDefault("PORT", "8080"));
@@ -76,8 +74,6 @@ public class Dsgt4Application {
 		return firewall;
 	}
 
-
-	
 
 	
 

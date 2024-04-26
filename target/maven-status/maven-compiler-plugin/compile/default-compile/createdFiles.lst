@@ -6,3 +6,4 @@ be/kuleuven/dsgt4/auth/SecurityFilter$FirebaseAuthentication.class
 be/kuleuven/dsgt4/UserMessage.class
 be/kuleuven/dsgt4/auth/SecurityFilter.class
 be/kuleuven/dsgt4/Dsgt4Application.class
+be/kuleuven/dsgt4/BuyController.class
