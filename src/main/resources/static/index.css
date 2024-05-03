@@ -7,7 +7,36 @@ a {
     color: initial;
     text-decoration: none;
 }
+#popupDialog {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 20px
+    rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    visibility: hidden;
+}
 
+.popupCart{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    visibility: hidden;
+}
+h1 {
+    color: #4caf50;
+    margin-bottom: 20px;
+}
 .header-menu {
     background: #4a9cc2;
     display: flex;
