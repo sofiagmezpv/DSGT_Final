@@ -171,6 +171,7 @@ function getHello(token) {
 
 }
 
+
 // calling /api/whoami on the rest service to illustrate JSON based data retrieval
 function whoami(token) {
 
@@ -188,6 +189,7 @@ function whoami(token) {
     .catch(function (error) {
       console.log(error);
     });
+
 
 
 }
