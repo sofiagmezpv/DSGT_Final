@@ -1,6 +1,6 @@
 be/kuleuven/dsgt4/auth/WebSecurityConfig.class
-be/kuleuven/dsgt4/ViewController.class
 be/kuleuven/dsgt4/CartController.class
+be/kuleuven/dsgt4/ViewController.class
 be/kuleuven/dsgt4/HelloWorldController.class
 be/kuleuven/dsgt4/Item.class
 be/kuleuven/dsgt4/User.class
