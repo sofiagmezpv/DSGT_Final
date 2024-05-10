@@ -1,6 +1,11 @@
 package be.kuleuven.dsgt4.auth;
 
 import be.kuleuven.dsgt4.User;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.core.io.JsonStringEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,8 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseToken;
+
 
 
 
@@ -30,16 +34,24 @@ public class SecurityFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // TODO: (level 1) decode Identity Token and assign correct email and role
         // TODO: (level 2) verify Identity Token
-        String token = request.getHeader("Authorization");
-        // TODO: navragen waarom FireBaseAUth niet werkt
-        //FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
-        //String uid = decodedToken.getUid();
-
-        System.out.println(token);
-        var user = new User("test@example.com", "manager");
-        SecurityContext context = SecurityContextHolder.getContext();
-        context.setAuthentication(new FirebaseAuthentication(user));
-
+        try {
+            String token = request.getHeader("Authorization");
+            token = token.substring(7);
+            var projectId = "demo-distributed-systems-kul";
+            DecodedJWT jwt = JWT.require(Algorithm.none())
+                    .withIssuer("https://securetoken.google.com/" + projectId)
+                    .build().verify(token);
+            var email = jwt.getClaim("email");
+            var role = jwt.getClaim("role");
+            //System.out.println(token);
+            System.out.println(email);
+            System.out.println(role);
+            var user = new User(email.asString(),role.asString());
+            SecurityContext context = SecurityContextHolder.getContext();
+            context.setAuthentication(new FirebaseAuthentication(user));
+        }catch(JWTVerificationException e){
+            System.out.println("verification exception");
+        }
 
 
         filterChain.doFilter(request, response);
