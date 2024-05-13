@@ -1,7 +1,7 @@
-/home/stijn/Distribuded/dsgt4start/src/main/java/be/kuleuven/dsgt4/auth/WebSecurityConfig.java
-/home/stijn/Distribuded/dsgt4start/src/main/java/be/kuleuven/dsgt4/UserMessage.java
-/home/stijn/Distribuded/dsgt4start/src/main/java/be/kuleuven/dsgt4/Dsgt4Application.java
-/home/stijn/Distribuded/dsgt4start/src/main/java/be/kuleuven/dsgt4/ViewController.java
-/home/stijn/Distribuded/dsgt4start/src/main/java/be/kuleuven/dsgt4/HelloWorldController.java
-/home/stijn/Distribuded/dsgt4start/src/main/java/be/kuleuven/dsgt4/User.java
-/home/stijn/Distribuded/dsgt4start/src/main/java/be/kuleuven/dsgt4/auth/SecurityFilter.java
+/home/stijn/Desktop/DSGT_Final/src/main/java/be/kuleuven/dsgt4/User.java
+/home/stijn/Desktop/DSGT_Final/src/main/java/be/kuleuven/dsgt4/UserMessage.java
+/home/stijn/Desktop/DSGT_Final/src/main/java/be/kuleuven/dsgt4/HelloWorldController.java
+/home/stijn/Desktop/DSGT_Final/src/main/java/be/kuleuven/dsgt4/auth/WebSecurityConfig.java
+/home/stijn/Desktop/DSGT_Final/src/main/java/be/kuleuven/dsgt4/Dsgt4Application.java
+/home/stijn/Desktop/DSGT_Final/src/main/java/be/kuleuven/dsgt4/ViewController.java
+/home/stijn/Desktop/DSGT_Final/src/main/java/be/kuleuven/dsgt4/auth/SecurityFilter.java
