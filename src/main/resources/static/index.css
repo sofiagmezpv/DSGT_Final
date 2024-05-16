@@ -178,7 +178,15 @@ label {
 }
 
 /* Additional styling for the test button */
-#btnTest {
+#btnSummer {
+    background-color: #007bff; /* Example background color */
+    color: white; /* Text color */
+    padding: 10px 20px; /* Padding around the text */
+    border: none; /* Remove default borders */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Change cursor to pointer on hover */
+}
+#btnWinter {
     background-color: #007bff; /* Example background color */
     color: white; /* Text color */
     padding: 10px 20px; /* Padding around the text */

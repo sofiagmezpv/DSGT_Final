@@ -8,7 +8,9 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "https://www.gstatic.com/firebasejs/9.9.4/firebase-auth.js";
-var test;
+var summer;
+var winter;
+var token;
 // we setup the authentication, and then wire up some key events to event handlers
 setupAuth();
 wireGuiUpEvents();
@@ -52,17 +54,35 @@ function wireGuiUpEvents() {
       var signInButton = document.getElementById("btnSignIn");
       var signUpButton = document.getElementById("btnSignUp");
       var logoutButton = document.getElementById("btnLogout");
-      var winter = document.getElementById("btnWinter");
-      var summer = document.getElementById("btnSummer");
-      test = document.getElementById("btnTest");
+      winter = document.getElementById("btnWinter");
+      summer = document.getElementById("btnSummer");
 
       console.log(winter)
       console.log(summer)
       console.log(logoutButton)
 
-      test.addEventListener("click", function () {
-                console.log('btnTest clicked'); // Should print when clicked
+      // Add event listeners to the sign in and sign up buttons
+      winter.addEventListener("click", function () {
+          console.log('btnWinter clicked'); // Should print when clicked
+          console.log('Event target:', event.target); // Debugging line
+          const itemId = parseInt(event.target.dataset.itemId);
+          console.log('Item ID:', itemId); // Debugging line
+          openPop(itemId)
+             .then(function () {
+                  console.log("opened called");
+              })
+             .catch(function (error) {
+                  console.log("error signInWithEmailAndPassword:");
+                  console.log(error.message);
+                  alert(error.message);
+              });
+          fetchData(token);
+      });
+      console.log('EventListener attached to btnWinter');
 
+      summer.addEventListener("click", function () {
+                console.log('btnWinter clicked'); // Should print when clicked
+                console.log('Event target:', event.target); // Debugging line
                 const itemId = parseInt(event.target.dataset.itemId);
                 console.log('Item ID:', itemId); // Debugging line
                 openPop(itemId)
@@ -73,25 +93,10 @@ function wireGuiUpEvents() {
                         console.log("error signInWithEmailAndPassword:");
                         console.log(error.message);
                         alert(error.message);
-                   });
+                    });
+                etchData(token);
             });
-      // Add event listeners to the sign in and sign up buttons
-      winter.addEventListener("click", function () {
-          console.log('btnWinter clicked'); // Should print when clicked
-          console.log('Event target:', event.target); // Debugging line
-////          const itemId = parseInt(event.target.dataset.itemId);
-//          console.log('Item ID:', itemId); // Debugging line
-//          openPop(itemId)
-//             .then(function () {
-//                  console.log("opened called");
-//              })
-//             .catch(function (error) {
-//                  console.log("error signInWithEmailAndPassword:");
-//                  console.log(error.message);
-//                  alert(error.message);
-//              });
-      });
-      console.log('EventListener attached to btnWinter'); // Log this to verify attachment
+      console.log('EventListener attached to btnSummer');
 
       signInButton.addEventListener("click", function () {
         // Sign in the user using Firebase's signInWithEmailAndPassword method
@@ -166,65 +171,49 @@ function wireUpAuthChange() {
       showAuthenticated(auth.currentUser.email);
 
       console.log("Token: " + idTokenResult.token);
-      console.log(test)
-      test.addEventListener("click", function () {
-          console.log('btnTest clicked'); // Debugging line
-          const itemId = parseInt(test.dataset.itemId); // Assuming the "TEST" button also has a data-item-id attribute
-          console.log('Item ID:', itemId); // Debugging line
-          openPop(itemId)
-             .then(function () {
-                  console.log("opened called");
-              })
-             .catch(function (error) {
-                  console.log("error signInWithEmailAndPassword:");
-                  console.log(error.message);
-                  alert(error.message);
-              });
-      //fetch data from server when authentication was successful. 
-      var token = idTokenResult.token;
+      console.log(summer)
+
+      token = idTokenResult.token;
       fetchData(token);
 
-
-    });
+//      summer.addEventListener("click", function () {
+//          console.log('btnSummer clicked'); // Debugging line
+//          const itemId = parseInt(summer.dataset.itemId); // Assuming the "TEST" button also has a data-item-id attribute
+//          console.log('Item ID:', itemId); // Debugging line
+//          openPop(itemId)
+//             .then(function () {
+//                  console.log("opened called");
+//              })
+//             .catch(function (error) {
+//                  console.log("error signInWithEmailAndPassword:");
+//                  console.log(error.message);
+//                  alert(error.message);
+//              });
+//
+//    //fetch data from server when authentication was successful.
+//
+//
+//    });
 
   });
 });
 }
 
-
 function openPop(itemId) {
-    console.log("openPop function called with itemId:", itemId); // Log the call to openPop
-
     fetch(`/add_to_cart?id=${itemId}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ /* Item details */ }) // Make sure to replace this comment with actual item details
+        body: JSON.stringify({ /* Item details */ })
     })
-   .then(response => response.text())
-   .then(data => console.log(data))
-   .catch(error => console.error('Error adding item to cart:', error));
+    .then(response => response.text())
+    .then(data => console.log(data))
+    .catch(error => console.error('Error adding item to cart:', error));
 
-    const popDialogpop = document.getElementById("popupDialog");
-    // Toggle the visibility of the popup dialog
-    popDialogpop.style.display = popDialogpop.style.display === "none"? "block" : "none";
+    const popDialog = document.getElementById("popupDialog");
+    popDialog.style.visibility = popDialog.style.visibility === "visible" ? "hidden" : "visible";
 }
-//function openPop(itemId) {
-//    fetch(`/add_to_cart?id=${itemId}`, {
-//        method: 'POST',
-//        headers: {
-//            'Content-Type': 'application/json'
-//        },
-//        body: JSON.stringify({ /* Item details */ })
-//    })
-//    .then(response => response.text())
-//    .then(data => console.log(data))
-//    .catch(error => console.error('Error adding item to cart:', error));
-//
-//    const popDialog = document.getElementById("popupDialog");
-//    popDialog.style.visibility = popDialog.style.visibility === "visible" ? "hidden" : "visible";
-//}
 
 // Define closePop function
 function closePop() {
