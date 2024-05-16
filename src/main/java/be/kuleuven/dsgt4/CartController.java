@@ -1,9 +1,11 @@
 package be.kuleuven.dsgt4;
 
 
-import be.kuleuven.dsgt4.ShoppingCart;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,12 +14,20 @@ import java.util.List;
 @RestController
 public class CartController {
     private ShoppingCart cart = new ShoppingCart();
+    private final WebClient webClient;
+
+    public CartController(WebClient.Builder webClientBuilder) {
+        this.webClient = webClientBuilder.baseUrl("http://127.0.0.1:8100/rest").build();
+    }
 
     // Endpoint to add an item to the cart
     @PostMapping("/add_to_cart")
     public ResponseEntity<String> addToCart(@RequestParam("id") int itemId) {
-
-        System.out.println(itemId);
+        var test = getDrinks();
+        System.out.println(test.subscribe(
+                value -> System.out.println(value),
+                error -> error.printStackTrace()
+                ));
         Item item = null;
         if(itemId == 1){
             // Use itemId to add the corresponding item to the cart
@@ -52,4 +62,32 @@ public class CartController {
         // Implement logic to process payment
         return ResponseEntity.ok("Payment processed successfully. Total amount: " + total);
     }
+
+    public Mono<String> fetchdrinks() {
+        return this.webClient.get()
+                .uri("/drinks/1234")
+                .retrieve()
+                .bodyToMono(String.class);
+    }
+
+    public Mono<String> getDrinks() {
+        return fetchdrinks()
+                .map(response -> {
+                    // Process the response here, for example, convert it to JSON
+                    return "Processed Response: " + response;
+                })
+                .doOnError(error -> {
+                    // Handle any errors that occur during the processing
+                    System.err.println("Error fetching products: " + error.getMessage());
+                })
+                .doOnNext(result -> {
+                    // Log or perform any actions on the result
+                    System.out.println("Received result: " + result);
+                })
+                .doFinally(signalType -> {
+                    // Perform cleanup or logging when the Mono terminates (success, error, or cancellation)
+                    System.out.println("Mono terminated with signal: " + signalType);
+                });
+    }
+
 }
