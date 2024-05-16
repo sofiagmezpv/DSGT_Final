@@ -193,10 +193,13 @@ function openPop(itemId) {
 
     const popDialog = document.getElementById("popupDialog");
     popDialog.style.visibility = popDialog.style.visibility === "visible" ? "hidden" : "visible";
+
+    setTimeout(closePop, 1000);
 }
 
 // Define closePop function
 function closePop() {
+    console.log("closing pop up")
     const popDialog = document.getElementById("popupDialog");
     popDialog.style.visibility = "hidden";
 }
