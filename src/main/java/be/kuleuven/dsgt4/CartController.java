@@ -16,7 +16,6 @@ public class CartController {
     // Endpoint to add an item to the cart
     @PostMapping("/add_to_cart")
     public ResponseEntity<String> addToCart(@RequestParam("id") int itemId) {
-
         System.out.println(itemId);
         Item item = null;
         if(itemId == 1){
@@ -24,12 +23,12 @@ public class CartController {
             List<Supplier> suppliers = new ArrayList<>();
             suppliers.add(new Supplier("Supplier A")); // Example supplier
 
-            item = new Item("Summer Student Pack", "Ideal summer vibes", 19.99, suppliers);
+            item = new Item(cart.getItems().size(),"Summer Student Pack", "Ideal summer vibes", 19.99, suppliers);
         }else if (itemId == 2){
             List<Supplier> suppliers = new ArrayList<>();
             suppliers.add(new Supplier("Supplier B")); // Example supplier
 
-            item = new Item("Winter Student Pack", "Ideal winter vibes", 29.99, suppliers);
+            item = new Item(cart.getItems().size(),"Winter Student Pack", "Ideal winter vibes", 29.99, suppliers);
         }
 
         cart.addItem(item);
@@ -40,8 +39,8 @@ public class CartController {
 
     // Endpoint to remove an item from the cart
     @PostMapping("/remove_from_cart")
-    public ResponseEntity<String> removeFromCart(@RequestBody Item item) {
-        cart.removeItem(item);
+    public ResponseEntity<String> removeFromCart(@RequestParam("id") int itemId)  {
+        cart.removeItem(itemId);
         return ResponseEntity.ok("Item removed from cart");
     }
 
@@ -51,5 +50,12 @@ public class CartController {
         double total = cart.calculateTotalPrice();
         // Implement logic to process payment
         return ResponseEntity.ok("Payment processed successfully. Total amount: " + total);
+    }
+
+    public static int getArrayListLength(ArrayList<?> list) {
+        if (list == null) {
+            return 0; // or throw an exception if null is not acceptable
+        }
+        return list.size();
     }
 }
