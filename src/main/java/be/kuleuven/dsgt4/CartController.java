@@ -16,12 +16,22 @@ public class CartController {
     // Endpoint to add an item to the cart
     @PostMapping("/add_to_cart")
     public ResponseEntity<String> addToCart(@RequestParam("id") int itemId) {
-        // For example:
-        // Use itemId to add the corresponding item to the cart
-        List<Supplier> suppliers = new ArrayList<>();
-        suppliers.add(new Supplier("Supplier A")); // Example supplier
 
-        Item item = new Item("Summer Student Pack", "Ideal chilling vibes", 29.99, suppliers);
+        System.out.println(itemId);
+        Item item = null;
+        if(itemId == 1){
+            // Use itemId to add the corresponding item to the cart
+            List<Supplier> suppliers = new ArrayList<>();
+            suppliers.add(new Supplier("Supplier A")); // Example supplier
+
+            item = new Item("Summer Student Pack", "Ideal summer vibes", 19.99, suppliers);
+        }else if (itemId == 2){
+            List<Supplier> suppliers = new ArrayList<>();
+            suppliers.add(new Supplier("Supplier B")); // Example supplier
+
+            item = new Item("Winter Student Pack", "Ideal winter vibes", 29.99, suppliers);
+        }
+
         cart.addItem(item);
 
         System.out.println("Inside add item to cart");

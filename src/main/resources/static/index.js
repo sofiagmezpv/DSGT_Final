@@ -61,43 +61,6 @@ function wireGuiUpEvents() {
       console.log(summer)
       console.log(logoutButton)
 
-      // Add event listeners to the sign in and sign up buttons
-      winter.addEventListener("click", function () {
-          console.log('btnWinter clicked'); // Should print when clicked
-          console.log('Event target:', event.target); // Debugging line
-          const itemId = parseInt(event.target.dataset.itemId);
-          console.log('Item ID:', itemId); // Debugging line
-          openPop(itemId)
-             .then(function () {
-                  console.log("opened called");
-              })
-             .catch(function (error) {
-                  console.log("error signInWithEmailAndPassword:");
-                  console.log(error.message);
-                  alert(error.message);
-              });
-          fetchData(token);
-      });
-      console.log('EventListener attached to btnWinter');
-
-//      summer.addEventListener("click", function () {
-//                console.log('btnWinter clicked'); // Should print when clicked
-//                console.log('Event target:', event.target); // Debugging line
-//                const itemId = parseInt(event.target.dataset.itemId);
-//                console.log('Item ID:', itemId); // Debugging line
-//                openPop(itemId)
-//                   .then(function () {
-//                        console.log("opened called");
-//                    })
-//                   .catch(function (error) {
-//                        console.log("error signInWithEmailAndPassword:");
-//                        console.log(error.message);
-//                        alert(error.message);
-//                    });
-//                fetchData(token);
-//            });
-//      console.log('EventListener attached to btnSummer');
-
       signInButton.addEventListener("click", function () {
         // Sign in the user using Firebase's signInWithEmailAndPassword method
 
@@ -173,7 +136,25 @@ function wireUpAuthChange() {
       console.log("Token: " + idTokenResult.token);
       console.log(summer)
 
+winter.addEventListener("click", function () {
+          console.log('winter in  idToken  clicked'); // Debugging line
+          const itemId = parseInt(winter.dataset.itemId); // Assuming the "TEST" button also has a data-item-id attribute
+          console.log('Item ID:', itemId); // Debugging line
+          openPop(itemId)
+             .then(function () {
+                  console.log("opened called");
+              })
+             .catch(function (error) {
+                  console.log("error signInWithEmailAndPassword:");
+                  console.log(error.message);
+                  alert(error.message);
+              });
 
+    //fetch data from server when authentication was successful.
+
+      token = idTokenResult.token;
+      fetchData(token);
+    });
       summer.addEventListener("click", function () {
           console.log('btnSummer clicked'); // Debugging line
           const itemId = parseInt(summer.dataset.itemId); // Assuming the "TEST" button also has a data-item-id attribute

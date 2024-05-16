@@ -11,12 +11,7 @@ public class ShoppingCart {
     }
 
     public void addItem(Item item) {
-        List<Supplier> suppliers = new ArrayList<>();
-        suppliers.add(new Supplier("Supplier A")); // Example supplier
-        // Create an item
-        Item itemNew = new Item("Summer Student Pack", "Ideal chilling vibes", 29.99,suppliers);
-        System.out.println(itemNew.getDescription());
-        items.add(itemNew);
+        items.add(item);
     }
 // Remove item from the cart
     public void removeItem(Item item) {
