@@ -16,8 +16,8 @@ public class CartController {
     // Endpoint to add an item to the cart
     @PostMapping("/add_to_cart")
     public ResponseEntity<String> addToCart(@RequestParam("id") int itemId) {
-        // Use itemId to add the corresponding item to the cart
         // For example:
+        // Use itemId to add the corresponding item to the cart
         List<Supplier> suppliers = new ArrayList<>();
         suppliers.add(new Supplier("Supplier A")); // Example supplier
 

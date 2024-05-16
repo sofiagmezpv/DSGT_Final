@@ -168,3 +168,21 @@ label {
     transition: 300ms ease all;
     left: 0;
 }
+/* Centering styles */
+.centered-button {
+    position: fixed; /* Use fixed positioning to keep the button in the center even when scrolling */
+    top: 50%; /* Position the top edge of the button at the middle of the viewport */
+    left: 50%; /* Position the left edge of the button at the middle of the viewport */
+    transform: translate(-50%, -50%); /* Adjust the button's position so that its center aligns with the center of the viewport */
+    z-index: 1000; /* Ensure the button stays above other elements */
+}
+
+/* Additional styling for the test button */
+#btnTest {
+    background-color: #007bff; /* Example background color */
+    color: white; /* Text color */
+    padding: 10px 20px; /* Padding around the text */
+    border: none; /* Remove default borders */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Change cursor to pointer on hover */
+}

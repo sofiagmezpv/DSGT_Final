@@ -1,36 +1,36 @@
-[debug] [2024-05-10T09:17:02.377Z] ----------------------------------------------------------------------
-[debug] [2024-05-10T09:17:02.378Z] Command:       /usr/local/bin/firebase /home/user/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/bin/firebase emulators:start --project demo-distributed-systems-kul
-[debug] [2024-05-10T09:17:02.379Z] CLI Version:   13.5.0
-[debug] [2024-05-10T09:17:02.379Z] Platform:      linux
-[debug] [2024-05-10T09:17:02.379Z] Node Version:  v18.5.0
-[debug] [2024-05-10T09:17:02.379Z] Time:          Fri May 10 2024 11:17:02 GMT+0200 (Central European Summer Time)
-[debug] [2024-05-10T09:17:02.379Z] ----------------------------------------------------------------------
+[debug] [2024-05-10T10:33:07.426Z] ----------------------------------------------------------------------
+[debug] [2024-05-10T10:33:07.431Z] Command:       /usr/local/bin/firebase /home/dapp/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/bin/firebase emulators:start --project demo-distributed-systems-kul
+[debug] [2024-05-10T10:33:07.431Z] CLI Version:   13.5.0
+[debug] [2024-05-10T10:33:07.431Z] Platform:      linux
+[debug] [2024-05-10T10:33:07.432Z] Node Version:  v18.5.0
+[debug] [2024-05-10T10:33:07.432Z] Time:          Fri May 10 2024 12:33:07 GMT+0200 (Central European Summer Time)
+[debug] [2024-05-10T10:33:07.432Z] ----------------------------------------------------------------------
 [debug] 
-[debug] [2024-05-10T09:17:02.422Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
-[debug] [2024-05-10T09:17:02.422Z] > authorizing via signed-in user (maeblanc@gmail.com)
-[debug] [2024-05-10T09:17:02.452Z] openjdk version "17.0.10" 2024-01-16
+[debug] [2024-05-10T10:33:07.524Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-05-10T10:33:07.525Z] > authorizing via signed-in user (sofia.gonzalezmezquita@student.kuleuven.be)
+[debug] [2024-05-10T10:33:07.629Z] openjdk version "17.0.10" 2024-01-16
 
-[debug] [2024-05-10T09:17:02.453Z] OpenJDK Runtime Environment (build 17.0.10+7-Ubuntu-122.04.1)
+[debug] [2024-05-10T10:33:07.631Z] OpenJDK Runtime Environment (build 17.0.10+7-Ubuntu-122.04.1)
 OpenJDK 64-Bit Server VM (build 17.0.10+7-Ubuntu-122.04.1, mixed mode, sharing)
 
-[debug] [2024-05-10T09:17:02.456Z] Parsed Java major version: 17
+[debug] [2024-05-10T10:33:07.637Z] Parsed Java major version: 17
 [info] i  emulators: Starting emulators: auth, firestore, pubsub {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: auth, firestore, pubsub"}}
 [info] i  emulators: Detected demo project ID "demo-distributed-systems-kul", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail. {"metadata":{"emulator":{"name":"hub"},"message":"Detected demo project ID \"demo-distributed-systems-kul\", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail."}}
-[debug] [2024-05-10T09:17:02.461Z] [logging] Logging Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
-[debug] [2024-05-10T09:17:02.461Z] assigned listening specs for emulators {"user":{"ui":[{"address":"0.0.0.0","family":"IPv4","port":8081}],"auth":[{"address":"0.0.0.0","family":"IPv4","port":8082}],"firestore":[{"address":"0.0.0.0","family":"IPv4","port":8084}],"firestore.websocket":[{"address":"0.0.0.0","family":"IPv4","port":9150}],"pubsub":[{"address":"0.0.0.0","family":"IPv4","port":8083}],"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}]},"metadata":{"message":"assigned listening specs for emulators"}}
-[debug] [2024-05-10T09:17:02.464Z] [hub] writing locator at /tmp/hub-demo-distributed-systems-kul.json
+[debug] [2024-05-10T10:33:07.648Z] [logging] Logging Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2024-05-10T10:33:07.649Z] assigned listening specs for emulators {"user":{"ui":[{"address":"0.0.0.0","family":"IPv4","port":8081}],"auth":[{"address":"0.0.0.0","family":"IPv4","port":8082}],"firestore":[{"address":"0.0.0.0","family":"IPv4","port":8084}],"firestore.websocket":[{"address":"0.0.0.0","family":"IPv4","port":9150}],"pubsub":[{"address":"0.0.0.0","family":"IPv4","port":8083}],"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}]},"metadata":{"message":"assigned listening specs for emulators"}}
+[warn] ⚠  emulators: It seems that you are running multiple instances of the emulator suite for project demo-distributed-systems-kul. This may result in unexpected behavior. 
+[debug] [2024-05-10T10:33:07.666Z] [hub] writing locator at /tmp/hub-demo-distributed-systems-kul.json
 [warn] ⚠  firestore: Cloud Firestore Emulator does not support multiple databases yet. {"metadata":{"emulator":{"name":"firestore"},"message":"Cloud Firestore Emulator does not support multiple databases yet."}}
 [warn] ⚠  firestore: Did not find a Cloud Firestore rules file specified in a firebase.json config file. {"metadata":{"emulator":{"name":"firestore"},"message":"Did not find a Cloud Firestore rules file specified in a firebase.json config file."}}
 [warn] ⚠  firestore: The emulator will default to allowing all reads and writes. Learn more about this option: https://firebase.google.com/docs/emulator-suite/install_and_configure#security_rules_configuration. {"metadata":{"emulator":{"name":"firestore"},"message":"The emulator will default to allowing all reads and writes. Learn more about this option: https://firebase.google.com/docs/emulator-suite/install_and_configure#security_rules_configuration."}}
-[debug] [2024-05-10T09:17:02.467Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: auto_download"}}
-[debug] [2024-05-10T09:17:02.467Z] Ignoring unsupported arg: single_project_mode_error {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: single_project_mode_error"}}
-[debug] [2024-05-10T09:17:02.467Z] Starting Firestore Emulator with command {"binary":"java","args":["-Dgoogle.cloud_firestore.debug_log_level=FINE","-Duser.language=en","-jar","/home/user/.cache/firebase/emulators/cloud-firestore-emulator-v1.19.3.jar","--host","0.0.0.0","--port",8084,"--websocket_port",9150,"--project_id","demo-distributed-systems-kul","--single_project_mode",true],"optionalArgs":["port","webchannel_port","host","rules","websocket_port","functions_emulator","seed_from_export","project_id","single_project_mode"],"joinArgs":false} {"metadata":{"emulator":{"name":"firestore"},"message":"Starting Firestore Emulator with command {\"binary\":\"java\",\"args\":[\"-Dgoogle.cloud_firestore.debug_log_level=FINE\",\"-Duser.language=en\",\"-jar\",\"/home/user/.cache/firebase/emulators/cloud-firestore-emulator-v1.19.3.jar\",\"--host\",\"0.0.0.0\",\"--port\",8084,\"--websocket_port\",9150,\"--project_id\",\"demo-distributed-systems-kul\",\"--single_project_mode\",true],\"optionalArgs\":[\"port\",\"webchannel_port\",\"host\",\"rules\",\"websocket_port\",\"functions_emulator\",\"seed_from_export\",\"project_id\",\"single_project_mode\"],\"joinArgs\":false}"}}
+[debug] [2024-05-10T10:33:07.706Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2024-05-10T10:33:07.706Z] Ignoring unsupported arg: single_project_mode_error {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: single_project_mode_error"}}
+[debug] [2024-05-10T10:33:07.706Z] Starting Firestore Emulator with command {"binary":"java","args":["-Dgoogle.cloud_firestore.debug_log_level=FINE","-Duser.language=en","-jar","/home/dapp/.cache/firebase/emulators/cloud-firestore-emulator-v1.19.3.jar","--host","0.0.0.0","--port",8084,"--websocket_port",9150,"--project_id","demo-distributed-systems-kul","--single_project_mode",true],"optionalArgs":["port","webchannel_port","host","rules","websocket_port","functions_emulator","seed_from_export","project_id","single_project_mode"],"joinArgs":false} {"metadata":{"emulator":{"name":"firestore"},"message":"Starting Firestore Emulator with command {\"binary\":\"java\",\"args\":[\"-Dgoogle.cloud_firestore.debug_log_level=FINE\",\"-Duser.language=en\",\"-jar\",\"/home/dapp/.cache/firebase/emulators/cloud-firestore-emulator-v1.19.3.jar\",\"--host\",\"0.0.0.0\",\"--port\",8084,\"--websocket_port\",9150,\"--project_id\",\"demo-distributed-systems-kul\",\"--single_project_mode\",true],\"optionalArgs\":[\"port\",\"webchannel_port\",\"host\",\"rules\",\"websocket_port\",\"functions_emulator\",\"seed_from_export\",\"project_id\",\"single_project_mode\"],\"joinArgs\":false}"}}
 [info] i  firestore: Firestore Emulator logging to firestore-debug.log {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator logging to \u001b[1mfirestore-debug.log\u001b[22m"}}
-[debug] [2024-05-10T09:17:03.139Z] May 10, 2024 11:17:03 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start
+[debug] [2024-05-10T10:33:10.374Z] May 10, 2024 12:33:10 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start
 INFO: Started WebSocket server on ws://0.0.0.0:9150
- {"metadata":{"emulator":{"name":"firestore"},"message":"May 10, 2024 11:17:03 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start\nINFO: Started WebSocket server on ws://0.0.0.0:9150\n"}}
-[debug] [2024-05-10T09:17:03.186Z] API endpoint: http:// {"metadata":{"emulator":{"name":"firestore"},"message":"API endpoint: http://"}}
-[debug] [2024-05-10T09:17:03.186Z] 0.0.0.0:8084
+ {"metadata":{"emulator":{"name":"firestore"},"message":"May 10, 2024 12:33:10 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start\nINFO: Started WebSocket server on ws://0.0.0.0:9150\n"}}
+[debug] [2024-05-10T10:33:10.472Z] API endpoint: http://0.0.0.0:8084
 If you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:
 
    export FIRESTORE_EMULATOR_HOST=0.0.0.0:8084
@@ -42,30 +42,33 @@ If you are running a Firestore in Datastore Mode project, run:
 Note: Support for Datastore Mode is in preview. If you encounter any bugs please file at https://github.com/firebase/firebase-tools/issues.
 Dev App Server is now running.
 
- {"metadata":{"emulator":{"name":"firestore"},"message":"0.0.0.0:8084\nIf you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:\n\n   export FIRESTORE_EMULATOR_HOST=0.0.0.0:8084\n\nIf you are running a Firestore in Datastore Mode project, run:\n\n   export DATASTORE_EMULATOR_HOST=0.0.0.0:8084\n\nNote: Support for Datastore Mode is in preview. If you encounter any bugs please file at https://github.com/firebase/firebase-tools/issues.\nDev App Server is now running.\n\n"}}
+ {"metadata":{"emulator":{"name":"firestore"},"message":"API endpoint: http://0.0.0.0:8084\nIf you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:\n\n   export FIRESTORE_EMULATOR_HOST=0.0.0.0:8084\n\nIf you are running a Firestore in Datastore Mode project, run:\n\n   export DATASTORE_EMULATOR_HOST=0.0.0.0:8084\n\nNote: Support for Datastore Mode is in preview. If you encounter any bugs please file at https://github.com/firebase/firebase-tools/issues.\nDev App Server is now running.\n\n"}}
 [info] ✔  firestore: Firestore Emulator UI websocket is running on 9150. {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator UI websocket is running on 9150."}}
-[debug] [2024-05-10T09:17:08.988Z] Ignoring unsupported arg: projectId {"metadata":{"emulator":{"name":"pubsub"},"message":"Ignoring unsupported arg: projectId"}}
-[debug] [2024-05-10T09:17:08.988Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"pubsub"},"message":"Ignoring unsupported arg: auto_download"}}
-[debug] [2024-05-10T09:17:08.988Z] Starting Pub/Sub Emulator with command {"binary":"/home/user/.cache/firebase/emulators/pubsub-emulator-0.7.1/pubsub-emulator/bin/cloud-pubsub-emulator","args":["--host=0.0.0.0","--port=8083"],"optionalArgs":["port","host"],"joinArgs":true} {"metadata":{"emulator":{"name":"pubsub"},"message":"Starting Pub/Sub Emulator with command {\"binary\":\"/home/user/.cache/firebase/emulators/pubsub-emulator-0.7.1/pubsub-emulator/bin/cloud-pubsub-emulator\",\"args\":[\"--host=0.0.0.0\",\"--port=8083\"],\"optionalArgs\":[\"port\",\"host\"],\"joinArgs\":true}"}}
+[debug] [2024-05-10T10:33:20.772Z] Ignoring unsupported arg: projectId {"metadata":{"emulator":{"name":"pubsub"},"message":"Ignoring unsupported arg: projectId"}}
+[debug] [2024-05-10T10:33:20.773Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"pubsub"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2024-05-10T10:33:20.773Z] Starting Pub/Sub Emulator with command {"binary":"/home/dapp/.cache/firebase/emulators/pubsub-emulator-0.7.1/pubsub-emulator/bin/cloud-pubsub-emulator","args":["--host=0.0.0.0","--port=8083"],"optionalArgs":["port","host"],"joinArgs":true} {"metadata":{"emulator":{"name":"pubsub"},"message":"Starting Pub/Sub Emulator with command {\"binary\":\"/home/dapp/.cache/firebase/emulators/pubsub-emulator-0.7.1/pubsub-emulator/bin/cloud-pubsub-emulator\",\"args\":[\"--host=0.0.0.0\",\"--port=8083\"],\"optionalArgs\":[\"port\",\"host\"],\"joinArgs\":true}"}}
 [info] i  pubsub: Pub/Sub Emulator logging to pubsub-debug.log {"metadata":{"emulator":{"name":"pubsub"},"message":"Pub/Sub Emulator logging to \u001b[1mpubsub-debug.log\u001b[22m"}}
-[debug] [2024-05-10T09:17:09.071Z] This is the Google Pub/Sub fake.
-Implementation may be incomplete or differ from the real system.
- {"metadata":{"emulator":{"name":"pubsub"},"message":"This is the Google Pub/Sub fake.\nImplementation may be incomplete or differ from the real system.\n"}}
-[debug] [2024-05-10T09:17:09.102Z] May 10, 2024 11:17:09 AM com.google.cloud.pubsub.testing.v1.Main main
+[debug] [2024-05-10T10:33:21.151Z] This is the Google Pub/Sub fake.
+ {"metadata":{"emulator":{"name":"pubsub"},"message":"This is the Google Pub/Sub fake.\n"}}
+[debug] [2024-05-10T10:33:21.152Z] Implementation may be incomplete or differ from the real system.
+ {"metadata":{"emulator":{"name":"pubsub"},"message":"Implementation may be incomplete or differ from the real system.\n"}}
+[debug] [2024-05-10T10:33:21.221Z] May 10, 2024 12:33:21 PM com.google.cloud.pubsub.testing.v1.Main main
 INFO: IAM integration is disabled. IAM policy methods and ACL checks are not supported
- {"metadata":{"emulator":{"name":"pubsub"},"message":"May 10, 2024 11:17:09 AM com.google.cloud.pubsub.testing.v1.Main main\nINFO: IAM integration is disabled. IAM policy methods and ACL checks are not supported\n"}}
-[debug] [2024-05-10T09:17:09.195Z] SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
-SLF4J: Defaulting to no-operation (NOP) logger implementation
-SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
- {"metadata":{"emulator":{"name":"pubsub"},"message":"SLF4J: Failed to load class \"org.slf4j.impl.StaticLoggerBinder\".\nSLF4J: Defaulting to no-operation (NOP) logger implementation\nSLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.\n"}}
-[debug] [2024-05-10T09:17:09.535Z] May 10, 2024 11:17:09 AM com.google.cloud.pubsub.testing.v1.Main main
+ {"metadata":{"emulator":{"name":"pubsub"},"message":"May 10, 2024 12:33:21 PM com.google.cloud.pubsub.testing.v1.Main main\nINFO: IAM integration is disabled. IAM policy methods and ACL checks are not supported\n"}}
+[debug] [2024-05-10T10:33:21.499Z] SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+ {"metadata":{"emulator":{"name":"pubsub"},"message":"SLF4J: Failed to load class \"org.slf4j.impl.StaticLoggerBinder\".\n"}}
+[debug] [2024-05-10T10:33:21.500Z] SLF4J: Defaulting to no-operation (NOP) logger implementation
+ {"metadata":{"emulator":{"name":"pubsub"},"message":"SLF4J: Defaulting to no-operation (NOP) logger implementation\n"}}
+[debug] [2024-05-10T10:33:21.502Z] SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+ {"metadata":{"emulator":{"name":"pubsub"},"message":"SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.\n"}}
+[debug] [2024-05-10T10:33:22.269Z] May 10, 2024 12:33:22 PM com.google.cloud.pubsub.testing.v1.Main main
 INFO: Server started, listening on 8083
- {"metadata":{"emulator":{"name":"pubsub"},"message":"May 10, 2024 11:17:09 AM com.google.cloud.pubsub.testing.v1.Main main\nINFO: Server started, listening on 8083\n"}}
-[debug] [2024-05-10T09:17:09.768Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: auto_download"}}
-[debug] [2024-05-10T09:17:09.768Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: port"}}
-[debug] [2024-05-10T09:17:09.769Z] Starting Emulator UI with command {"binary":"node","args":["/home/user/.cache/firebase/emulators/ui-v1.11.7/server/server.js"],"optionalArgs":[],"joinArgs":false} {"metadata":{"emulator":{"name":"ui"},"message":"Starting Emulator UI with command {\"binary\":\"node\",\"args\":[\"/home/user/.cache/firebase/emulators/ui-v1.11.7/server/server.js\"],\"optionalArgs\":[],\"joinArgs\":false}"}}
+ {"metadata":{"emulator":{"name":"pubsub"},"message":"May 10, 2024 12:33:22 PM com.google.cloud.pubsub.testing.v1.Main main\nINFO: Server started, listening on 8083\n"}}
+[debug] [2024-05-10T10:33:22.358Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2024-05-10T10:33:22.375Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2024-05-10T10:33:22.375Z] Starting Emulator UI with command {"binary":"node","args":["/home/dapp/.cache/firebase/emulators/ui-v1.11.7/server/server.js"],"optionalArgs":[],"joinArgs":false} {"metadata":{"emulator":{"name":"ui"},"message":"Starting Emulator UI with command {\"binary\":\"node\",\"args\":[\"/home/dapp/.cache/firebase/emulators/ui-v1.11.7/server/server.js\"],\"optionalArgs\":[],\"joinArgs\":false}"}}
 [info] i  ui: Emulator UI logging to ui-debug.log {"metadata":{"emulator":{"name":"ui"},"message":"Emulator UI logging to \u001b[1mui-debug.log\u001b[22m"}}
-[debug] [2024-05-10T09:17:09.925Z] Web / API server started at 0.0.0.0:8081
+[debug] [2024-05-10T10:33:22.811Z] Web / API server started at 0.0.0.0:8081
  {"metadata":{"emulator":{"name":"ui"},"message":"Web / API server started at 0.0.0.0:8081\n"}}
 [info] 
 ┌─────────────────────────────────────────────────────────────┐
@@ -87,9 +90,247 @@ INFO: Server started, listening on 8083
 
 Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
  
-[debug] [2024-05-10T09:17:10.933Z] May 10, 2024 11:17:10 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel
+[debug] [2024-05-10T10:37:42.245Z] May 10, 2024 12:37:42 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel
 INFO: Connected to new websocket client
- {"metadata":{"emulator":{"name":"firestore"},"message":"May 10, 2024 11:17:10 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel\nINFO: Connected to new websocket client\n"}}
-[debug] [2024-05-10T09:17:30.620Z] May 10, 2024 11:17:30 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
-INFO: Detected HTTP/2 connection.
- {"metadata":{"emulator":{"name":"firestore"},"message":"May 10, 2024 11:17:30 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead\nINFO: Detected HTTP/2 connection.\n"}}
+ {"metadata":{"emulator":{"name":"firestore"},"message":"May 10, 2024 12:37:42 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel\nINFO: Connected to new websocket client\n"}}
+[debug] [2024-05-10T10:37:45.684Z] May 10, 2024 12:37:45 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler channelClosed
+INFO: Websocket client disconnected
+ {"metadata":{"emulator":{"name":"firestore"},"message":"May 10, 2024 12:37:45 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler channelClosed\nINFO: Websocket client disconnected\n"}}
+[debug] [2024-05-10T10:54:50.243Z] Received signal SIGHUP 1
+[info]  
+[info] i  emulators: Received SIGHUP for the first time. Starting a clean shutdown. 
+[info] i  emulators: Please wait for a clean shutdown or send the SIGHUP signal again to stop right now. 
+[debug] [2024-05-10T10:54:50.250Z] Error: write EIO
+    at afterWriteDispatched (node:internal/stream_base_commons:160:15)
+    at writeGeneric (node:internal/stream_base_commons:151:3)
+    at Socket._writeGeneric (node:net:863:11)
+    at Socket._write (node:net:875:8)
+    at writeOrBuffer (node:internal/streams/writable:392:12)
+    at _write (node:internal/streams/writable:333:10)
+    at Writable.write (node:internal/streams/writable:337:10)
+    at Console.log (/home/dapp/.cache/firebase/tools/lib/node_modules/winston/lib/winston/transports/console.js:79:23)
+    at Console._write (/home/dapp/.cache/firebase/tools/lib/node_modules/winston-transport/modern.js:103:17)
+    at doWrite (/home/dapp/.cache/firebase/tools/lib/node_modules/readable-stream/lib/_stream_writable.js:390:139)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2024-05-10T10:54:50.266Z] Error: write EIO
+    at afterWriteDispatched (node:internal/stream_base_commons:160:15)
+    at writeGeneric (node:internal/stream_base_commons:151:3)
+    at Socket._writeGeneric (node:net:863:11)
+    at Socket._write (node:net:875:8)
+    at writeOrBuffer (node:internal/streams/writable:392:12)
+    at _write (node:internal/streams/writable:333:10)
+    at Writable.write (node:internal/streams/writable:337:10)
+    at Console.log (/home/dapp/.cache/firebase/tools/lib/node_modules/winston/lib/winston/transports/console.js:79:23)
+    at Console._write (/home/dapp/.cache/firebase/tools/lib/node_modules/winston-transport/modern.js:103:17)
+    at doWrite (/home/dapp/.cache/firebase/tools/lib/node_modules/readable-stream/lib/_stream_writable.js:390:139)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2024-05-10T10:54:50.303Z] Error: write EIO
+    at afterWriteDispatched (node:internal/stream_base_commons:160:15)
+    at writeGeneric (node:internal/stream_base_commons:151:3)
+    at Socket._writeGeneric (node:net:863:11)
+    at Socket._write (node:net:875:8)
+    at writeOrBuffer (node:internal/streams/writable:392:12)
+    at _write (node:internal/streams/writable:333:10)
+    at Writable.write (node:internal/streams/writable:337:10)
+    at Console.log (/home/dapp/.cache/firebase/tools/lib/node_modules/winston/lib/winston/transports/console.js:79:23)
+    at Console._write (/home/dapp/.cache/firebase/tools/lib/node_modules/winston-transport/modern.js:103:17)
+    at doWrite (/home/dapp/.cache/firebase/tools/lib/node_modules/readable-stream/lib/_stream_writable.js:390:139)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2024-05-10T10:54:50.316Z] Error: write EIO
+    at afterWriteDispatched (node:internal/stream_base_commons:160:15)
+    at writeGeneric (node:internal/stream_base_commons:151:3)
+    at Socket._writeGeneric (node:net:863:11)
+    at Socket._write (node:net:875:8)
+    at writeOrBuffer (node:internal/streams/writable:392:12)
+    at _write (node:internal/streams/writable:333:10)
+    at Writable.write (node:internal/streams/writable:337:10)
+    at Console.log (/home/dapp/.cache/firebase/tools/lib/node_modules/winston/lib/winston/transports/console.js:79:23)
+    at Console._write (/home/dapp/.cache/firebase/tools/lib/node_modules/winston-transport/modern.js:103:17)
+    at doWrite (/home/dapp/.cache/firebase/tools/lib/node_modules/readable-stream/lib/_stream_writable.js:390:139)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2024-05-10T10:54:50.345Z] Error: write EIO
+    at afterWriteDispatched (node:internal/stream_base_commons:160:15)
+    at writeGeneric (node:internal/stream_base_commons:151:3)
+    at Socket._writeGeneric (node:net:863:11)
+    at Socket._write (node:net:875:8)
+    at writeOrBuffer (node:internal/streams/writable:392:12)
+    at _write (node:internal/streams/writable:333:10)
+    at Writable.write (node:internal/streams/writable:337:10)
+    at Console.log (/home/dapp/.cache/firebase/tools/lib/node_modules/winston/lib/winston/transports/console.js:79:23)
+    at Console._write (/home/dapp/.cache/firebase/tools/lib/node_modules/winston-transport/modern.js:103:17)
+    at doWrite (/home/dapp/.cache/firebase/tools/lib/node_modules/readable-stream/lib/_stream_writable.js:390:139)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2024-05-10T10:54:50.352Z] Error: write EIO
+    at afterWriteDispatched (node:internal/stream_base_commons:160:15)
+    at writeGeneric (node:internal/stream_base_commons:151:3)
+    at Socket._writeGeneric (node:net:863:11)
+    at Socket._write (node:net:875:8)
+    at writeOrBuffer (node:internal/streams/writable:392:12)
+    at _write (node:internal/streams/writable:333:10)
+    at Writable.write (node:internal/streams/writable:337:10)
+    at Console.log (/home/dapp/.cache/firebase/tools/lib/node_modules/winston/lib/winston/transports/console.js:79:23)
+    at Console._write (/home/dapp/.cache/firebase/tools/lib/node_modules/winston-transport/modern.js:103:17)
+    at doWrite (/home/dapp/.cache/firebase/tools/lib/node_modules/readable-stream/lib/_stream_writable.js:390:139)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2024-05-10T10:54:50.353Z] Error: write EIO
+    at afterWriteDispatched (node:internal/stream_base_commons:160:15)
+    at writeGeneric (node:internal/stream_base_commons:151:3)
+    at Socket._writeGeneric (node:net:863:11)
+    at Socket._write (node:net:875:8)
+    at writeOrBuffer (node:internal/streams/writable:392:12)
+    at _write (node:internal/streams/writable:333:10)
+    at Writable.write (node:internal/streams/writable:337:10)
+    at Console.log (/home/dapp/.cache/firebase/tools/lib/node_modules/winston/lib/winston/transports/console.js:79:23)
+    at Console._write (/home/dapp/.cache/firebase/tools/lib/node_modules/winston-transport/modern.js:103:17)
+    at doWrite (/home/dapp/.cache/firebase/tools/lib/node_modules/readable-stream/lib/_stream_writable.js:390:139)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2024-05-10T10:54:50.354Z] Error: write EIO
+    at afterWriteDispatched (node:internal/stream_base_commons:160:15)
+    at writeGeneric (node:internal/stream_base_commons:151:3)
+    at Socket._writeGeneric (node:net:863:11)
+    at Socket._write (node:net:875:8)
+    at writeOrBuffer (node:internal/streams/writable:392:12)
+    at _write (node:internal/streams/writable:333:10)
+    at Writable.write (node:internal/streams/writable:337:10)
+    at Console.log (/home/dapp/.cache/firebase/tools/lib/node_modules/winston/lib/winston/transports/console.js:79:23)
+    at Console._write (/home/dapp/.cache/firebase/tools/lib/node_modules/winston-transport/modern.js:103:17)
+    at doWrite (/home/dapp/.cache/firebase/tools/lib/node_modules/readable-stream/lib/_stream_writable.js:390:139)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2024-05-10T10:54:50.373Z] Error: write EIO
+    at afterWriteDispatched (node:internal/stream_base_commons:160:15)
+    at writeGeneric (node:internal/stream_base_commons:151:3)
+    at Socket._writeGeneric (node:net:863:11)
+    at Socket._write (node:net:875:8)
+    at writeOrBuffer (node:internal/streams/writable:392:12)
+    at _write (node:internal/streams/writable:333:10)
+    at Writable.write (node:internal/streams/writable:337:10)
+    at Console.log (/home/dapp/.cache/firebase/tools/lib/node_modules/winston/lib/winston/transports/console.js:79:23)
+    at Console._write (/home/dapp/.cache/firebase/tools/lib/node_modules/winston-transport/modern.js:103:17)
+    at doWrite (/home/dapp/.cache/firebase/tools/lib/node_modules/readable-stream/lib/_stream_writable.js:390:139)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2024-05-10T10:54:50.378Z] Error: write EIO
+    at afterWriteDispatched (node:internal/stream_base_commons:160:15)
+    at writeGeneric (node:internal/stream_base_commons:151:3)
+    at Socket._writeGeneric (node:net:863:11)
+    at Socket._write (node:net:875:8)
+    at writeOrBuffer (node:internal/streams/writable:392:12)
+    at _write (node:internal/streams/writable:333:10)
+    at Writable.write (node:internal/streams/writable:337:10)
+    at Console.log (/home/dapp/.cache/firebase/tools/lib/node_modules/winston/lib/winston/transports/console.js:79:23)
+    at Console._write (/home/dapp/.cache/firebase/tools/lib/node_modules/winston-transport/modern.js:103:17)
+    at doWrite (/home/dapp/.cache/firebase/tools/lib/node_modules/readable-stream/lib/_stream_writable.js:390:139)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2024-05-10T10:54:50.379Z] Error: write EIO
+    at afterWriteDispatched (node:internal/stream_base_commons:160:15)
+    at writeGeneric (node:internal/stream_base_commons:151:3)
+    at Socket._writeGeneric (node:net:863:11)
+    at Socket._write (node:net:875:8)
+    at writeOrBuffer (node:internal/streams/writable:392:12)
+    at _write (node:internal/streams/writable:333:10)
+    at Writable.write (node:internal/streams/writable:337:10)
+    at Console.log (/home/dapp/.cache/firebase/tools/lib/node_modules/winston/lib/winston/transports/console.js:79:23)
+    at Console._write (/home/dapp/.cache/firebase/tools/lib/node_modules/winston-transport/modern.js:103:17)
+    at doWrite (/home/dapp/.cache/firebase/tools/lib/node_modules/readable-stream/lib/_stream_writable.js:390:139)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2024-05-10T10:54:50.380Z] Error: write EIO
+    at afterWriteDispatched (node:internal/stream_base_commons:160:15)
+    at writeGeneric (node:internal/stream_base_commons:151:3)
+    at Socket._writeGeneric (node:net:863:11)
+    at Socket._write (node:net:875:8)
+    at writeOrBuffer (node:internal/streams/writable:392:12)
+    at _write (node:internal/streams/writable:333:10)
+    at Writable.write (node:internal/streams/writable:337:10)
+    at Console.log (/home/dapp/.cache/firebase/tools/lib/node_modules/winston/lib/winston/transports/console.js:79:23)
+    at Console._write (/home/dapp/.cache/firebase/tools/lib/node_modules/winston-transport/modern.js:103:17)
+    at doWrite (/home/dapp/.cache/firebase/tools/lib/node_modules/readable-stream/lib/_stream_writable.js:390:139)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2024-05-10T10:54:50.393Z] Error: write EIO
+    at afterWriteDispatched (node:internal/stream_base_commons:160:15)
+    at writeGeneric (node:internal/stream_base_commons:151:3)
+    at Socket._writeGeneric (node:net:863:11)
+    at Socket._write (node:net:875:8)
+    at writeOrBuffer (node:internal/streams/writable:392:12)
+    at _write (node:internal/streams/writable:333:10)
+    at Writable.write (node:internal/streams/writable:337:10)
+    at Console.log (/home/dapp/.cache/firebase/tools/lib/node_modules/winston/lib/winston/transports/console.js:79:23)
+    at Console._write (/home/dapp/.cache/firebase/tools/lib/node_modules/winston-transport/modern.js:103:17)
+    at doWrite (/home/dapp/.cache/firebase/tools/lib/node_modules/readable-stream/lib/_stream_writable.js:390:139)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2024-05-10T10:54:50.394Z] Error: write EIO
+    at afterWriteDispatched (node:internal/stream_base_commons:160:15)
+    at writeGeneric (node:internal/stream_base_commons:151:3)
+    at Socket._writeGeneric (node:net:863:11)
+    at Socket._write (node:net:875:8)
+    at writeOrBuffer (node:internal/streams/writable:392:12)
+    at _write (node:internal/streams/writable:333:10)
+    at Writable.write (node:internal/streams/writable:337:10)
+    at Console.log (/home/dapp/.cache/firebase/tools/lib/node_modules/winston/lib/winston/transports/console.js:79:23)
+    at Console._write (/home/dapp/.cache/firebase/tools/lib/node_modules/winston-transport/modern.js:103:17)
+    at doWrite (/home/dapp/.cache/firebase/tools/lib/node_modules/readable-stream/lib/_stream_writable.js:390:139)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2024-05-10T10:54:50.395Z] Error: write EIO
+    at afterWriteDispatched (node:internal/stream_base_commons:160:15)
+    at writeGeneric (node:internal/stream_base_commons:151:3)
+    at Socket._writeGeneric (node:net:863:11)
+    at Socket._write (node:net:875:8)
+    at writeOrBuffer (node:internal/streams/writable:392:12)
+    at _write (node:internal/streams/writable:333:10)
+    at Writable.write (node:internal/streams/writable:337:10)
+    at Console.log (/home/dapp/.cache/firebase/tools/lib/node_modules/winston/lib/winston/transports/console.js:79:23)
+    at Console._write (/home/dapp/.cache/firebase/tools/lib/node_modules/winston-transport/modern.js:103:17)
+    at doWrite (/home/dapp/.cache/firebase/tools/lib/node_modules/readable-stream/lib/_stream_writable.js:390:139)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2024-05-10T10:54:50.409Z] Error: write EIO
+    at afterWriteDispatched (node:internal/stream_base_commons:160:15)
+    at writeGeneric (node:internal/stream_base_commons:151:3)
+    at Socket._writeGeneric (node:net:863:11)
+    at Socket._write (node:net:875:8)
+    at writeOrBuffer (node:internal/streams/writable:392:12)
+    at _write (node:internal/streams/writable:333:10)
+    at Writable.write (node:internal/streams/writable:337:10)
+    at Console.log (/home/dapp/.cache/firebase/tools/lib/node_modules/winston/lib/winston/transports/console.js:79:23)
+    at Console._write (/home/dapp/.cache/firebase/tools/lib/node_modules/winston-transport/modern.js:103:17)
+    at doWrite (/home/dapp/.cache/firebase/tools/lib/node_modules/readable-stream/lib/_stream_writable.js:390:139)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2024-05-10T10:54:50.412Z] Error: write EIO
+    at afterWriteDispatched (node:internal/stream_base_commons:160:15)
+    at writeGeneric (node:internal/stream_base_commons:151:3)
+    at Socket._writeGeneric (node:net:863:11)
+    at Socket._write (node:net:875:8)
+    at writeOrBuffer (node:internal/streams/writable:392:12)
+    at _write (node:internal/streams/writable:333:10)
+    at Writable.write (node:internal/streams/writable:337:10)
+    at Console.log (/home/dapp/.cache/firebase/tools/lib/node_modules/winston/lib/winston/transports/console.js:79:23)
+    at Console._write (/home/dapp/.cache/firebase/tools/lib/node_modules/winston-transport/modern.js:103:17)
+    at doWrite (/home/dapp/.cache/firebase/tools/lib/node_modules/readable-stream/lib/_stream_writable.js:390:139)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2024-05-10T10:54:50.413Z] Error: write EIO
+    at afterWriteDispatched (node:internal/stream_base_commons:160:15)
+    at writeGeneric (node:internal/stream_base_commons:151:3)
+    at Socket._writeGeneric (node:net:863:11)
+    at Socket._write (node:net:875:8)
+    at writeOrBuffer (node:internal/streams/writable:392:12)
+    at _write (node:internal/streams/writable:333:10)
+    at Writable.write (node:internal/streams/writable:337:10)
+    at Console.log (/home/dapp/.cache/firebase/tools/lib/node_modules/winston/lib/winston/transports/console.js:79:23)
+    at Console._write (/home/dapp/.cache/firebase/tools/lib/node_modules/winston-transport/modern.js:103:17)
+    at doWrite (/home/dapp/.cache/firebase/tools/lib/node_modules/readable-stream/lib/_stream_writable.js:390:139)
+[error] 
+[error] Error: An unexpected error has occurred.

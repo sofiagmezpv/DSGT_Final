@@ -8,7 +8,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "https://www.gstatic.com/firebasejs/9.9.4/firebase-auth.js";
-
+var test;
 // we setup the authentication, and then wire up some key events to event handlers
 setupAuth();
 wireGuiUpEvents();
@@ -41,53 +41,100 @@ function setupAuth() {
   }
 }
 
+
+
 function wireGuiUpEvents() {
   // Get references to the email and password inputs, and the sign in, sign out and sign up buttons
-  var email = document.getElementById("email");
-  var password = document.getElementById("password");
-  var signInButton = document.getElementById("btnSignIn");
-  var signUpButton = document.getElementById("btnSignUp");
-  var logoutButton = document.getElementById("btnLogout");
+  document.addEventListener('DOMContentLoaded', function() {
+      // Get references to the email and password inputs, and the sign in, sign out and sign up buttons
+      var email = document.getElementById("email");
+      var password = document.getElementById("password");
+      var signInButton = document.getElementById("btnSignIn");
+      var signUpButton = document.getElementById("btnSignUp");
+      var logoutButton = document.getElementById("btnLogout");
+      var winter = document.getElementById("btnWinter");
+      var summer = document.getElementById("btnSummer");
+      test = document.getElementById("btnTest");
 
-  // Add event listeners to the sign in and sign up buttons
-  signInButton.addEventListener("click", function () {
-    // Sign in the user using Firebase's signInWithEmailAndPassword method
+      console.log(winter)
+      console.log(summer)
+      console.log(logoutButton)
 
-    signInWithEmailAndPassword(getAuth(), email.value, password.value)
-      .then(function () {
+      test.addEventListener("click", function () {
+                console.log('btnTest clicked'); // Should print when clicked
 
-        console.log("signedin");
-      })
-      .catch(function (error) {
-        // Show an error message
-        console.log("error signInWithEmailAndPassword:")
-        console.log(error.message);
-        alert(error.message);
+                const itemId = parseInt(event.target.dataset.itemId);
+                console.log('Item ID:', itemId); // Debugging line
+                openPop(itemId)
+                   .then(function () {
+                        console.log("opened called");
+                    })
+                   .catch(function (error) {
+                        console.log("error signInWithEmailAndPassword:");
+                        console.log(error.message);
+                        alert(error.message);
+                   });
+            });
+      // Add event listeners to the sign in and sign up buttons
+      winter.addEventListener("click", function () {
+          console.log('btnWinter clicked'); // Should print when clicked
+          console.log('Event target:', event.target); // Debugging line
+////          const itemId = parseInt(event.target.dataset.itemId);
+//          console.log('Item ID:', itemId); // Debugging line
+//          openPop(itemId)
+//             .then(function () {
+//                  console.log("opened called");
+//              })
+//             .catch(function (error) {
+//                  console.log("error signInWithEmailAndPassword:");
+//                  console.log(error.message);
+//                  alert(error.message);
+//              });
       });
-  });
+      console.log('EventListener attached to btnWinter'); // Log this to verify attachment
 
-  signUpButton.addEventListener("click", function () {
-    // Sign up the user using Firebase's createUserWithEmailAndPassword method
+      signInButton.addEventListener("click", function () {
+        // Sign in the user using Firebase's signInWithEmailAndPassword method
 
-    createUserWithEmailAndPassword(getAuth(), email.value, password.value)
-      .then(function () {
-        console.log("created");
-      })
-      .catch(function (error) {
-        // Show an error message
-        console.log("error createUserWithEmailAndPassword:");
-        console.log(error.message);
-        alert(error.message);
+        signInWithEmailAndPassword(getAuth(), email.value, password.value)
+          .then(function () {
+
+            console.log("signedin");
+          })
+          .catch(function (error) {
+            // Show an error message
+            console.log("error signInWithEmailAndPassword:")
+            console.log(error.message);
+            alert(error.message);
+          });
       });
-  });
 
-  logoutButton.addEventListener("click", function () {
-    try {
-      var auth = getAuth();
-      auth.signOut();
-    } catch (err) { }
-  });
+      signUpButton.addEventListener("click", function () {
+        // Sign up the user using Firebase's createUserWithEmailAndPassword method
 
+        createUserWithEmailAndPassword(getAuth(), email.value, password.value)
+          .then(function () {
+            console.log("created");
+          })
+          .catch(function (error) {
+            // Show an error message
+            console.log("error createUserWithEmailAndPassword:");
+            console.log(error.message);
+            alert(error.message);
+          });
+      });
+
+      logoutButton.addEventListener("click", function () {
+          try {
+              var auth = getAuth();
+              auth.signOut();
+          } catch (err) {
+              // Handle the error here if needed
+              console.error(err); // Example: log the error to the console
+          }
+      });
+
+    });
 }
 
 function wireUpAuthChange() {
@@ -112,20 +159,77 @@ function wireUpAuthChange() {
     }
 
     auth.currentUser.getIdTokenResult().then((idTokenResult) => {
+
       console.log("Hello " + auth.currentUser.email)
 
       //update GUI when user is authenticated
       showAuthenticated(auth.currentUser.email);
 
       console.log("Token: " + idTokenResult.token);
-
+      console.log(test)
+      test.addEventListener("click", function () {
+          console.log('btnTest clicked'); // Debugging line
+          const itemId = parseInt(test.dataset.itemId); // Assuming the "TEST" button also has a data-item-id attribute
+          console.log('Item ID:', itemId); // Debugging line
+          openPop(itemId)
+             .then(function () {
+                  console.log("opened called");
+              })
+             .catch(function (error) {
+                  console.log("error signInWithEmailAndPassword:");
+                  console.log(error.message);
+                  alert(error.message);
+              });
       //fetch data from server when authentication was successful. 
       var token = idTokenResult.token;
       fetchData(token);
 
+
     });
 
   });
+});
+}
+
+
+function openPop(itemId) {
+    console.log("openPop function called with itemId:", itemId); // Log the call to openPop
+
+    fetch(`/add_to_cart?id=${itemId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ /* Item details */ }) // Make sure to replace this comment with actual item details
+    })
+   .then(response => response.text())
+   .then(data => console.log(data))
+   .catch(error => console.error('Error adding item to cart:', error));
+
+    const popDialogpop = document.getElementById("popupDialog");
+    // Toggle the visibility of the popup dialog
+    popDialogpop.style.display = popDialogpop.style.display === "none"? "block" : "none";
+}
+//function openPop(itemId) {
+//    fetch(`/add_to_cart?id=${itemId}`, {
+//        method: 'POST',
+//        headers: {
+//            'Content-Type': 'application/json'
+//        },
+//        body: JSON.stringify({ /* Item details */ })
+//    })
+//    .then(response => response.text())
+//    .then(data => console.log(data))
+//    .catch(error => console.error('Error adding item to cart:', error));
+//
+//    const popDialog = document.getElementById("popupDialog");
+//    popDialog.style.visibility = popDialog.style.visibility === "visible" ? "hidden" : "visible";
+//}
+
+// Define closePop function
+function closePop() {
+    const popDialog = document.getElementById("popupDialog");
+    popDialog.style.visibility = "hidden";
 }
 
 function fetchData(token) {
@@ -133,6 +237,7 @@ function fetchData(token) {
   whoami(token);
 }
 function showAuthenticated(username) {
+
   document.getElementById("namediv").innerHTML = "Hello " + username;
   document.getElementById("logindiv").style.display = "none";
   document.getElementById("contentdiv").style.display = "block";
