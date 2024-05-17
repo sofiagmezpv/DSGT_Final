@@ -14,8 +14,19 @@ public class ShoppingCart {
         items.add(item);
     }
 // Remove item from the cart
-    public void removeItem(Item item) {
-        items.remove(item);
+    public void removeItem(int itemPos) {
+        //call method that ghets item with itemId
+        items.remove(getItemAtPosition(itemPos));
+    }
+
+    public Item getItemAtPosition(int idPos) {
+        // Check if the idPos is within the bounds of the array
+        if (idPos >= 0 && idPos < items.size()) {
+            return items.get(idPos);
+        } else {
+            // Handle the case where idPos is out of bounds
+            return null; // Or throw an exception, depending on your requirements
+        }
     }
 
     // Calculate total price of items in the cart
@@ -35,6 +46,8 @@ public class ShoppingCart {
         items.clear();
     }
 
-    // Getters and setters...
+    public List<Item> getItems() {
+        return items;
+    }
 }
 

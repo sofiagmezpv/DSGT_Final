@@ -49,8 +49,8 @@ public class CartController {
 
     // Endpoint to remove an item from the cart
     @PostMapping("/remove_from_cart")
-    public ResponseEntity<String> removeFromCart(@RequestBody Item item) {
-        cart.removeItem(item);
+    public ResponseEntity<String> removeFromCart(@RequestParam("id") int itemId)  {
+        cart.removeItem(itemId);
         return ResponseEntity.ok("Item removed from cart");
     }
 

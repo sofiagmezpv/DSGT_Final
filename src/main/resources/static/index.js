@@ -11,6 +11,8 @@ import {
 var summer;
 var winter;
 var token;
+var cart;
+
 // we setup the authentication, and then wire up some key events to event handlers
 setupAuth();
 wireGuiUpEvents();
@@ -56,6 +58,7 @@ function wireGuiUpEvents() {
       var logoutButton = document.getElementById("btnLogout");
       winter = document.getElementById("btnWinter");
       summer = document.getElementById("btnSummer");
+      cart = document.getElementById("cartButton");
 
       console.log(winter)
       console.log(summer)
@@ -136,6 +139,24 @@ function wireUpAuthChange() {
       console.log("Token: " + idTokenResult.token);
       console.log(summer)
 
+cart.addEventListener("click", function () {
+          console.log('cart open clicked');
+           openCartPopup()
+              .then(function () {
+                   console.log("opened cart");
+               })
+              .catch(function (error) {
+                   console.log("error opening cart:");
+                   console.log(error.message);
+                   alert(error.message);
+               });
+
+     //fetch data from server when authentication was successful.
+
+       token = idTokenResult.token;
+       fetchData(token);
+     });
+
 winter.addEventListener("click", function () {
           console.log('winter in  idToken  clicked'); // Debugging line
           const itemId = parseInt(winter.dataset.itemId); // Assuming the "TEST" button also has a data-item-id attribute
@@ -205,6 +226,131 @@ function closePop() {
     popDialog.style.visibility = "hidden";
 }
 
+
+        // Function to handle "Remove" button clicks
+        function handleRemoveButtonClick(event) {
+            const removeButton = event.target;
+            const itemId = removeButton.getAttribute('data-item-id');
+
+            // Check if the clicked element is a "Remove" button
+            if (removeButton.classList.contains('remove-btn')) {
+                console.log(itemId-1)
+                removeFromCart(itemId-1);
+            }
+        }
+
+        // Add event listener to the cart items container
+        const cartItemsContainer = document.getElementById("cartItems");
+        cartItemsContainer.addEventListener('click', handleRemoveButtonClick);
+
+        function openCartPopup() {
+            console.log("inside the openCartPopup");
+
+            // Mock fetch response with dummy data
+            const mockFetchResponse = new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve({
+                        json: () => Promise.resolve([
+                            { id: 1, name: 'Item 1', price: 9.99 },
+                            { id: 2, name: 'Item 2', price: 14.99 },
+                            { id: 3, name: 'Item 3', price: 19.99 },
+                        ])
+                    });
+                }, 1000);
+            });
+
+            mockFetchResponse
+                .then(response => response.json())
+                .then(items => {
+                    // Clear previous items
+                    cartItemsContainer.innerHTML = "";
+
+                    // Iterate over the items in the cart and dynamically populate the cart section
+                    items.forEach(item => {
+                        const itemElement = document.createElement("div");
+                        itemElement.innerHTML = `
+                            <p>${item.name} - $${item.price.toFixed(2)}</p>
+                            <button data-item-id="${item.id}" type="button" class="btn btn-danger remove-btn">Remove</button>
+                        `;
+                        cartItemsContainer.appendChild(itemElement);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
+            const popDialog2 = document.getElementById("cartPopup");
+            popDialog2.style.visibility =
+                popDialog2.style.visibility === "visible"
+                    ? "hidden"
+                    : "visible";
+        }
+
+
+            function closeCartPop() {
+                const popDialog3 = document.getElementById("cartPopup");
+                popDialog3.style.visibility = "hidden";
+            }
+            function removeFromCart(itemId) {
+                console.log("function remove from Cart")
+                // Send a request to the server to remove the item from the cart
+                fetch(`/remove_from_cart/${itemId}`, { // Fixed the syntax by enclosing the URL in backticks and moving the opening curly brace inside the fetch call
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id: itemId })
+                })
+               .then(response => {
+                    if (response.ok) {
+                        // If the item is successfully removed, reload the cart
+                        openCartPopup();
+                    } else {
+                        console.error('Error removing item from cart:', response.status);
+                    }
+                })
+               .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+
+
+
+            function buy()
+            {
+                const popDialog4 =
+                    document.getElementById(
+                        "paymentPopup"
+                    );
+                popDialog4.style.visibility =
+                    popDialog4.style.visibility ===
+                    "visible"
+                        ? "hidden"
+                        : "visible";
+            }
+            function closePayment() {
+                const popDialog5 = document.getElementById("paymentPopup");
+                popDialog5.style.visibility = "hidden";
+            }
+            function donePurchase() {
+                const paymentPopup = document.getElementById("paymentPopup");
+                const cartPopup = document.getElementById("cartPopup");
+                const confirmationPopup = document.getElementById("confirmationPopup");
+
+                paymentPopup.style.visibility = "hidden";
+                cartPopup.style.visibility = "hidden";
+                confirmationPopup.style.visibility = "visible";
+
+                closeConfirmation(); // Call closeConfirmation function after showing confirmation popup
+            }
+
+            function closeConfirmation() {
+                const popDialog6 = document.getElementById("confirmationPopup");
+                popDialog6.style.visibility = "hidden";
+                //class="bg-light box-shadow mx-auto"
+                //style="width: 80%; height: 300px;
+                //class="bg-dark box-shadow mx-auto"
+            }
 function fetchData(token) {
   getHello(token);
   whoami(token);
