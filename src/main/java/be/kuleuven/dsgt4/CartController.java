@@ -67,7 +67,7 @@ public class CartController {
     public Item getItemFromId(int id){
         //dummie Item until database is constructed
         Supplier subA = new Supplier("subbA","http://127.0.0.1:8100/rest");
-        Item item = new Item("cola","beverage",12,subA);
+        Item item = new Item(id,"cola","beverage",12,subA);
         return null;
     }
 
