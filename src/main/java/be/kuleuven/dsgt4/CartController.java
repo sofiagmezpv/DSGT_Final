@@ -1,6 +1,7 @@
 package be.kuleuven.dsgt4;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,26 +21,24 @@ public class CartController {
         this.webClient = webClientBuilder.baseUrl("http://127.0.0.1:8100/rest").build();
     }
 
-    // Endpoint to add an item to the cart
+    // Endpoint to add an item to the cartµ
+    @Autowired
     @PostMapping("/add_to_cart")
     public ResponseEntity<String> addToCart(@RequestParam("id") int itemId) {
+        Item item = getItemFromId(itemId);
         var test = getDrinks();
+
         System.out.println(test.subscribe(
                 value -> System.out.println(value),
                 error -> error.printStackTrace()
                 ));
-        Item item = null;
         if(itemId == 1){
             // Use itemId to add the corresponding item to the cart
-            List<Supplier> suppliers = new ArrayList<>();
-            suppliers.add(new Supplier("Supplier A")); // Example supplier
-
-            item = new Item("Summer Student Pack", "Ideal summer vibes", 19.99, suppliers);
+            Supplier subA = new Supplier("Supplier A","http://127.0.0.1:8100/rest"); // Example supplier
+            item = new Item("Summer Student Pack", "Ideal summer vibes", 19.99, subA);
         }else if (itemId == 2){
-            List<Supplier> suppliers = new ArrayList<>();
-            suppliers.add(new Supplier("Supplier B")); // Example supplier
-
-            item = new Item("Winter Student Pack", "Ideal winter vibes", 29.99, suppliers);
+            Supplier subB = new Supplier("Supplier A","http://127.0.0.1:8100/rest"); // Example supplier
+            item = new Item("Winter Student Pack", "Ideal winter vibes", 29.99, subB);
         }
 
         cart.addItem(item);
@@ -63,13 +62,22 @@ public class CartController {
         return ResponseEntity.ok("Payment processed successfully. Total amount: " + total);
     }
 
+
+    //get item from database with the id
+    public Item getItemFromId(int id){
+        //dummie Item until database is constructed
+        Supplier subA = new Supplier("subbA","http://127.0.0.1:8100/rest");
+        Item item = new Item("cola","beverage",12,subA);
+        return null;
+    }
+
+
     public Mono<String> fetchdrinks() {
         return this.webClient.get()
                 .uri("/drinks/1234")
                 .retrieve()
                 .bodyToMono(String.class);
     }
-
     public Mono<String> getDrinks() {
         return fetchdrinks()
                 .map(response -> {

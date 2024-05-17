@@ -8,18 +8,18 @@ class Item {
     private String name;
     private double price;
     private int id;
-    private List<Supplier> suppliers; // List of suppliers providing this item
+    private Supplier supplier;
 
     // Default constructor
     public Item() {
         // Default constructor required for Jackson deserialization
     }
     // Constructor
-    public Item(String name, String description, double price, List<Supplier> suppliers) {
+    public Item(String name, String description, double price, Supplier supplier) {
         this.name = name;
         this.description = description;
         this.price = price;
-        this.suppliers = suppliers;
+        this.supplier = supplier;
     }
 
     // Getter methods
@@ -34,8 +34,8 @@ class Item {
     public double getPrice() {
         return price;
     }
-    public List<Supplier> getSuppliers() {
-        return suppliers;
+    public Supplier getSuppliers() {
+        return supplier;
     }
 }
 
