@@ -21,8 +21,7 @@ public class CartController {
         this.webClient = webClientBuilder.baseUrl("http://127.0.0.1:8100/rest").build();
     }
 
-    // Endpoint to add an item to the cartµ
-    @Autowired
+    // Endpoint to add an item to the cart
     @PostMapping("/add_to_cart")
     public ResponseEntity<String> addToCart(@RequestParam("id") int itemId) {
         Item item = getItemFromId(itemId);
