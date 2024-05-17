@@ -35,10 +35,10 @@ public class CartController {
         if(itemId == 1){
             // Use itemId to add the corresponding item to the cart
             Supplier subA = new Supplier("Supplier A","http://127.0.0.1:8100/rest"); // Example supplier
-            item = new Item("Summer Student Pack", "Ideal summer vibes", 19.99, subA);
+            item = new Item(itemId,"Summer Student Pack", "Ideal summer vibes", 19.99, subA);
         }else if (itemId == 2){
             Supplier subB = new Supplier("Supplier A","http://127.0.0.1:8100/rest"); // Example supplier
-            item = new Item("Winter Student Pack", "Ideal winter vibes", 29.99, subB);
+            item = new Item(itemId,"Winter Student Pack", "Ideal winter vibes", 29.99, subB);
         }
 
         cart.addItem(item);
