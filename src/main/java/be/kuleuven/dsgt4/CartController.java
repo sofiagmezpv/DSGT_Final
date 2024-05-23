@@ -2,7 +2,10 @@ package be.kuleuven.dsgt4;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.reactive.function.client.WebClient;
@@ -17,41 +20,52 @@ public class CartController {
     private ShoppingCart cart = new ShoppingCart();
     private final WebClient webClient;
 
+    @Autowired
+    private FirestoreService firestoreService;
+    @Autowired
+    private PackageService packageService;
+
     public CartController(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.baseUrl("http://127.0.0.1:8100/rest").build();
     }
 
     // Endpoint to add an item to the cart
     @PostMapping("/add_to_cart")
-    public ResponseEntity<String> addToCart(@RequestParam("id") int itemId) {
-        Item item = getItemFromId(itemId);
-        var test = getDrinks();
+    public ResponseEntity<String> addToCart(@RequestParam("id") int itemId, @RequestParam("username") String username) {
 
-        System.out.println(test.subscribe(
-                value -> System.out.println(value),
-                error -> error.printStackTrace()
-                ));
-        if(itemId == 1){
-            // Use itemId to add the corresponding item to the cart
-            Supplier subA = new Supplier("Supplier A","http://127.0.0.1:8100/rest"); // Example supplier
-            item = new Item(itemId,"Summer Student Pack", "Ideal summer vibes", 19.99, subA);
-        }else if (itemId == 2){
-            Supplier subB = new Supplier("Supplier A","http://127.0.0.1:8100/rest"); // Example supplier
-            item = new Item(itemId,"Winter Student Pack", "Ideal winter vibes", 29.99, subB);
+        Package pack = packageService.getPackageFromId(itemId);
+        if (pack == null) {
+            return ResponseEntity.status(404).body("Package not found");
         }
 
-        cart.addItem(item);
+        cart.addItem(pack);
+
+        firestoreService.addItemToUserCart(username, pack);
 
         System.out.println("Inside add item to cart");
         return ResponseEntity.ok("Item added to cart");
     }
 
-    // Endpoint to remove an item from the cart
-    @PostMapping("/remove_from_cart")
-    public ResponseEntity<String> removeFromCart(@RequestParam("id") int itemId)  {
-        cart.removeItem(itemId);
-        return ResponseEntity.ok("Item removed from cart");
+
+    @GetMapping("/user/packages/{username}")
+    public ResponseEntity<List<Package>> getUserPackages(@PathVariable String username) {
+        List<Package> userPackages = firestoreService.getUserPackages(username);
+
+        if (userPackages.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Or an empty list, depending on your preference
+        }
+
+        return ResponseEntity.ok(userPackages);
     }
+
+
+
+    // Endpoint to remove an item from the cart
+//    @PostMapping("/remove_from_cart")
+//    public ResponseEntity<String> removeFromCart(@RequestParam("id") int itemId)  {
+//        cart.removeItem(itemId);
+//        return ResponseEntity.ok("Item removed from cart");
+//    }
 
     // Endpoint to proceed to payment
     @PostMapping("/pay")
@@ -63,12 +77,12 @@ public class CartController {
 
 
     //get item from database with the id
-    public Item getItemFromId(int id){
-        //dummie Item until database is constructed
-        Supplier subA = new Supplier("subbA","http://127.0.0.1:8100/rest");
-        Item item = new Item(id,"cola","beverage",12,subA);
-        return null;
-    }
+//    public Item getItemFromId(int id){
+//        //dummie Item until database is constructed
+//        Supplier subA = new Supplier("subbA","http://127.0.0.1:8100/rest");
+//        Item item = new Item(id,"cola","beverage",12,subA);
+//        return null;
+//    }
 
 
     public Mono<String> fetchdrinks() {

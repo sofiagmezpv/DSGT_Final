@@ -201,7 +201,20 @@ winter.addEventListener("click", function () {
 }
 
 function openPop(itemId) {
-    fetch(`/add_to_cart?id=${itemId}`, {
+    const auth = getAuth(); // Assuming this function gets the authentication object
+    let username = ""; // Initialize username variable
+
+    // Check if the user is authenticated
+    if (auth.currentUser) {
+        username = auth.currentUser.email; // Retrieve username from currentUser's email
+    } else {
+        console.log("User not authenticated");
+        // Handle the case where the user is not authenticated
+        // You may display a message or redirect to a login page
+        return; // Exit the function if user is not authenticated
+    }
+
+    fetch(`/add_to_cart?id=${itemId}&username=${username}`, { // Include username in the fetch URL
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -215,9 +228,9 @@ function openPop(itemId) {
     const popDialog = document.getElementById("popupDialog");
     popDialog.style.visibility = popDialog.style.visibility === "visible" ? "hidden" : "visible";
 
-
     setTimeout(closePop, 1000);
 }
+
 
 // Define closePop function
 function closePop() {
@@ -246,45 +259,96 @@ function closePop() {
         function openCartPopup() {
             console.log("inside the openCartPopup");
 
-            // Mock fetch response with dummy data
-            const mockFetchResponse = new Promise((resolve) => {
-                setTimeout(() => {
-                    resolve({
-                        json: () => Promise.resolve([
-                            { id: 1, name: 'Item 1', price: 9.99 },
-                            { id: 2, name: 'Item 2', price: 14.99 },
-                            { id: 3, name: 'Item 3', price: 19.99 },
-                        ])
-                    });
-                }, 1000);
-            });
+            const auth = getAuth(); // Assuming this function gets the authentication object
 
-            mockFetchResponse
+            // Check if the user is authenticated
+            if (auth.currentUser) {
+                const username = auth.currentUser.email; // Retrieve username from currentUser's email
+
+                // Fetch user's packages from the server
+                fetch(`/user/packages/${username}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
                 .then(response => response.json())
-                .then(items => {
+                .then(packages => {
                     // Clear previous items
                     cartItemsContainer.innerHTML = "";
 
-                    // Iterate over the items in the cart and dynamically populate the cart section
-                    items.forEach(item => {
-                        const itemElement = document.createElement("div");
-                        itemElement.innerHTML = `
-                            <p>${item.name} - $${item.price.toFixed(2)}</p>
-                            <button data-item-id="${item.id}" type="button" class="btn btn-danger remove-btn">Remove</button>
+                    // Iterate over the packages and dynamically populate the cart section
+                    packages.forEach(pkg => {
+                        const packageElement = document.createElement("div");
+                        packageElement.innerHTML = `
+                            <p>${pkg.name} - $${pkg.price.toFixed(2)}</p>
+                            <button data-package-id="${pkg.id}" type="button" class="btn btn-danger remove-btn">Remove</button>
                         `;
-                        cartItemsContainer.appendChild(itemElement);
+                        cartItemsContainer.appendChild(packageElement);
                     });
                 })
                 .catch(error => {
-                    console.error('Error:', error);
+                    console.error('Error fetching user packages:', error);
                 });
+            } else {
+                console.log("User not authenticated");
+                // Handle the case where the user is not authenticated
+                // You may display a message or redirect to a login page
+            }
 
+            // Show the cart popup
             const popDialog2 = document.getElementById("cartPopup");
             popDialog2.style.visibility =
                 popDialog2.style.visibility === "visible"
                     ? "hidden"
                     : "visible";
         }
+
+
+
+
+//        function openCartPopup() {
+//            console.log("inside the openCartPopup");
+//
+//            // Mock fetch response with dummy data
+//            const mockFetchResponse = new Promise((resolve) => {
+//                setTimeout(() => {
+//                    resolve({
+//                        json: () => Promise.resolve([
+//                            { id: 1, name: 'Item 1', price: 9.99 },
+//                            { id: 2, name: 'Item 2', price: 14.99 },
+//                            { id: 3, name: 'Item 3', price: 19.99 },
+//                        ])
+//                    });
+//                }, 1000);
+//            });
+//
+//            mockFetchResponse
+//                .then(response => response.json())
+//                .then(items => {
+//                    // Clear previous items
+//                    cartItemsContainer.innerHTML = "";
+//
+//                    // Iterate over the items in the cart and dynamically populate the cart section
+//                    items.forEach(item => {
+//                        const itemElement = document.createElement("div");
+//                        itemElement.innerHTML = `
+//                            <p>${item.name} - $${item.price.toFixed(2)}</p>
+//                            <button data-item-id="${item.id}" type="button" class="btn btn-danger remove-btn">Remove</button>
+//                        `;
+//                        cartItemsContainer.appendChild(itemElement);
+//                    });
+//                })
+//                .catch(error => {
+//                    console.error('Error:', error);
+//                });
+//
+//            const popDialog2 = document.getElementById("cartPopup");
+//            popDialog2.style.visibility =
+//                popDialog2.style.visibility === "visible"
+//                    ? "hidden"
+//                    : "visible";
+//        }
 
 
             function closeCartPop() {

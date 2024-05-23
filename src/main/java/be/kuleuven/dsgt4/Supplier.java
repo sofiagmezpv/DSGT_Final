@@ -8,24 +8,31 @@ import java.util.List;
 
 @RestController
 public class Supplier {
-        private static final String NAMESPACE_URI ="http://127.0.0.1:8100/rest";
+        private int apiKey;
         private String name;
-        private List<Item> items;
-        public String baseUrl;
+        private String baseUrl;
+//        private List<Item> items; // Assuming you have an Item class defined
 
+//        // Default constructor required for Firestore deserialization
+//        public Supplier() {
+//        }
 
-        @Autowired
-        public Supplier(String name, String baseUrl) {
-                this.name = name;
+        public Supplier(int apiKey, String baseUrl, String name) {
+                this.apiKey = apiKey;
                 this.baseUrl = baseUrl;
-
+                this.name = name;
+//                this.items = items;
         }
 
+        public String getName() {
+                return name;
+        }
 
+        public String getBaseUrl() {
+                return baseUrl;
+        }
 
-
-
-        // Constructor, getters, setters...
-
-
+//        public List<Item> getItems() {
+//                return items;
+//        }
 }

@@ -1,25 +1,28 @@
 package be.kuleuven.dsgt4;
 
+import java.util.List;
+import java.util.stream.Collectors;
 
-// Class representing an item
-class Item {
+public class Package {
+
     private String description;
     private String name;
     private double price;
     private int id;
-    private Supplier supplier;
+    private List<Supplier> suppliers;
 
     // Default constructor
-    public Item() {
+    public Package() {
         // Default constructor required for Jackson deserialization
     }
     // Constructor
-    public Item(int id, String name, String description, double price, Supplier suppliers) {
+    public Package(int id, String name, String description, double price, List<Supplier> suppliers) {
 
+        this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
-        this.supplier = supplier;
+        this.suppliers = suppliers;
     }
 
     // Getter methods
@@ -37,10 +40,13 @@ class Item {
         return price;
     }
 
-    public Supplier getSuppliers() {
-        return supplier;
+    public List<Supplier> getSuppliers() {
+        return suppliers;
+    }
+
+    public List<String> getSupplierNames() {
+        return suppliers.stream().map(Supplier::getName).collect(Collectors.toList());
     }
 
 
 }
-
