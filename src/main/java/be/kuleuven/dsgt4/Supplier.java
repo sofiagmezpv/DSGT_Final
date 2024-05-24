@@ -1,31 +1,55 @@
 package be.kuleuven.dsgt4;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import java.util.List;
 
-@RestController
+@Service
 public class Supplier {
-        private static final String NAMESPACE_URI ="http://127.0.0.1:8100/rest";
+        private WebClient webClient;
         private String name;
         private List<Item> items;
-        public String baseUrl;
-
+        private String baseUrl;
 
         @Autowired
-        public Supplier(String name, String baseUrl) {
+        public Supplier(WebClient.Builder webClientBuilder, String name, String baseUrl) {
                 this.name = name;
                 this.baseUrl = baseUrl;
-
+                this.webClient = webClientBuilder.baseUrl(baseUrl).build();
         }
 
-        @PayloadRoot()
+        public Mono<String> getDrinkById(int id) {
+                System.out.println("trying to contact supplier");
+                return webClient.get()
+                        .uri("/drinksId/{id}/1234", id)
+                        .retrieve()
+                        .bodyToMono(String.class);
+        }
 
+        // Getters and setters
+        public String getName() {
+                return name;
+        }
 
+        public void setName(String name) {
+                this.name = name;
+        }
 
-        // Constructor, getters, setters...
+        public List<Item> getItems() {
+                return items;
+        }
 
+        public void setItems(List<Item> items) {
+                this.items = items;
+        }
 
+        public String getBaseUrl() {
+                return baseUrl;
+        }
+
+        public void setBaseUrl(String baseUrl) {
+                this.baseUrl = baseUrl;
+        }
 }
