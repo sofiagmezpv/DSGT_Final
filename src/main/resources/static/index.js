@@ -245,12 +245,11 @@ function closePop() {
 //        cartItemsContainer.addEventListener('click', handleRemoveButtonClick);
         const closeCart = document.getElementById("closeCartButton");
         function openCartPopup() {
-            console.log("inside the openCartPopup");
-            const auth = getAuth(); // Assuming this function gets the authentication object
+            const auth = getAuth();
 
             // Check if the user is authenticated
             if (auth.currentUser) {
-                const username = auth.currentUser.email; // Retrieve username from currentUser's email
+                const username = auth.currentUser.email;
 
                 // Fetch user's packages from the server
                 fetch(`/user/packages/${username}`, {
@@ -273,13 +272,12 @@ function closePop() {
                         `;
                         // Attach event listener to the Remove button
                         packageElement.querySelector('.remove-btn').addEventListener('click', () => {
-                            removePackageFromCart(pkg.id); // Pass both the document ID and the package ID
+                            removePackageFromCart(pkg.id);
                         });
 
                         cartItemsContainer.appendChild(packageElement);
 
                         closeCart.addEventListener('click' , () => {
-                            console.log("In the close cart click")
                             closeCartPop();
                         });
                     });
@@ -289,8 +287,6 @@ function closePop() {
                 });
             } else {
                 console.log("User not authenticated");
-                // Handle the case where the user is not authenticated
-                // You may display a message or redirect to a login page
             }
 
 
