@@ -13,6 +13,19 @@ public class ShoppingCart {
     public void addItem(Package pack) {
         packs.add(pack);
     }
+
+    public Package findItemById(int itemId) {
+        for (Package pack :packs) {
+            if (pack.getId() == itemId) {
+                return pack;
+            }
+        }
+        return null; // Return null if item not found
+    }
+
+    public boolean removeItem(Package item) {
+        return packs.remove(item);
+    }
 // Remove item from the cart
 //    public void removeItem(int itemPos) {
 //        //call method that ghets item with itemId

@@ -14,7 +14,7 @@ class Item {
         // Default constructor required for Jackson deserialization
     }
     // Constructor
-    public Item(int id, String name, String description, double price, Supplier suppliers) {
+    public Item(int id, String name, String description, double price, Supplier supplier) {
 
         this.name = name;
         this.description = description;

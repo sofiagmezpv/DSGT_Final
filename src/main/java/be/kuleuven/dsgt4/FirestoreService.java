@@ -5,10 +5,7 @@ import com.google.cloud.firestore.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -21,12 +18,11 @@ public class FirestoreService {
         System.out.println("In addItemToUserCart" + username);
 
         Map<String, Object> cartItem = new HashMap<>();
-        cartItem.put("itemId", pack.getId());
+        cartItem.put("id", pack.getId());
         cartItem.put("name", pack.getName());
         cartItem.put("description", pack.getDescription());
         cartItem.put("price", pack.getPrice());
-        cartItem.put("suppliers", pack.getSupplierNames());
-        cartItem.put("username", username); // Add the username field
+//        cartItem.put("suppliers", pack.getSuppliers());
 
         ApiFuture<DocumentReference> future = db.collection("users")
                 .document(username)
@@ -42,7 +38,7 @@ public class FirestoreService {
     }
 
     public List<Package> getUserPackages(String username) {
-        System.out.println("In getUserPackages" + username);
+        System.out.println("In getUserPackages with username: " + username);
         List<Package> userPackages = new ArrayList<>();
 
         try {
@@ -51,20 +47,67 @@ public class FirestoreService {
                     .document(username)
                     .collection("cart");
 
-            ApiFuture<QuerySnapshot> query = cartRef.whereEqualTo("username", username).get();
+            ApiFuture<QuerySnapshot> query = cartRef.get();
             QuerySnapshot querySnapshot = query.get();
+
+            System.out.println("Query snapshot size: " + querySnapshot.size());
 
             // Iterate over the documents in the query result
             for (QueryDocumentSnapshot document : querySnapshot) {
-                // Get the package details from the cart item
+                System.out.println("Processing document: " + document.getId());
+
+                        // Get the package details from the cart item
                 Package pack = document.toObject(Package.class);
                 userPackages.add(pack);
+
+                System.out.println("Package added: " + pack.toString());
             }
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
 
         return userPackages;
+    }
+
+    public void removeItemFromUserCart(String username, int itemId) {
+        System.out.println("Into RemoveItemFromUserCart");
+
+        // Query to find the document(s) where id matches the itemId
+        Query query = db.collection("users").document(username).collection("cart")
+                .whereEqualTo("id", itemId); // Corrected to use whereEqualTo instead of whereIn
+
+        // Execute the query asynchronously
+        ApiFuture<QuerySnapshot> querySnapshotApiFuture = query.get();
+
+        try {
+            // Get the results of the query
+            QuerySnapshot querySnapshot = querySnapshotApiFuture.get();
+
+            // Check if any documents were found
+            if (!querySnapshot.isEmpty()) {
+                // Delete each document found
+                for (DocumentSnapshot document : querySnapshot.getDocuments()) {
+                    ApiFuture<WriteResult> deleteFuture = document.getReference().delete();
+
+                    try {
+                        // Wait for the delete operation to complete
+                        WriteResult deleteResult = deleteFuture.get();
+
+                        if (deleteResult.getUpdateTime()!= null) {
+                            System.out.println("Document deleted with ID: " + document.getId());
+                        } else {
+                            System.err.println("Unsuccessful delete operation: ");
+                        }
+                    } catch (Exception e) {
+                        System.err.println("An error occurred during the delete operation: " + e.getMessage());
+                    }
+                }
+            } else {
+                System.out.println("No items found with ID: " + itemId);
+            }
+        } catch (Exception e) {
+            System.err.println("An error occurred during the query operation: " + e.getMessage());
+        }
     }
 
 

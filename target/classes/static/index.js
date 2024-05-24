@@ -240,21 +240,10 @@ function closePop() {
 }
 
 
-        // Function to handle "Remove" button clicks
-        function handleRemoveButtonClick(event) {
-            const removeButton = event.target;
-            const itemId = removeButton.getAttribute('data-item-id');
-
-            // Check if the clicked element is a "Remove" button
-            if (removeButton.classList.contains('remove-btn')) {
-                console.log(itemId-1)
-                removeFromCart(itemId-1);
-            }
-        }
 
         // Add event listener to the cart items container
         const cartItemsContainer = document.getElementById("cartItems");
-        cartItemsContainer.addEventListener('click', handleRemoveButtonClick);
+//        cartItemsContainer.addEventListener('click', handleRemoveButtonClick);
 
         function openCartPopup() {
             console.log("inside the openCartPopup");
@@ -284,6 +273,11 @@ function closePop() {
                             <p>${pkg.name} - $${pkg.price.toFixed(2)}</p>
                             <button data-package-id="${pkg.id}" type="button" class="btn btn-danger remove-btn">Remove</button>
                         `;
+                        // Attach event listener to the Remove button
+                        packageElement.querySelector('.remove-btn').addEventListener('click', () => {
+                            removePackageFromCart(pkg.id); // Pass both the document ID and the package ID
+                        });
+
                         cartItemsContainer.appendChild(packageElement);
                     });
                 })
@@ -296,6 +290,37 @@ function closePop() {
                 // You may display a message or redirect to a login page
             }
 
+            function removePackageFromCart(packageId) {
+                    const auth = getAuth(); // Assuming this function gets the authentication object
+                    let username = ""; // Initialize username variable
+
+                    // Check if the user is authenticated
+                    if (auth.currentUser) {
+                        username = auth.currentUser.email; // Retrieve username from currentUser's email
+                    } else {
+                        console.log("User not authenticated");
+                        // Handle the case where the user is not authenticated
+                        // You may display a message or redirect to a login page
+                        return; // Exit the function if user is not authenticated
+                    }
+
+                    // Send a DELETE request to the server to remove the package
+                    fetch(`/remove_from_cart?id=${packageId}&username=${username}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                   .then(() => {
+                        console.log(`Package with ID ${packageId} removed from cart.`);
+                        // Optionally, refresh the cart UI to reflect the change
+                        openCartPopup(); // Recursively call openCartPopup to refresh the cart
+                    })
+                   .catch(error => {
+                        console.error('Error removing package from cart:', error);
+                    });
+                }
+
             // Show the cart popup
             const popDialog2 = document.getElementById("cartPopup");
             popDialog2.style.visibility =
@@ -304,80 +329,10 @@ function closePop() {
                     : "visible";
         }
 
-
-
-
-//        function openCartPopup() {
-//            console.log("inside the openCartPopup");
-//
-//            // Mock fetch response with dummy data
-//            const mockFetchResponse = new Promise((resolve) => {
-//                setTimeout(() => {
-//                    resolve({
-//                        json: () => Promise.resolve([
-//                            { id: 1, name: 'Item 1', price: 9.99 },
-//                            { id: 2, name: 'Item 2', price: 14.99 },
-//                            { id: 3, name: 'Item 3', price: 19.99 },
-//                        ])
-//                    });
-//                }, 1000);
-//            });
-//
-//            mockFetchResponse
-//                .then(response => response.json())
-//                .then(items => {
-//                    // Clear previous items
-//                    cartItemsContainer.innerHTML = "";
-//
-//                    // Iterate over the items in the cart and dynamically populate the cart section
-//                    items.forEach(item => {
-//                        const itemElement = document.createElement("div");
-//                        itemElement.innerHTML = `
-//                            <p>${item.name} - $${item.price.toFixed(2)}</p>
-//                            <button data-item-id="${item.id}" type="button" class="btn btn-danger remove-btn">Remove</button>
-//                        `;
-//                        cartItemsContainer.appendChild(itemElement);
-//                    });
-//                })
-//                .catch(error => {
-//                    console.error('Error:', error);
-//                });
-//
-//            const popDialog2 = document.getElementById("cartPopup");
-//            popDialog2.style.visibility =
-//                popDialog2.style.visibility === "visible"
-//                    ? "hidden"
-//                    : "visible";
-//        }
-
-
             function closeCartPop() {
                 const popDialog3 = document.getElementById("cartPopup");
                 popDialog3.style.visibility = "hidden";
             }
-            function removeFromCart(itemId) {
-                console.log("function remove from Cart")
-                // Send a request to the server to remove the item from the cart
-                fetch(`/remove_from_cart/${itemId}`, { // Fixed the syntax by enclosing the URL in backticks and moving the opening curly brace inside the fetch call
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ id: itemId })
-                })
-               .then(response => {
-                    if (response.ok) {
-                        // If the item is successfully removed, reload the cart
-                        openCartPopup();
-                    } else {
-                        console.error('Error removing item from cart:', response.status);
-                    }
-                })
-               .catch(error => {
-                    console.error('Error:', error);
-                });
-            }
-
 
 
             function buy()

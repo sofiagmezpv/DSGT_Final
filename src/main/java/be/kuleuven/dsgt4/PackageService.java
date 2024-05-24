@@ -8,8 +8,8 @@ public class PackageService {
 
     public Package getPackageFromId(int id) {
         // Example data, replace this with actual data fetching logic
-        Supplier supplierA = new Supplier(1234, "http://127.0.0.1:8100/rest", "Supplier A" );
-        Supplier supplierB = new Supplier(1234, "http://127.0.0.1:8200/rest", "Supplier B" );
+        Supplier supplierA = new Supplier(1, "http://127.0.0.1:8100/rest", "Supplier A" );
+        Supplier supplierB = new Supplier(2, "http://127.0.0.1:8200/rest", "Supplier B" );
 
         if (id == 1) {
             return new Package(1, "Summer Student Pack", "Ideal summer vibes", 19.99, List.of(supplierA));

@@ -48,15 +48,34 @@ public class CartController {
 
 
     @GetMapping("/user/packages/{username}")
-    public ResponseEntity<List<Package>> getUserPackages(@PathVariable String username) {
+    public ResponseEntity<?> getUserPackages(@PathVariable String username) {
         List<Package> userPackages = firestoreService.getUserPackages(username);
 
+        if (userPackages == null) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to retrieve user packages.");
+        }
+
         if (userPackages.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Or an empty list, depending on your preference
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User packages not found for username: " + username);
         }
 
         return ResponseEntity.ok(userPackages);
     }
+
+    @PostMapping("/remove_from_cart")
+    public ResponseEntity<String> removeFromCart(@RequestParam("id") int itemId, @RequestParam("username") String username) {
+        System.out.println("Cart Controller Remove");
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+        }
+        // Optionally, update the Firestore database to reflect the change in the cart
+        firestoreService.removeItemFromUserCart(username, itemId);
+
+        return ResponseEntity.ok("Item removed from cart");
+    }
+
 
 
 
