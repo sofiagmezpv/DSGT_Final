@@ -42,7 +42,6 @@ public class FirestoreService {
         List<Package> userPackages = new ArrayList<>();
 
         try {
-            // Query the "cart" collection for items associated with the user
             CollectionReference cartRef = db.collection("users")
                     .document(username)
                     .collection("cart");
@@ -54,13 +53,8 @@ public class FirestoreService {
 
             // Iterate over the documents in the query result
             for (QueryDocumentSnapshot document : querySnapshot) {
-                System.out.println("Processing document: " + document.getId());
-
-                        // Get the package details from the cart item
                 Package pack = document.toObject(Package.class);
                 userPackages.add(pack);
-
-                System.out.println("Package added: " + pack.toString());
             }
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
@@ -74,7 +68,7 @@ public class FirestoreService {
 
         // Query to find the document(s) where id matches the itemId
         Query query = db.collection("users").document(username).collection("cart")
-                .whereEqualTo("id", itemId); // Corrected to use whereEqualTo instead of whereIn
+                .whereEqualTo("id", itemId);
 
         // Execute the query asynchronously
         ApiFuture<QuerySnapshot> querySnapshotApiFuture = query.get();
@@ -85,22 +79,23 @@ public class FirestoreService {
 
             // Check if any documents were found
             if (!querySnapshot.isEmpty()) {
-                // Delete each document found
-                for (DocumentSnapshot document : querySnapshot.getDocuments()) {
-                    ApiFuture<WriteResult> deleteFuture = document.getReference().delete();
+                // Assuming you want to delete the first document found
+                DocumentSnapshot document = querySnapshot.getDocuments().get(0);
 
-                    try {
-                        // Wait for the delete operation to complete
-                        WriteResult deleteResult = deleteFuture.get();
+                // Delete the document
+                ApiFuture<WriteResult> deleteFuture = document.getReference().delete();
 
-                        if (deleteResult.getUpdateTime()!= null) {
-                            System.out.println("Document deleted with ID: " + document.getId());
-                        } else {
-                            System.err.println("Unsuccessful delete operation: ");
-                        }
-                    } catch (Exception e) {
-                        System.err.println("An error occurred during the delete operation: " + e.getMessage());
+                try {
+                    // Wait for the delete operation to complete
+                    WriteResult deleteResult = deleteFuture.get();
+
+                    if (deleteResult.getUpdateTime()!= null) {
+                        System.out.println("Document deleted with ID: " + document.getId());
+                    } else {
+                        System.err.println("Unsuccessful delete operation: ");
                     }
+                } catch (Exception e) {
+                    System.err.println("An error occurred during the delete operation: " + e.getMessage());
                 }
             } else {
                 System.out.println("No items found with ID: " + itemId);
@@ -109,6 +104,7 @@ public class FirestoreService {
             System.err.println("An error occurred during the query operation: " + e.getMessage());
         }
     }
+
 
 
     @Autowired

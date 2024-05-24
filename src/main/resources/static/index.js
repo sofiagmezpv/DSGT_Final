@@ -290,36 +290,6 @@ function closePop() {
                 // You may display a message or redirect to a login page
             }
 
-            function removePackageFromCart(packageId) {
-                    const auth = getAuth(); // Assuming this function gets the authentication object
-                    let username = ""; // Initialize username variable
-
-                    // Check if the user is authenticated
-                    if (auth.currentUser) {
-                        username = auth.currentUser.email; // Retrieve username from currentUser's email
-                    } else {
-                        console.log("User not authenticated");
-                        // Handle the case where the user is not authenticated
-                        // You may display a message or redirect to a login page
-                        return; // Exit the function if user is not authenticated
-                    }
-
-                    // Send a DELETE request to the server to remove the package
-                    fetch(`/remove_from_cart?id=${packageId}&username=${username}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                   .then(() => {
-                        console.log(`Package with ID ${packageId} removed from cart.`);
-                        // Optionally, refresh the cart UI to reflect the change
-                        openCartPopup(); // Recursively call openCartPopup to refresh the cart
-                    })
-                   .catch(error => {
-                        console.error('Error removing package from cart:', error);
-                    });
-                }
 
             // Show the cart popup
             const popDialog2 = document.getElementById("cartPopup");
@@ -328,6 +298,37 @@ function closePop() {
                     ? "hidden"
                     : "visible";
         }
+
+        function removePackageFromCart(packageId) {
+                            const auth = getAuth(); // Assuming this function gets the authentication object
+                            let username = ""; // Initialize username variable
+
+                            // Check if the user is authenticated
+                            if (auth.currentUser) {
+                                username = auth.currentUser.email; // Retrieve username from currentUser's email
+                            } else {
+                                console.log("User not authenticated");
+                                // Handle the case where the user is not authenticated
+                                // You may display a message or redirect to a login page
+                                return; // Exit the function if user is not authenticated
+                            }
+
+                            // Send a DELETE request to the server to remove the package
+                            fetch(`/remove_from_cart?id=${packageId}&username=${username}`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            })
+                           .then(() => {
+                                console.log(`Package with ID ${packageId} removed from cart.`);
+                                // Optionally, refresh the cart UI to reflect the change
+                                openCartPopup(); // Recursively call openCartPopup to refresh the cart
+                            })
+                           .catch(error => {
+                                console.error('Error removing package from cart:', error);
+                            });
+                        }
 
             function closeCartPop() {
                 const popDialog3 = document.getElementById("cartPopup");
