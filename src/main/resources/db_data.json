@@ -1,0 +1,56 @@
+{
+
+    "item" : [ {
+      "id" : "1",
+      "name" : "Nalu Original",
+      "kcal" : 50,
+      "price" : 1.08,
+      "description" : "An amazing new taste of Nalu Drinks with less calories and a boost of energy.",
+      "volume" : 250.0,
+      "brand" : "NALU",
+      "supplier" : "SCImO9FqmkJELue1zi8f"
+    }, {
+      "id" : "2",
+      "name" : "Nalu Passion",
+      "kcal" : 50,
+      "price" : 1.41,
+      "description" : "Introducing Nalu Passion, a refreshing, fruity blend of blueberry, pear, blackberry, peach, açai, Goji berries and mangosteen for the most passionate among us.",
+      "volume" : 250.0,
+      "brand" : "NALU",
+      "supplier" : "SCImO9FqmkJELue1zi8f"
+    }, {
+      "id" : "3",
+      "name" : "Red Bull Green Edition",
+      "kcal" : 112,
+      "price" : 1.65,
+      "description" : "The Red Bull Green Edition with the exotic flavor of cactus fruit.",
+      "volume" : 250.0,
+      "brand" : "REDBULL",
+      "supplier" : "SCImO9FqmkJELue1zi8f"
+    } ],
+
+  "supplier" : [ {
+    "id" : "SCImO9FqmkJELue1zi8f",
+    "name" : "Caffeine shop",
+    "apiKey" : 1234,
+    "baseUrl" : "http://127.0.0.1:8100/rest"
+  } ],
+
+
+  "package" : [ {
+    "id" : "eGBPA1nEgmAjdmgJg1nE",
+    "name" : "Winter Package",
+    "description" : "Cozy winter vibes.",
+    "price" : 1,
+    "items" : [1, 2]
+  }, {
+    "id" : "mNJ6dIZ7hssWBFKg212",
+    "name" : "Summer Package",
+    "description" : "Refreshing!",
+    "price" : 2,
+    "items" : [3, 2]
+  } ]
+
+}
+
+

@@ -10,21 +10,21 @@ public class Package extends Object {
     private String name;
     private double price;
     private int id;
-    private List<Supplier> suppliers;
+    private List<Item> items;
 
     // Default constructor required for Jackson deserialization
     public Package() {
         // Initialize suppliers to an empty list
-        this.suppliers = new ArrayList<>();
+        this.items = new ArrayList<>();
     }
 
     // Constructor
-    public Package(int id, String name, String description, double price, List<Supplier> suppliers) {
+    public Package(int id, String name, String description, double price, List<Item> items) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
-        this.suppliers = suppliers;
+        this.items = items;
     }
 
     // Getter methods
@@ -44,12 +44,12 @@ public class Package extends Object {
         return price;
     }
 
-    public List<Supplier> getSuppliers() {
-        return suppliers;
+    public List<Item> getItems() {
+        return items;
     }
 
-    public List<String> getSupplierNames() {
-        return suppliers.stream().map(Supplier::getName).collect(Collectors.toList());
+    public List<String> getItemNames() {
+        return items.stream().map(Item::getName).collect(Collectors.toList());
     }
 
 

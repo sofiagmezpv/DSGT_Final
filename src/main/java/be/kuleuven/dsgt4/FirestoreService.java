@@ -3,15 +3,31 @@ package be.kuleuven.dsgt4;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+import com.google.cloud.firestore.WriteBatch;
+import com.google.cloud.firestore.WriteResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class FirestoreService {
 
     private final Firestore db;
+    private final ResourceLoader loader;
 
     public void addItemToUserCart(String username, Package pack) {
 
@@ -112,30 +128,39 @@ public class FirestoreService {
 
 
     @Autowired
-    public FirestoreService(Firestore db) {
+    public FirestoreService(Firestore db, ResourceLoader loader) {
         this.db = db;
+        this.loader = loader;
     }
 
     @PostConstruct
     void initializeDB() {
-        // add suppliers
-        Map<String, Object> docData = new HashMap<>();
-        docData.put("name", "caffeine shop");
-        docData.put("apiKey", 1234);
-        docData.put("baseUrl", "http://127.0.0.1:8100/rest");
-        ApiFuture<WriteResult> future = db.collection("supplier").document("SCImO9FqmkJELue1zi8f").set(docData);
+        Resource resource = loader.getResource("classpath:db_data.json");
+        ObjectMapper mapper = new ObjectMapper();
+        try (InputStream inputStream = resource.getInputStream()) {
+            // Read JSON into a Map
+            Map<String, Object> firestoreData = mapper.readValue(inputStream, new TypeReference<Map<String, Object>>() {});
 
+            WriteBatch batch = db.batch();
 
-        //add items
-        Map<String, Object> docData2 = new HashMap<>();
-        docData2.put("name", "Nalu Original");
-        docData2.put("description", "An amazing new taste of Nalu Drinks with less calories and a boost of energy.");
-        docData2.put("price", 1.09);
-        docData2.put("supplier", "SCImO9FqmkJELue1zi8f");
-        ApiFuture<DocumentReference> future2 = db.collection("item").add(docData2);
+            // Iterate over each entry in the Map
+            for (Map.Entry<String, Object> entry : firestoreData.entrySet()) {
+                String collectionName = entry.getKey();
+                List<Map<String, Object>> documents = (List<Map<String, Object>>) entry.getValue();
 
+                for (Map<String, Object> document : documents) {
+                    String documentId = (String) document.get("id");
+                    batch.set(db.collection(collectionName).document(documentId), document);
+                }
+            }
 
-
+            // Commit the batch
+            List<WriteResult> results = batch.commit().get();
+            for (WriteResult result : results) {
+                System.out.println("Update time: " + result.getUpdateTime());
+            }
+        } catch (IOException | InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
     }
-
 }
