@@ -112,9 +112,8 @@ public class FirestoreService {
 
 
     @Autowired
-    public FirestoreService() {
-        Dsgt4Application app = new Dsgt4Application();
-        this.db = app.db();
+    public FirestoreService(Firestore db) {
+        this.db = db;
     }
 
     @PostConstruct
