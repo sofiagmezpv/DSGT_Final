@@ -109,7 +109,6 @@ function wireGuiUpEvents() {
 }
 
 function wireUpAuthChange() {
-
   var auth = getAuth();
   onAuthStateChanged(auth, (user) => {
     console.log("onAuthStateChanged");
@@ -133,72 +132,72 @@ function wireUpAuthChange() {
 
       console.log("Hello " + auth.currentUser.email)
 
-      //update GUI when user is authenticated
+      // Update GUI when user is authenticated
       showAuthenticated(auth.currentUser.email);
 
       console.log("Token: " + idTokenResult.token);
       console.log(summer)
 
-cart.addEventListener("click", function () {
-          console.log('cart open clicked');
-           openCartPopup()
-              .then(function () {
-                   console.log("opened cart");
-               })
-              .catch(function (error) {
-                   console.log("error opening cart:");
-                   console.log(error.message);
-                   alert(error.message);
-               });
+      cart.addEventListener("click", function () {
+        console.log('cart open clicked');
+        openCartPopup()
+         .then(function () {
+                console.log("opened cart");
+            })
+         .catch(function (error) {
+                console.log("error opening cart:");
+                console.log(error.message);
+                alert(error.message);
+            });
 
-     //fetch data from server when authentication was successful.
+        // Fetch data from server when authentication was successful.
+        token = idTokenResult.token;
+        fetchData(token);
+      });
 
-       token = idTokenResult.token;
-       fetchData(token);
-     });
+      winter.addEventListener("click", function () {
+        console.log('winter in  idToken  clicked'); // Debugging line
+        const itemId = parseInt(winter.dataset.itemId); // Assuming the "TEST" button also has a data-item-id attribute
+        console.log('Item ID:', itemId); // Debugging line
+        openPop(itemId)
+         .then(function () {
+                console.log("opened called");
+            })
+         .catch(function (error) {
+                console.log("error signInWithEmailAndPassword:");
+                console.log(error.message);
+                alert(error.message);
+            });
 
-winter.addEventListener("click", function () {
-          console.log('winter in  idToken  clicked'); // Debugging line
-          const itemId = parseInt(winter.dataset.itemId); // Assuming the "TEST" button also has a data-item-id attribute
-          console.log('Item ID:', itemId); // Debugging line
-          openPop(itemId)
-             .then(function () {
-                  console.log("opened called");
-              })
-             .catch(function (error) {
-                  console.log("error signInWithEmailAndPassword:");
-                  console.log(error.message);
-                  alert(error.message);
-              });
+        // Fetch data from server when authentication was successful.
+        token = idTokenResult.token;
+        fetchData(token);
+      });
 
-    //fetch data from server when authentication was successful.
-
-      token = idTokenResult.token;
-      fetchData(token);
-    });
       summer.addEventListener("click", function () {
-          console.log('btnSummer clicked'); // Debugging line
-          const itemId = parseInt(summer.dataset.itemId); // Assuming the "TEST" button also has a data-item-id attribute
-          console.log('Item ID:', itemId); // Debugging line
-          openPop(itemId)
-             .then(function () {
-                  console.log("opened called");
-              })
-             .catch(function (error) {
-                  console.log("error signInWithEmailAndPassword:");
-                  console.log(error.message);
-                  alert(error.message);
-              });
+        console.log('btnSummer clicked'); // Debugging line
+        const itemId = parseInt(summer.dataset.itemId); // Assuming the "TEST" button also has a data-item-id attribute
+        console.log('Item ID:', itemId); // Debugging line
+        openPop(itemId)
+         .then(function () {
+                console.log("opened called");
+            })
+         .catch(function (error) {
+                console.log("error signInWithEmailAndPassword:");
+                console.log(error.message);
+                alert(error.message);
+            });
 
-    //fetch data from server when authentication was successful.
+        // Fetch data from server when authentication was successful.
+        token = idTokenResult.token;
+        fetchData(token);
+      });
 
-      token = idTokenResult.token;
-      fetchData(token);
+
     });
-
   });
-});
 }
+
 
 function openPop(itemId) {
     const auth = getAuth(); // Assuming this function gets the authentication object
@@ -244,7 +243,7 @@ function closePop() {
         // Add event listener to the cart items container
         const cartItemsContainer = document.getElementById("cartItems");
 //        cartItemsContainer.addEventListener('click', handleRemoveButtonClick);
-
+        const closeCart = document.getElementById("closeCartButton");
         function openCartPopup() {
             console.log("inside the openCartPopup");
             const auth = getAuth(); // Assuming this function gets the authentication object
@@ -278,6 +277,11 @@ function closePop() {
                         });
 
                         cartItemsContainer.appendChild(packageElement);
+
+                        closeCart.addEventListener('click' , () => {
+                            console.log("In the close cart click")
+                            closeCartPop();
+                        });
                     });
                 })
                 .catch(error => {
@@ -324,7 +328,7 @@ function closePop() {
                 // Reload the cart content directly here
                 const cartItemsContainer = document.getElementById("cartItems");
                 cartItemsContainer.innerHTML = ""; // Clear previous items
-        
+
                 fetchCurrentCartItems(); // Call your function to fetch the updated cart items
             })
           .catch(error => {

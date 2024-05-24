@@ -33,12 +33,10 @@
                 <div class="card-body">
                     <h5 class="card-title">Login</h5>
                     <div class="form-group">
-                        <label for="email">Email</label>
-                        <input class="form-control" type="text" id="email" required>
+                        <input class="form-control" type="text" id="email" placeholder="name@example.com" required>
                     </div>
                     <div class="form-group">
-                        <label for="password">Password</label>
-                        <input class="form-control" type="password" id="password" required>
+                        <input class="form-control" type="password" id="password" required placeholder="password">
                     </div>
                     <button class="btn btn-primary" id="btnSignIn">Sign In</button>
                     <button class="btn btn-secondary" id="btnSignUp">Sign Up</button>
@@ -57,7 +55,7 @@
         <div id="cartContainer">
             <div class = "popupCart " id="cartPopup">
                 <h1>Cart</h1>
-                <button type="button" class="btn btn-secondary" onclick="closeCartPop()">close cart</button>
+                <button id="closeCartButton" class="btn btn-secondary">close cart</button>
                 <div id="cartItems"></div> <!-- This is where the cart items will be displayed -->
                 <button type="button" class="btn btn-secondary" onclick="buy()">Pay and Order</button>
             </div>
