@@ -140,7 +140,36 @@ function wireUpAuthChange() {
       console.log("Token: " + idTokenResult.token);
       console.log(summer)
 
-    // Check if user is manager position
+      manager.style.visibility = "hidden" ;
+
+    });
+
+    auth.currentUser.getIdTokenResult(auth.currentUser.getIdToken()).then((idTokenResult) => {
+      if (idTokenResult.claims.role === 'admin') {
+        console.log('User has admin role');
+        // Perform actions for admin users
+      } else {
+        console.log('User does not have admin role');
+        // Perform actions for non-admin users
+      }
+    }).catch((error) => {
+      console.error('Error getting ID token result:', error);
+    });
+
+//    // Verify the ID token first.
+//    auth.verifyIdToken(idToken)
+//      .then((claims) => {
+//        if (claims.manager === true) {
+//          manager.style.visibility = "visible";
+//                  manager.addEventListener("click", function () {
+//                    console.log('Manager button clicked');
+//                    // Perform actions specific to managers here
+//                    // For example, open a manager-specific UI
+//                  });
+//        }
+//      });
+
+
     // if manager -> view button and add event listener and if clicked call the UI of the manager (differnt )
     // if not manager-> nothing
       manager.addEventListener("click", function () {
@@ -177,7 +206,7 @@ function wireUpAuthChange() {
         fetchData(token);
       });
 
-winter.addEventListener("click", function () {
+        winter.addEventListener("click", function () {
           console.log('winter in  idToken  clicked'); // Debugging line
           const itemId = winter.dataset.itemId; // Assuming the "TEST" button also has a data-item-id attribute
           console.log('Item ID:', itemId); // Debugging line
@@ -214,10 +243,7 @@ winter.addEventListener("click", function () {
         token = idTokenResult.token;
         fetchData(token);
       });
-
-
     });
-  });
 }
 
 function openPop(itemId) {
@@ -501,8 +527,4 @@ function whoami(token) {
     .catch(function (error) {
       console.log(error);
     });
-
-
-
 }
-

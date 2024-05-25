@@ -113,8 +113,8 @@ h1 {
 }
 #managerButton {
     position: absolute;
-    right: 10px; /* Adjust the distance from the right edge */
-    top: 100px; /* Adjust the vertical position */
+    right: 10px;
+    top: 100px;
 }
 
 textarea {
