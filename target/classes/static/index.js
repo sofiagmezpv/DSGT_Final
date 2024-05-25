@@ -155,19 +155,19 @@ function wireUpAuthChange() {
         fetchData(token);
       });
 
-      winter.addEventListener("click", function () {
-        console.log('winter in  idToken  clicked'); // Debugging line
-        const itemId = parseInt(winter.dataset.itemId);
-        console.log('Item ID:', itemId); // Debugging line
-        openPop(itemId)
-         .then(function () {
-                console.log("opened called");
-            })
-         .catch(function (error) {
-                console.log("error signInWithEmailAndPassword:");
-                console.log(error.message);
-                alert(error.message);
-            });
+winter.addEventListener("click", function () {
+          console.log('winter in  idToken  clicked'); // Debugging line
+          const itemId = winter.dataset.itemId; // Assuming the "TEST" button also has a data-item-id attribute
+          console.log('Item ID:', itemId); // Debugging line
+          openPop(itemId)
+             .then(function () {
+                  console.log("opened called");
+              })
+             .catch(function (error) {
+                  console.log("error signInWithEmailAndPassword:");
+                  console.log(error.message);
+                  alert(error.message);
+              });
 
         // Fetch data from server when authentication was successful.
         token = idTokenResult.token;
@@ -175,18 +175,18 @@ function wireUpAuthChange() {
       });
 
       summer.addEventListener("click", function () {
-        console.log('btnSummer clicked'); // Debugging line
-        const itemId = parseInt(summer.dataset.itemId); // Assuming the "TEST" button also has a data-item-id attribute
-        console.log('Item ID:', itemId); // Debugging line
-        openPop(itemId)
-         .then(function () {
-                console.log("opened called");
-            })
-         .catch(function (error) {
-                console.log("error signInWithEmailAndPassword:");
-                console.log(error.message);
-                alert(error.message);
-            });
+          console.log('btnSummer clicked'); // Debugging line
+          const itemId = summer.dataset.itemId; // Assuming the "TEST" button also has a data-item-id attribute
+          console.log('Item ID:', itemId); // Debugging line
+          openPop(itemId)
+             .then(function () {
+                  console.log("opened called");
+              })
+             .catch(function (error) {
+                  console.log("error signInWithEmailAndPassword:");
+                  console.log(error.message);
+                  alert(error.message);
+              });
 
         // Fetch data from server when authentication was successful.
         token = idTokenResult.token;
@@ -197,7 +197,6 @@ function wireUpAuthChange() {
     });
   });
 }
-
 
 function openPop(itemId) {
     const auth = getAuth(); // Assuming this function gets the authentication object

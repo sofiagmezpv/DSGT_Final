@@ -3,38 +3,36 @@ package be.kuleuven.dsgt4;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import com.google.cloud.Timestamp;
-
-
-
-
 
 public class Package extends Object {
 
     private String description;
     private String name;
     private double price;
-    private int id;
-    private List<Item> items = new ArrayList<>();;
+    private String id;
+    private List<String> itemIds;
+    private List<Item> items;
 
     // Default constructor required for Jackson deserialization
     public Package() {
-
+        // Initialize suppliers to an empty list
+        this.items = new ArrayList<>();
     }
 
-    public Package(int id, String name, String description, double price, List<Item> items) {
+    // Constructor
+    public Package(String id, String name, String description, double price, List<String> ItemIds) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
-        this.items = items;
+        this.itemIds = itemIds;
     }
 
     public String getName() {
         return name;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -50,6 +48,19 @@ public class Package extends Object {
         return items;
     }
 
+    public void setItems(List<Item> items) {
+        this.items = items;
+    }
 
+    public List<String> getItemNames() {
+        return items.stream().map(Item::getName).collect(Collectors.toList());
+    }
 
+    public List<String> getItemIds() {
+        return itemIds;
+    }
+
+    public void setItemIds(List<String> itemIds) {
+        this.itemIds = itemIds;
+    }
 }

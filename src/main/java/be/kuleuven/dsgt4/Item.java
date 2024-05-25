@@ -6,41 +6,73 @@ class Item {
     private String description;
     private String name;
     private double price;
-    private int id;
+    private String id;
     private Supplier supplier;
+    private String supplierId;
+    private String brand;
 
     // Default constructor
     public Item() {
         // Default constructor required for Jackson deserialization
     }
     // Constructor
-    public Item(int id, String name, String description, double price, Supplier supplier) {
+    public Item(String id, String name, String description, double price, String supplierId, String brand) {
 
         this.name = name;
         this.description = description;
         this.price = price;
-        this.supplier = supplier;
+        this.supplierId = supplierId;
+        this.brand = brand;
     }
 
-    // Getter methods
+
+
     public String getName() {
         return name;
     }
 
-    public int getId() {return id;}
-
-    public String getDescription() {
-        return description;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public double getPrice() {
         return price;
     }
 
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public Supplier getSupplier() {
         return supplier;
     }
 
+    public void setSupplier(Supplier supplier) {
+        this.supplier = supplier;
+    }
 
+    public String getSupplierId() {
+        return supplierId;
+    }
+
+    public void setSupplierId(String supplierId) {
+        this.supplierId = supplierId;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
 }
 
