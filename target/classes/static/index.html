@@ -33,12 +33,10 @@
                 <div class="card-body">
                     <h5 class="card-title">Login</h5>
                     <div class="form-group">
-                        <label for="email">Email</label>
-                        <input class="form-control" type="text" id="email" required>
+                        <input class="form-control" type="text" id="email" placeholder="name@example.com" required>
                     </div>
                     <div class="form-group">
-                        <label for="password">Password</label>
-                        <input class="form-control" type="password" id="password" required>
+                        <input class="form-control" type="password" id="password" required placeholder="password">
                     </div>
                     <button class="btn btn-primary" id="btnSignIn">Sign In</button>
                     <button class="btn btn-secondary" id="btnSignUp">Sign Up</button>
@@ -57,7 +55,7 @@
         <div id="cartContainer">
             <div class = "popupCart " id="cartPopup">
                 <h1>Cart</h1>
-                <button type="button" class="btn btn-secondary" onclick="closeCartPop()">close cart</button>
+                <button id="closeCartButton" class="btn btn-secondary">close cart</button>
                 <div id="cartItems"></div> <!-- This is where the cart items will be displayed -->
                 <button type="button" class="btn btn-secondary" onclick="buy()">Pay and Order</button>
             </div>
@@ -71,109 +69,6 @@
                 <button type="button" class="btn btn-secondary" onclick="closeConfirmation">Great</button>
             </div>
         </div>
-        <script>
-            function openCartPopup() {
-                const popDialog1 = document.getElementById("cartPopup");
-                popDialog1.style.visibility = "visible";
-
-                fetch("/get_cart")
-                    .then(response => response.json())
-                    .then(data => {
-                        // Clear previous items
-                        const cartItemsContainer = document.getElementById("cartItems");
-                        cartItemsContainer.innerHTML = "";
-
-                        // Iterate over the items in the cart and dynamically populate the cart section
-                        data.items.forEach(item => {
-                            const itemElement = document.createElement("div");
-                            itemElement.innerHTML = `
-                                <p>${item.name} - $${item.price}</p>
-                                <button type="button" class="btn btn-danger" onclick="removeFromCart(${item.id})">Remove</button>
-                            `;
-                            cartItemsContainer.appendChild(itemElement);
-                        });
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-
-
-
-                const popDialog2 =
-                    document.getElementById(
-                        "cartPopup"
-                    );
-                popDialog2.style.visibility =
-                    popDialog2.style.visibility ===
-                    "visible"
-                        ? "hidden"
-                        : "visible";
-            }
-            function closeCartPop() {
-                const popDialog3 = document.getElementById("cartPopup");
-                popDialog3.style.visibility = "hidden";
-            }
-            function removeFromCart(itemId) {
-                // Send a request to the server to remove the item from the cart
-                fetch(`/remove_from_cart/${itemId}`, { // Fixed the syntax by enclosing the URL in backticks and moving the opening curly brace inside the fetch call
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ id: itemId })
-                })
-               .then(response => {
-                    if (response.ok) {
-                        // If the item is successfully removed, reload the cart
-                        openCartPopup();
-                    } else {
-                        console.error('Error removing item from cart:', response.status);
-                    }
-                })
-               .catch(error => {
-                    console.error('Error:', error);
-                });
-            }
-
-
-
-            function buy()
-            {
-                const popDialog4 =
-                    document.getElementById(
-                        "paymentPopup"
-                    );
-                popDialog4.style.visibility =
-                    popDialog4.style.visibility ===
-                    "visible"
-                        ? "hidden"
-                        : "visible";
-            }
-            function closePayment() {
-                const popDialog5 = document.getElementById("paymentPopup");
-                popDialog5.style.visibility = "hidden";
-            }
-            function donePurchase() {
-                const paymentPopup = document.getElementById("paymentPopup");
-                const cartPopup = document.getElementById("cartPopup");
-                const confirmationPopup = document.getElementById("confirmationPopup");
-
-                paymentPopup.style.visibility = "hidden";
-                cartPopup.style.visibility = "hidden";
-                confirmationPopup.style.visibility = "visible";
-
-                closeConfirmation(); // Call closeConfirmation function after showing confirmation popup
-            }
-
-            function closeConfirmation() {
-                const popDialog6 = document.getElementById("confirmationPopup");
-                popDialog6.style.visibility = "hidden";
-                //class="bg-light box-shadow mx-auto"
-                //style="width: 80%; height: 300px;
-                //class="bg-dark box-shadow mx-auto"
-            }
-
-        </script>
     </div>
     <div class="d-md-flex flex-md-equal w-100 my-md-3 pl-md-3">
 
@@ -201,7 +96,6 @@
                 <div id="popupContainer">
                     <div id="popupDialog">
                         <h1>Added to cart</h1>
-                        <button type="button" class="btn btn-secondary" onclick="closePop()">OK</button>
                     </div>
                 </div>
 

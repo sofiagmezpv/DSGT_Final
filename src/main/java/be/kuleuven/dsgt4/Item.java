@@ -1,6 +1,5 @@
 package be.kuleuven.dsgt4;
 
-import java.util.List;
 
 // Class representing an item
 class Item {
@@ -15,7 +14,8 @@ class Item {
         // Default constructor required for Jackson deserialization
     }
     // Constructor
-    public Item(String name, String description, double price, Supplier supplier) {
+    public Item(int id, String name, String description, double price, Supplier supplier) {
+
         this.name = name;
         this.description = description;
         this.price = price;
@@ -27,6 +27,8 @@ class Item {
         return name;
     }
 
+    public int getId() {return id;}
+
     public String getDescription() {
         return description;
     }
@@ -34,8 +36,11 @@ class Item {
     public double getPrice() {
         return price;
     }
+
     public Supplier getSuppliers() {
         return supplier;
     }
+
+
 }
 

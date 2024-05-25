@@ -4,9 +4,11 @@ be/kuleuven/dsgt4/CartController.class
 be/kuleuven/dsgt4/HelloWorldController.class
 be/kuleuven/dsgt4/Item.class
 be/kuleuven/dsgt4/User.class
+be/kuleuven/dsgt4/Package.class
+be/kuleuven/dsgt4/FirestoreService.class
 be/kuleuven/dsgt4/auth/SecurityFilter$FirebaseAuthentication.class
 be/kuleuven/dsgt4/UserMessage.class
 be/kuleuven/dsgt4/auth/SecurityFilter.class
-be/kuleuven/dsgt4/ShoppingCart.class
 be/kuleuven/dsgt4/Dsgt4Application.class
+be/kuleuven/dsgt4/PackageService.class
 be/kuleuven/dsgt4/Supplier.class
