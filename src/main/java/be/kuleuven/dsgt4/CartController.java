@@ -83,55 +83,25 @@ public class CartController {
     }
 
 
-
-
-    // Endpoint to remove an item from the cart
-//    @PostMapping("/remove_from_cart")
-//    public ResponseEntity<String> removeFromCart(@RequestParam("id") int itemId)  {
-//        cart.removeItem(itemId);
-//        return ResponseEntity.ok("Item removed from cart");
-//    }
-
-    // Endpoint to proceed to payment
-//    @PostMapping("/pay")
-//    public ResponseEntity<String> pay() {
-//        double total = cart.calculateTotalPrice();
-//        // Implement logic to process payment
-//        return ResponseEntity.ok("Payment processed successfully. Total amount: " + total);
-//    }
-
-
-    //get item from database with the id
-//    public Item getItemFromId(int id){
-//        //dummie Item until database is constructed
-//        Supplier subA = new Supplier("subbA","http://127.0.0.1:8100/rest");
-//        Item item = new Item(id,"cola","beverage",12,subA);
-//        return null;
-//    }
-
     public Mono<List<Item>> reserveItemsInPack(Package pack) {
 
         //TODO debug
         List<Item> items = pack.getItems();
 
-        // Create a Flux of Mono<Boolean> by mapping each item to its availability check
-        Flux<Mono<Boolean>> availabilityChecks = Flux.fromIterable(items)
-                .map(Item::checkAvailablity);
 
-        // Collect all availability checks and wait for all of them to complete
-        return Flux.merge(availabilityChecks)
-                .collectList()
-                .flatMap(availabilityList -> {
-                    boolean allAvailable = availabilityList.stream().allMatch(Boolean::booleanValue);
-                    if (!allAvailable) {
-                        System.out.println("One or more items are not available.");
-                        return Mono.empty();
-                    } else {
-                        items.forEach(Item::reserveItem);
-                        System.out.println("All items are reserved!");
-                        return Mono.just(items);
-                    }
-                });
+        for(Item i:items) {
+            Mono<Boolean> availablity = i.checkAvailablity();
+            availablity.subscribe(response ->
+            {
+                if (!response) {
+                    System.out.println("item is not available");
+                } else {
+                    System.out.println("item is avaiable");
+                }
+
+            });
+        }
+        return null;
     }
 
 
@@ -160,5 +130,4 @@ public class CartController {
                     System.out.println("Mono terminated with signal: " + signalType);
                 });
     }
-
 }
