@@ -226,6 +226,7 @@ public class FirestoreService {
                     }
                 }
                 pack.setItems(packageItems);
+                pack.updatePrice(); //set price based on the items in the pack
                 packages.put(pack.getId(),pack);
             }
         } catch (InterruptedException | ExecutionException e) {

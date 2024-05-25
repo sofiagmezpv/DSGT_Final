@@ -20,7 +20,7 @@ public class Package extends Object {
     }
 
     // Constructor
-    public Package(String id, String name, String description, double price, List<String> ItemIds) {
+    public Package(String id, String name, String description, List<String> ItemIds) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -42,6 +42,14 @@ public class Package extends Object {
 
     public double getPrice() {
         return price;
+    }
+
+    public void updatePrice() {
+        double newPrice = 0;
+        for (Item item : items) {
+            newPrice += item.getPrice();
+        }
+        this.price = newPrice;
     }
 
     public List<Item> getItems() {
