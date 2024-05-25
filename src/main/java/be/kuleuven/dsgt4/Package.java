@@ -3,6 +3,11 @@ package be.kuleuven.dsgt4;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import com.google.cloud.Timestamp;
+
+
+
+
 
 public class Package extends Object {
 
@@ -10,21 +15,21 @@ public class Package extends Object {
     private String name;
     private double price;
     private int id;
-    private List<Supplier> suppliers;
+    private Timestamp timestamp;
+    private List<Item> items = new ArrayList<>();;
 
     // Default constructor required for Jackson deserialization
     public Package() {
-        // Initialize suppliers to an empty list
-        this.suppliers = new ArrayList<>();
+
     }
 
     // Constructor
-    public Package(int id, String name, String description, double price, List<Supplier> suppliers) {
+    public Package(int id, String name, String description, double price, List<Item> items) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
-        this.suppliers = suppliers;
+        this.items = items;
     }
 
     // Getter methods
@@ -44,13 +49,12 @@ public class Package extends Object {
         return price;
     }
 
-    public List<Supplier> getSuppliers() {
-        return suppliers;
+    public Timestamp getTimestamp(){return timestamp;}
+
+    public List<Item> getItems() {
+        return items;
     }
 
-    public List<String> getSupplierNames() {
-        return suppliers.stream().map(Supplier::getName).collect(Collectors.toList());
-    }
 
 
 }

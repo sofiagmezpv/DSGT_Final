@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+import com.google.cloud.Timestamp;
 
 @Service
 public class FirestoreService {
@@ -22,7 +23,12 @@ public class FirestoreService {
         cartItem.put("name", pack.getName());
         cartItem.put("description", pack.getDescription());
         cartItem.put("price", pack.getPrice());
-//        cartItem.put("suppliers", pack.getSuppliers());
+
+//        cartItem.put("suppliers", pack.getSuppliers())
+
+        Timestamp currentTimeStamp = Timestamp.now();
+        cartItem.put("timestamp", currentTimeStamp);
+
 
         ApiFuture<DocumentReference> future = db.collection("users")
                 .document(username)
@@ -61,6 +67,47 @@ public class FirestoreService {
         }
 
         return userPackages;
+    }
+
+    public void removeItemFromUserCartByTimeStamp(String username, int itemId, Timestamp timestamp){
+        System.out.println("Into removeItemFromUserCartByTimeStamp");
+        Query query = db.collection("users").document(username).collection("cart")
+                .whereEqualTo("id", itemId).whereEqualTo("timestamp", timestamp);
+
+        // Execute the query asynchronously
+        ApiFuture<QuerySnapshot> querySnapshotApiFuture = query.get();
+
+        try {
+            // Get the results of the query
+            QuerySnapshot querySnapshot = querySnapshotApiFuture.get();
+
+            // Check if any documents were found
+            if (!querySnapshot.isEmpty()) {
+                // Assuming you want to delete the first document found
+                DocumentSnapshot document = querySnapshot.getDocuments().get(0);
+
+                // Delete the document
+                ApiFuture<WriteResult> deleteFuture = document.getReference().delete();
+
+                try {
+                    // Wait for the delete operation to complete
+                    WriteResult deleteResult = deleteFuture.get();
+
+                    if (deleteResult.getUpdateTime()!= null) {
+                        System.out.println("Document deleted with ID: " + document.getId());
+                    } else {
+                        System.err.println("Unsuccessful delete operation: ");
+                    }
+                } catch (Exception e) {
+                    System.err.println("An error occurred during the delete operation: " + e.getMessage());
+                }
+            } else {
+                System.out.println("No items found with ID: " + itemId);
+            }
+        } catch (Exception e) {
+            System.err.println("An error occurred during the query operation: " + e.getMessage());
+        }
+
     }
 
     public void removeItemFromUserCart(String username, int itemId) {
