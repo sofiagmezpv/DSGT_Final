@@ -1,32 +1,26 @@
 {
 
     "item" : [ {
-      "id" : "1",
+      "id" : "Ndjb0HZE6s3uxnAryOqA",
       "name" : "Nalu Original",
-      "kcal" : 50,
       "price" : 1.08,
       "description" : "An amazing new taste of Nalu Drinks with less calories and a boost of energy.",
-      "volume" : 250.0,
       "brand" : "NALU",
-      "supplier" : "SCImO9FqmkJELue1zi8f"
+      "supplierId" : "SCImO9FqmkJELue1zi8f"
     }, {
-      "id" : "2",
+      "id" : "ep3FAfq9y06EYXx14Mt0",
       "name" : "Nalu Passion",
-      "kcal" : 50,
       "price" : 1.41,
       "description" : "Introducing Nalu Passion, a refreshing, fruity blend of blueberry, pear, blackberry, peach, açai, Goji berries and mangosteen for the most passionate among us.",
-      "volume" : 250.0,
       "brand" : "NALU",
-      "supplier" : "SCImO9FqmkJELue1zi8f"
+      "supplierId" : "SCImO9FqmkJELue1zi8f"
     }, {
-      "id" : "3",
+      "id" : "eIRRKA8H6lUF19NWHtMZ",
       "name" : "Red Bull Green Edition",
-      "kcal" : 112,
       "price" : 1.65,
       "description" : "The Red Bull Green Edition with the exotic flavor of cactus fruit.",
-      "volume" : 250.0,
       "brand" : "REDBULL",
-      "supplier" : "SCImO9FqmkJELue1zi8f"
+      "supplierId" : "SCImO9FqmkJELue1zi8f"
     } ],
 
   "supplier" : [ {
@@ -42,13 +36,13 @@
     "name" : "Winter Package",
     "description" : "Cozy winter vibes.",
     "price" : 1,
-    "items" : [1, 2]
+    "itemIds" : ["Ndjb0HZE6s3uxnAryOqA", "ep3FAfq9y06EYXx14Mt0"]
   }, {
     "id" : "mNJ6dIZ7hssWBFKg212",
     "name" : "Summer Package",
     "description" : "Refreshing!",
     "price" : 2,
-    "items" : [3, 2]
+    "itemIds" : ["eIRRKA8H6lUF19NWHtMZ", "ep3FAfq9y06EYXx14Mt0"]
   } ]
 
 }

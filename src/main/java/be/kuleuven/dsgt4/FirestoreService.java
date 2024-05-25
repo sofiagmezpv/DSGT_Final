@@ -10,12 +10,8 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import com.google.cloud.firestore.WriteBatch;
 import com.google.cloud.firestore.WriteResult;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -140,7 +136,6 @@ public class FirestoreService {
         try (InputStream inputStream = resource.getInputStream()) {
             // Read JSON into a Map
             Map<String, Object> firestoreData = mapper.readValue(inputStream, new TypeReference<Map<String, Object>>() {});
-
             WriteBatch batch = db.batch();
 
             // Iterate over each entry in the Map
@@ -163,4 +158,73 @@ public class FirestoreService {
             e.printStackTrace();
         }
     }
+
+    public List<Supplier> fetchSuppliers() {
+        List<Supplier> suppliers = new ArrayList<>();
+        try {
+            List<QueryDocumentSnapshot> documents = db.collection("supplier").get().get().getDocuments();
+            for (QueryDocumentSnapshot document : documents) {
+                suppliers.add(document.toObject(Supplier.class));
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return suppliers;
+    }
+
+    public List<Item> fetchItems() {
+        List<Item> items = new ArrayList<>();
+        List<Supplier> suppliers = this.fetchSuppliers();
+        Map<String, Supplier> supplierMap = new HashMap<>();
+
+        for (Supplier supplier : suppliers) {
+            supplierMap.put(supplier.getId(), supplier);
+        }
+
+        try {
+            List<QueryDocumentSnapshot> documents = db.collection("item").get().get().getDocuments();
+            for (QueryDocumentSnapshot document : documents) {
+                Item item = document.toObject(Item.class);
+                Supplier supplier = supplierMap.get(item.getSupplierId());
+                item.setSupplier(supplier);
+                items.add(item);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return items;
+    }
+
+    public Map<String,Package> fetchPackages() {
+        Map<String,Package> packages = new HashMap<>();
+        List<Item> items = this.fetchItems();
+        Map<String, Item> itemsMap = new HashMap<>();
+
+        for (Item item : items) {
+            itemsMap.put(item.getId(), item);
+        }
+
+        try {
+            List<QueryDocumentSnapshot> documents = db.collection("package").get().get().getDocuments();
+
+            for (QueryDocumentSnapshot document : documents) {
+                Package pack = document.toObject(Package.class);
+                List<Item> packageItems = new ArrayList<>();
+                List<String> itemIds = (List<String>) document.get("itemIds");
+
+                for (String itemId : itemIds) {
+                    if (itemsMap.containsKey(itemId)) {
+                        packageItems.add(itemsMap.get(itemId));
+                    }
+                }
+                pack.setItems(packageItems);
+                packages.put(pack.getId(),pack);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return packages;
+    }
+
+
 }

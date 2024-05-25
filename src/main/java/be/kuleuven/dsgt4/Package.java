@@ -9,7 +9,8 @@ public class Package extends Object {
     private String description;
     private String name;
     private double price;
-    private int id;
+    private String id;
+    private List<String> itemIds;
     private List<Item> items;
 
     // Default constructor required for Jackson deserialization
@@ -19,20 +20,19 @@ public class Package extends Object {
     }
 
     // Constructor
-    public Package(int id, String name, String description, double price, List<Item> items) {
+    public Package(String id, String name, String description, double price, List<String> ItemIds) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
-        this.items = items;
+        this.itemIds = itemIds;
     }
 
-    // Getter methods
     public String getName() {
         return name;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -48,9 +48,19 @@ public class Package extends Object {
         return items;
     }
 
+    public void setItems(List<Item> items) {
+        this.items = items;
+    }
+
     public List<String> getItemNames() {
         return items.stream().map(Item::getName).collect(Collectors.toList());
     }
 
+    public List<String> getItemIds() {
+        return itemIds;
+    }
 
+    public void setItemIds(List<String> itemIds) {
+        this.itemIds = itemIds;
+    }
 }

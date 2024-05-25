@@ -17,7 +17,6 @@ import java.util.List;
 // Controller class to handle HTTP requests
 @RestController
 public class CartController {
-    private ShoppingCart cart = new ShoppingCart();
     private final WebClient webClient;
 
     @Autowired
@@ -29,16 +28,14 @@ public class CartController {
         this.webClient = webClientBuilder.baseUrl("http://127.0.0.1:8100/rest").build();
     }
 
-    // Endpoint to add an item to the cart
+    // Endpoint to add a package to the cart
     @PostMapping("/add_to_cart")
-    public ResponseEntity<String> addToCart(@RequestParam("id") int itemId, @RequestParam("username") String username) {
+    public ResponseEntity<String> addToCart(@RequestParam("id") String itemId, @RequestParam("username") String username) {
 
         Package pack = packageService.getPackageFromId(itemId);
         if (pack == null) {
             return ResponseEntity.status(404).body("Package not found");
         }
-
-        cart.addItem(pack);
 
         firestoreService.addItemToUserCart(username, pack);
 
@@ -89,9 +86,8 @@ public class CartController {
     // Endpoint to proceed to payment
     @PostMapping("/pay")
     public ResponseEntity<String> pay() {
-        double total = cart.calculateTotalPrice();
         // Implement logic to process payment
-        return ResponseEntity.ok("Payment processed successfully. Total amount: " + total);
+        return ResponseEntity.ok("Payment processed successfully. Total amount: " /*+ total*/);
     }
 
 

@@ -159,7 +159,7 @@ cart.addEventListener("click", function () {
 
 winter.addEventListener("click", function () {
           console.log('winter in  idToken  clicked'); // Debugging line
-          const itemId = parseInt(winter.dataset.itemId); // Assuming the "TEST" button also has a data-item-id attribute
+          const itemId = winter.dataset.itemId; // Assuming the "TEST" button also has a data-item-id attribute
           console.log('Item ID:', itemId); // Debugging line
           openPop(itemId)
              .then(function () {
@@ -178,7 +178,7 @@ winter.addEventListener("click", function () {
     });
       summer.addEventListener("click", function () {
           console.log('btnSummer clicked'); // Debugging line
-          const itemId = parseInt(summer.dataset.itemId); // Assuming the "TEST" button also has a data-item-id attribute
+          const itemId = summer.dataset.itemId; // Assuming the "TEST" button also has a data-item-id attribute
           console.log('Item ID:', itemId); // Debugging line
           openPop(itemId)
              .then(function () {
