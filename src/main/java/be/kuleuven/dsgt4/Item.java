@@ -1,6 +1,12 @@
 package be.kuleuven.dsgt4;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+
 // Class representing an item
 class Item {
     private String description;
@@ -23,6 +29,8 @@ class Item {
         this.price = price;
         this.supplierId = supplierId;
         this.brand = brand;
+        this.id = id;
+
     }
 
 
@@ -73,6 +81,17 @@ class Item {
 
     public void setBrand(String brand) {
         this.brand = brand;
+    }    public Mono<Boolean> checkAvailablity() {
+        System.out.println("Checking if item is available");
+
+        return supplier.getItemById(this.id)
+            .map(amount -> amount > 0);
+        }
+
+    public void reserveItem(){
+        //TODO implement REST reserve request
+        System.out.println("reserving item");
     }
+
 }
 
