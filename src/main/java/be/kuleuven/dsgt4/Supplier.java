@@ -15,6 +15,8 @@ public class Supplier {
         private String name;
         private String baseUrl;
 
+        public Supplier() {}
+
         public Supplier(@Value("${supplier.apiKey}") int apiKey, String baseUrl, String name) {
                 this.apiKey = apiKey;
                 this.baseUrl = baseUrl;
@@ -33,7 +35,4 @@ public class Supplier {
                 return baseUrl;
         }
 
-//        public List<Item> getItems() {
-//                return items;
-//        }
 }

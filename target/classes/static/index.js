@@ -157,7 +157,7 @@ function wireUpAuthChange() {
 
       winter.addEventListener("click", function () {
         console.log('winter in  idToken  clicked'); // Debugging line
-        const itemId = parseInt(winter.dataset.itemId); // Assuming the "TEST" button also has a data-item-id attribute
+        const itemId = parseInt(winter.dataset.itemId);
         console.log('Item ID:', itemId); // Debugging line
         openPop(itemId)
          .then(function () {

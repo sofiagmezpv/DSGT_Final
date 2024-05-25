@@ -37,7 +37,7 @@ class Item {
         return price;
     }
 
-    public Supplier getSuppliers() {
+    public Supplier getSupplier() {
         return supplier;
     }
 
