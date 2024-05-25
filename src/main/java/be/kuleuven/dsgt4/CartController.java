@@ -2,51 +2,56 @@ package be.kuleuven.dsgt4;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.util.ArrayList;
 import java.util.List;
 
 // Controller class to handle HTTP requests
 @RestController
 public class CartController {
-    private ShoppingCart cart = new ShoppingCart();
     private final WebClient webClient;
+
+    @Autowired
+    private FirestoreService firestoreService;
+    @Autowired
+    private PackageService packageService;
 
     public CartController(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.baseUrl("http://127.0.0.1:8100/rest").build();
     }
 
-    // Endpoint to add an item to the cartµ
-    @Autowired
+    // Endpoint to add an item to the cart
     @PostMapping("/add_to_cart")
-    public ResponseEntity<String> addToCart(@RequestParam("id") int itemId) {
-        Item item = getItemFromId(itemId);
-        var test = getDrinks();
+    public ResponseEntity<String> addToCart(@RequestParam("id") int itemId, @RequestParam("username") String username) {
 
-        System.out.println(test.subscribe(
-                value -> System.out.println(value),
-                error -> error.printStackTrace()
-                ));
-        if(itemId == 1){
-            // Use itemId to add the corresponding item to the cart
-            Supplier subA = new Supplier("Supplier A","http://127.0.0.1:8100/rest"); // Example supplier
-            item = new Item("Summer Student Pack", "Ideal summer vibes", 19.99, subA);
-        }else if (itemId == 2){
-            Supplier subB = new Supplier("Supplier A","http://127.0.0.1:8100/rest"); // Example supplier
-            item = new Item("Winter Student Pack", "Ideal winter vibes", 29.99, subB);
+        Package pack = packageService.getPackageFromId(itemId);
+        if (pack == null) {
+            return ResponseEntity.status(404).body("Package not found");
         }
 
-        cart.addItem(item);
 
-        System.out.println("Inside add item to cart");
-        return ResponseEntity.ok("Item added to cart");
+        //TODO check why this doesn't print on the page"
+        //TODO check mono implementation
+        Mono<List<Item>> items =  reserveItemsInPack(pack);
+        if (items==null){
+            return ResponseEntity.ok("Not all items ara available anymore");
+        }
+        else {
+            firestoreService.addItemToUserCart(username, pack);
+            System.out.println("Inside add item to cart");
+            return ResponseEntity.ok("Item added to cart");
+        }
     }
-
 
     @GetMapping("/user/packages/{username}")
     public ResponseEntity<?> getUserPackages(@PathVariable String username) {
@@ -77,21 +82,56 @@ public class CartController {
         return ResponseEntity.ok("Item removed from cart");
     }
 
+
+
+
+    // Endpoint to remove an item from the cart
+//    @PostMapping("/remove_from_cart")
+//    public ResponseEntity<String> removeFromCart(@RequestParam("id") int itemId)  {
+//        cart.removeItem(itemId);
+//        return ResponseEntity.ok("Item removed from cart");
+//    }
+
     // Endpoint to proceed to payment
-    @PostMapping("/pay")
-    public ResponseEntity<String> pay() {
-        double total = cart.calculateTotalPrice();
-        // Implement logic to process payment
-        return ResponseEntity.ok("Payment processed successfully. Total amount: " + total);
-    }
+//    @PostMapping("/pay")
+//    public ResponseEntity<String> pay() {
+//        double total = cart.calculateTotalPrice();
+//        // Implement logic to process payment
+//        return ResponseEntity.ok("Payment processed successfully. Total amount: " + total);
+//    }
 
 
     //get item from database with the id
-    public Item getItemFromId(int id){
-        //dummie Item until database is constructed
-        Supplier subA = new Supplier("subbA","http://127.0.0.1:8100/rest");
-        Item item = new Item("cola","beverage",12,subA);
-        return null;
+//    public Item getItemFromId(int id){
+//        //dummie Item until database is constructed
+//        Supplier subA = new Supplier("subbA","http://127.0.0.1:8100/rest");
+//        Item item = new Item(id,"cola","beverage",12,subA);
+//        return null;
+//    }
+
+    public Mono<List<Item>> reserveItemsInPack(Package pack) {
+
+        //TODO debug
+        List<Item> items = pack.getItems();
+
+        // Create a Flux of Mono<Boolean> by mapping each item to its availability check
+        Flux<Mono<Boolean>> availabilityChecks = Flux.fromIterable(items)
+                .map(Item::checkAvailablity);
+
+        // Collect all availability checks and wait for all of them to complete
+        return Flux.merge(availabilityChecks)
+                .collectList()
+                .flatMap(availabilityList -> {
+                    boolean allAvailable = availabilityList.stream().allMatch(Boolean::booleanValue);
+                    if (!allAvailable) {
+                        System.out.println("One or more items are not available.");
+                        return Mono.empty();
+                    } else {
+                        items.forEach(Item::reserveItem);
+                        System.out.println("All items are reserved!");
+                        return Mono.just(items);
+                    }
+                });
     }
 
 

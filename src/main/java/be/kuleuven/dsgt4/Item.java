@@ -1,6 +1,12 @@
 package be.kuleuven.dsgt4;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+
 // Class representing an item
 class Item {
     private String description;
@@ -8,7 +14,16 @@ class Item {
     private double price;
     private int id;
     private Supplier supplier;
+    //for json data
+    private int kcal;
+    private double volume;
+    private String brand;
+    private int amount;
 
+
+
+    @Autowired
+    WebClient.Builder webClientBuilder;
     // Default constructor
     public Item() {
         // Default constructor required for Jackson deserialization
@@ -20,6 +35,8 @@ class Item {
         this.description = description;
         this.price = price;
         this.supplier = supplier;
+        this.id = id;
+
     }
 
     // Getter methods
@@ -41,6 +58,17 @@ class Item {
         return supplier;
     }
 
+    public Mono<Boolean> checkAvailablity() {
+        System.out.println("Checking if item is available");
+
+        return supplier.getItemById(this.id)
+            .map(amount -> amount > 0);
+        }
+
+    public void reserveItem(){
+        //TODO implement REST reserve request
+        System.out.println("reserving item");
+    }
 
 }
 

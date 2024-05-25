@@ -16,15 +16,14 @@ public class FirestoreService {
 
     public void addItemToUserCart(String username, Package pack) {
 
-        System.out.println("In addItemToUserCart" + username);
+        System.out.println("In addItemToUserCart " + username);
 
         Map<String, Object> cartItem = new HashMap<>();
         cartItem.put("id", pack.getId());
         cartItem.put("name", pack.getName());
         cartItem.put("description", pack.getDescription());
         cartItem.put("price", pack.getPrice());
-
-//        cartItem.put("suppliers", pack.getSuppliers())
+        cartItem.put("items", pack.getItems());
 
         Timestamp currentTimeStamp = Timestamp.now();
         cartItem.put("timestamp", currentTimeStamp);
