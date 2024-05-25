@@ -12,6 +12,7 @@ var summer;
 var winter;
 var token;
 var cart;
+var manager;
 
 // we setup the authentication, and then wire up some key events to event handlers
 setupAuth();
@@ -59,6 +60,7 @@ function wireGuiUpEvents() {
       winter = document.getElementById("btnWinter");
       summer = document.getElementById("btnSummer");
       cart = document.getElementById("cartButton");
+      manager = document.getElementById("managerButton");
 
       console.log(winter)
       console.log(summer)
@@ -137,6 +139,26 @@ function wireUpAuthChange() {
 
       console.log("Token: " + idTokenResult.token);
       console.log(summer)
+
+    // Check if user is manager position
+    // if manager -> view button and add event listener and if clicked call the UI of the manager (differnt )
+    // if not manager-> nothing
+      manager.addEventListener("click", function () {
+              console.log('cart open clicked');
+              managerPopUp()
+               .then(function () {
+                      console.log("manager cart");
+                  })
+               .catch(function (error) {
+                      console.log("error opening cart:");
+                      console.log(error.message);
+                      alert(error.message);
+                  });
+
+              // Fetch data from server when authentication was successful.
+              token = idTokenResult.token;
+              fetchData(token);
+            });
 
       cart.addEventListener("click", function () {
         console.log('cart open clicked');
