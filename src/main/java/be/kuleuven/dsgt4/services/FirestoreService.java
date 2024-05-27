@@ -1,6 +1,10 @@
-package be.kuleuven.dsgt4;
+package be.kuleuven.dsgt4.services;
 
+import be.kuleuven.dsgt4.models.Item;
+import be.kuleuven.dsgt4.models.Package;
+import be.kuleuven.dsgt4.models.Supplier;
 import com.google.api.core.ApiFuture;
+import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
@@ -214,6 +218,7 @@ public class FirestoreService {
         for (Item item : items) {
             itemsMap.put(item.getId(), item);
         }
+        System.out.println("items in pack:"+items);
 
         try {
             List<QueryDocumentSnapshot> documents = db.collection("package").get().get().getDocuments();

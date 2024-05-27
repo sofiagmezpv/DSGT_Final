@@ -1,14 +1,10 @@
-package be.kuleuven.dsgt4;
+package be.kuleuven.dsgt4.models;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 // Class representing an item
-class Item {
+public class Item {
     private String description;
     private String name;
     private double price;

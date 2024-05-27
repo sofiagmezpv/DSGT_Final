@@ -1,6 +1,11 @@
-package be.kuleuven.dsgt4;
+package be.kuleuven.dsgt4.controllers;
 
 
+import be.kuleuven.dsgt4.models.Item;
+import be.kuleuven.dsgt4.models.Package;
+import be.kuleuven.dsgt4.services.FirestoreService;
+import be.kuleuven.dsgt4.services.PackageService;
+import be.kuleuven.dsgt4.services.SupplierSerivce;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,35 +14,43 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
-import java.util.ArrayList;
 import java.util.List;
 
 // Controller class to handle HTTP requests
 @RestController
 public class CartController {
-    private final WebClient webClient;
 
+    @Autowired
+    WebClient.Builder webClient;
     @Autowired
     private FirestoreService firestoreService;
     @Autowired
     private PackageService packageService;
 
-    public CartController(WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder.baseUrl("http://127.0.0.1:8100/rest").build();
+    SupplierSerivce supplierLogic;
+
+    public CartController() {
+        this.supplierLogic = new SupplierSerivce();
     }
 
     // Endpoint to add a package to the cart
     @PostMapping("/add_to_cart")
     public ResponseEntity<String> addToCart(@RequestParam("id") String itemId, @RequestParam("username") String username) {
-
+        System.out.println("printing pack");
         Package pack = packageService.getPackageFromId(itemId);
+        System.out.println("done printing pack");
+        System.out.println(pack);
         if (pack == null) {
             return ResponseEntity.status(404).body("Package not found");
         }
+
+        for(Item it : pack.getItems()){
+            this.supplierLogic.reserveItem(it);
+
+        }
+
 
         firestoreService.addItemToUserCart(username, pack);
 
@@ -103,7 +116,8 @@ public class CartController {
 
 
     public Mono<String> fetchdrinks() {
-        return this.webClient.get()
+        return this.webClient.baseUrl("http://127.0.0.1:8100/rest").build()
+                .get()
                 .uri("/drinks/1234")
                 .retrieve()
                 .bodyToMono(String.class);

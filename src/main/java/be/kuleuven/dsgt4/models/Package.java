@@ -1,4 +1,4 @@
-package be.kuleuven.dsgt4;
+package be.kuleuven.dsgt4.models;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class Package extends Object {
     }
 
     // Constructor
-    public Package(String id, String name, String description, List<String> ItemIds) {
+    public Package(String id, String name, String description, List<Item> ItemIds) {
         this.id = id;
         this.name = name;
         this.description = description;

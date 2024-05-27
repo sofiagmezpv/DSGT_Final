@@ -1,41 +1,22 @@
-package be.kuleuven.dsgt4;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import net.minidev.json.JSONObject;
-import netscape.javascript.JSObject;
-import org.eclipse.jetty.util.ajax.JSON;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+package be.kuleuven.dsgt4.models;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class Supplier {
         private String id;
-        private final int apiKey;
+        private String apiKey;
         private static final String NAMESPACE_URI ="http://127.0.0.1:8100/rest";
         private String name;
         private List<Item> items;
         public String baseUrl;
-        private final WebClient webClient;
 
 
-        //TODO this can only be a data model class make new class for webclientbuilder
-
-        @Autowired
-        public Supplier(WebClient.Builder webClientBuilder,){
-
-        }
-
-        public Supplier(String name, String baseUrl, String id, int apiKey) {
+        public Supplier(String id,String apiKey, String name, String baseUrl) {
                 this.apiKey = apiKey;
                 this.name = name;
                 this.baseUrl = baseUrl;
-                this.name = name;
                 this.id = id;
         }
 
@@ -47,11 +28,11 @@ public class Supplier {
                 this.id = id;
         }
 
-        public int getApiKey() {
+        public String getApiKey() {
                 return apiKey;
         }
 
-        public void setApiKey(int apiKey) {
+        public void setApiKey(String apiKey) {
                 this.apiKey = apiKey;
         }
 
@@ -64,15 +45,11 @@ public class Supplier {
                 this.name = name;
         }
 
-        public void setName(String name) {
-                this.name = name;
-        }
-
         public List<Item> getItems() {
                 return items;
         }
 
-
+/*
         public Mono<Integer> getItemById(int id) {
 
                 System.out.print("Trying to contact supplier for id ");
@@ -96,7 +73,7 @@ public class Supplier {
                                 }
                         });
         }
-
+*/
         public void setItems(List<Item> items) {
                 this.items = items;
         }
@@ -107,5 +84,9 @@ public class Supplier {
 
         public void setBaseUrl(String baseUrl) {
                 this.baseUrl = baseUrl;
+        }
+//todo impelment logic
+        public  Mono<Integer> getItemById(String id) {
+                return null;
         }
 }
