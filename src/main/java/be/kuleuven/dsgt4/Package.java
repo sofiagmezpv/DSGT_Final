@@ -45,7 +45,7 @@ public class Package extends Object {
     }
 
     public void updatePrice() {
-        double newPrice = 0;
+        double newPrice = 4;
         for (Item item : items) {
             newPrice += item.getPrice();
         }

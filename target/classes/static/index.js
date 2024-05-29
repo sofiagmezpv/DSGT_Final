@@ -197,7 +197,7 @@ function wireUpAuthChange() {
 }
 
 
-function openPop(itemId) {
+function openPop(packageId) {
     const auth = getAuth(); // Assuming this function gets the authentication object
     let username = ""; // Initialize username variable
 
@@ -211,7 +211,7 @@ function openPop(itemId) {
         return; // Exit the function if user is not authenticated
     }
 
-    fetch(`/add_to_cart?id=${itemId}&username=${username}`, { // Include username in the fetch URL
+    fetch(`/add_to_cart?id=${packageId}&username=${username}`, { // Include username in the fetch URL
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -477,7 +477,21 @@ function displaypackages(packages) {
       packageElement.querySelector('.card-price').textContent = `$${pkg.price.toFixed(2)}`;
       packageElement.querySelector('.card-description').textContent = pkg.description;
       packageElement.querySelector('.card-items').textContent = pkg.itemNames;
-      packageElement.querySelector('.card-button').dataset.itemId = pkg.id;
+      packageElement.querySelector('.card-button').dataset.packageId = pkg.id;
+
+      const button = packageElement.querySelector('.card-button');
+      button.addEventListener("click", function () {
+        const packageId = this.dataset.packageId;
+        console.log('Package ID:', packageId); // Debugging line
+        openPop(packageId)
+        .then(function () {
+          console.log("Popup opened successfully");
+        })
+        .catch(function (error) {
+          console.log("Error opening popup:", error.message);
+          alert(error.message);
+        });
+      });
 
       packagesDiv.appendChild(packageElement);
     });
