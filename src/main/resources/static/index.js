@@ -467,18 +467,20 @@ function fetchPackages(token) {
 
 function displaypackages(packages) {
   const packagesDiv = document.getElementById('packagesDiv');
-      packagesDiv.innerHTML = ''; // Clear existing content
+    const template = document.getElementById('packageTemplate').content;
+    packagesDiv.innerHTML = ''; // Clear existing content
 
-      packages.forEach(pkg => {
-          const packageElement = document.createElement('div');
-          packageElement.innerHTML = `
-              <h2>${pkg.name}</h2>
-              <p>Price: $${pkg.price}</p>
-              <p>Description: ${pkg.description}</p>
-              <p>${pkg.itemNames}</p>
-          `;
-          packagesDiv.appendChild(packageElement);
-      });
+    packages.forEach(pkg => {
+      const packageElement = template.cloneNode(true);
+
+      packageElement.querySelector('.card-name').textContent = pkg.name;
+      packageElement.querySelector('.card-price').textContent = `$${pkg.price.toFixed(2)}`;
+      packageElement.querySelector('.card-description').textContent = pkg.description;
+      packageElement.querySelector('.card-items').textContent = pkg.itemNames;
+      packageElement.querySelector('.card-button').dataset.itemId = pkg.id;
+
+      packagesDiv.appendChild(packageElement);
+    });
 }
 
 
