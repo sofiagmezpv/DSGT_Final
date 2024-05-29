@@ -25,6 +25,32 @@ public class FirestoreService {
     private final Firestore db;
     private final ResourceLoader loader;
 
+
+    public List<User> getAllCustomers() {
+        System.out.println("In getAllCustomers ");
+        List<User> usersAll = new ArrayList<>();
+        try {
+            CollectionReference usersRef = db.collection("users");
+            ApiFuture<QuerySnapshot> query = usersRef.get();
+            QuerySnapshot querySnapshot = query.get();
+            System.out.println("Query snapshot size: " + querySnapshot.size());
+
+            for (QueryDocumentSnapshot document : querySnapshot) {
+                String email = document.getString("email");
+                String role = document.getString("role");
+                System.out.println("User email: " + email + ", role: " + role);
+
+                // Create a User object and add it to the list
+                User user = new User(email, role);
+                usersAll.add(user);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return usersAll;
+    }
+
     public void addItemToUserCart(String username, Package pack) {
 
         System.out.println("In addItemToUserCart" + username);
@@ -129,6 +155,42 @@ public class FirestoreService {
         }
     }
 
+    public List<Cart> getAllOrders(){
+        System.out.println("In getAllOrders");
+        List<Cart> allOrders = new ArrayList<>();
+//        try {
+//            CollectionReference ordersRef = db.collection("orders");
+//            ApiFuture<QuerySnapshot> query = ordersRef.get();
+//            QuerySnapshot documents = query.get();
+//
+//
+//            // Iterate through each document (username)
+//            for (QueryDocumentSnapshot document : documents) {
+//                String username = document.getId();
+//
+//                // Reference to the 'cart' collection for each username
+//                CollectionReference cartRef = db.collection("orders")
+//                        .document(username)
+//                        .collection("cart");
+//
+//                // Get all documents in the 'cart' collection
+//                ApiFuture<QuerySnapshot> cartQuerySnapshot = cartRef.get();
+//                List<QueryDocumentSnapshot> cartDocuments = cartQuerySnapshot.get().getDocuments();
+//
+//                System.out.println("Carts for user: " + username);
+//                for (QueryDocumentSnapshot cartDocument : cartDocuments) {
+//                    System.out.println(cartDocument.getId() + " => " + cartDocument.getData());
+//                    Cart cart = document.toObject(Cart.class);
+//                    allOrders.add(cart);
+//                }
+//            }
+//
+//        } catch (InterruptedException | ExecutionException e) {
+//            e.printStackTrace();
+//        }
+
+        return allOrders;
+    }
 
 
     @Autowired

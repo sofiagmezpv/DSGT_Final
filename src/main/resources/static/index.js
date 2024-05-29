@@ -10,6 +10,8 @@ import {
 } from "https://www.gstatic.com/firebasejs/9.9.4/firebase-auth.js";
 var token;
 var cart;
+var managerGetAllOrders;
+var managerAllCustomers;
 
 // we setup the authentication, and then wire up some key events to event handlers
 setupAuth();
@@ -54,6 +56,8 @@ function wireGuiUpEvents() {
       var signUpButton = document.getElementById("btnSignUp");
       var logoutButton = document.getElementById("btnLogout");
       cart = document.getElementById("cartButton");
+      managerGetAllOrders = document.getElementById("managerAllOrdersButton");
+      managerAllCustomers = document.getElementById("managerAllCustomersButton");
 
       console.log(logoutButton)
 
@@ -119,35 +123,75 @@ function wireUpAuthChange() {
       return;
     }
 
-    auth.currentUser.getIdTokenResult().then((idTokenResult) => {
+     auth.currentUser.getIdTokenResult(auth.currentUser.getIdToken()).then((idTokenResult) => {
+          // Update GUI when user is authenticated
+          showAuthenticated(auth.currentUser.email);
+          console.log("Token: " + idTokenResult.token);
 
-      console.log("Hello " + auth.currentUser.email)
+          // Fetch packages to show on page
+          fetchPackages(idTokenResult.token);
 
-      // Update GUI when user is authenticated
-      showAuthenticated(auth.currentUser.email);
+          cart.addEventListener("click", function () {
+                  console.log('cart open clicked');
+                  openCartPopup()
+                   .then(function () {
+                          console.log("opened cart");
+                      })
+                   .catch(function (error) {
+                          console.log("error opening cart:");
+                          console.log(error.message);
+                          alert(error.message);
+                      });
 
-      console.log("Token: " + idTokenResult.token);
+                  // Fetch data from server when authentication was successful.
+                  token = idTokenResult.token;
+                  fetchData(token);
+                });
 
-      // Fetch packages to show on page
-      fetchPackages(idTokenResult.token);
+          if (idTokenResult.claims.role === 'admin') {
+            console.log('User has admin role');
+            managerGetAllOrders.style.visibility = "visible";
+            managerAllCustomers.style.visibility = "visible";
 
-      cart.addEventListener("click", function () {
-        console.log('cart open clicked');
-        openCartPopup()
-         .then(function () {
-                console.log("opened cart");
-            })
-         .catch(function (error) {
-                console.log("error opening cart:");
-                console.log(error.message);
-                alert(error.message);
-            });
+            managerGetAllOrders.addEventListener("click", function () {
+                console.log('manager get all orders clicked');
+                managerAllOrdersPopUp()
+                .then(function () {
+                    console.log("manager cart");
+                })
+                .catch(function (error) {
+                    console.log("error opening cart:");
+                    console.log(error.message);
+                    alert(error.message);
+                });
+                token = idTokenResult.token;
+                fetchData(token);
+                });
+            managerAllCustomers.addEventListener("click", function () {
+                console.log('manager get all customers clicked');
+                managerAllCustomersPopUp()
+                .then(function () {
+                    console.log("manager cart");
+                })
+                .catch(function (error) {
+                    console.log("error opening cart:");
+                    console.log(error.message);
+                    alert(error.message);
+                });
+                token = idTokenResult.token;
+                fetchData(token);
+                });
 
-        // Fetch data from server when authentication was successful.
-        token = idTokenResult.token;
-        fetchData(token);
-      });
-    });
+          } else {
+            console.log('User does not have admin role');
+            managerGetAllOrders.style.visibility = "hidden" ;
+            managerAllCustomers.style.visibility = "hidden";
+          }
+        }).catch((error) => {
+          console.error('Error getting ID token result:', error);
+        });
+
+
   });
 }
 
@@ -459,7 +503,69 @@ function displaypackages(packages) {
     });
 }
 
+function managerAllOrdersPopUp() {
+            console.log('Token in manager all orders')
+            const auth = getAuth();
+            // Check if the user is authenticated
+            if (auth.currentUser) {
+                // Fetch user's packages from the server
+                fetch(`/api/getAllOrders`, {
+                    method: 'GET',
+                    headers: { Authorization: 'Bearer {token}' }
+                })
+                .then(response => response.json())
+                .then(carts => {
+                //                    // Clear previous items
+                                    const orderItemsContainer = document.getElementById("orderItems");
+                                    orderItemsContainer.innerHTML = "";
 
+                                    // Iterate over the packages and dynamically populate the cart section
+                                    carts.forEach(cartI => {
+                                        const cartElement = document.createElement("div");
+                                        cartElement.innerHTML = `
+                                            <p>${cartI.name} - $${pkg.price.toFixed(2)}</p>
+                                        `;
+                                        orderItemsContainer.appendChild(cartElement);
+                                    });
+                                })
+                .catch(error => {
+                    console.error('Error fetching user packages:', error);
+                });
+            } else {
+                console.log("User not authenticated");
+            }
+
+            // Show the cart popup
+            const popDialogOrders = document.getElementById("ordersPopup");
+            popDialogOrders.style.visibility =
+                popDialogOrders.style.visibility === "visible"
+                    ? "hidden"
+                    : "visible";
+}
+
+function managerAllCustomersPopUp(){
+
+    // Fetch user's packages from the server
+    fetch(`/api/getAllCustomers`, {
+        method: 'GET',
+        headers: { Authorization: 'Bearer {token}' }
+    })
+   .then(response => response.json())
+   .then(users => {
+        // Populate the cart section with the fetched packages
+        const usersItemsContainer = document.getElementById("usersItems");
+        usersItemsContainer.innerHTML = "";
+
+    })
+   .catch(error => {
+        console.error('Error fetching user packages:', error);
+    });
+   const popDialogOrders = document.getElementById("usersPopup");
+               popDialogOrders.style.visibility =
+                   popDialogOrders.style.visibility === "visible"
+                       ? "hidden"
+                       : "visible";
+}
 // calling /api/hello on the rest service to illustrate text based data retrieval
 function getHello(token) {
 

@@ -73,6 +73,37 @@ public class CartController {
         return ResponseEntity.ok("Item removed from cart");
     }
 
+    @GetMapping("/api/getAllCustomers")
+    public ResponseEntity<?> getAllCustomers() {
+    List<User> allUsers = firestoreService.getAllCustomers();
+
+    if (allUsers == null) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to retrieve user packages.");
+    }
+
+    if (allUsers.isEmpty()) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User packages not found for username: ");
+    }
+
+    return ResponseEntity.ok(allUsers);
+    }
+
+
+    @GetMapping("/api/getAllOrders")
+    public ResponseEntity<?> getAllOrders() {
+        System.out.println("Inside api/getAllOrders");
+        List<Cart> purchasedCarts = firestoreService.getAllOrders();
+
+        if (purchasedCarts == null) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to retrieve all purchased carts.");
+        }
+
+        if (purchasedCarts.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No purchased found");
+        }
+
+        return ResponseEntity.ok(purchasedCarts);
+    }
 
 
 
