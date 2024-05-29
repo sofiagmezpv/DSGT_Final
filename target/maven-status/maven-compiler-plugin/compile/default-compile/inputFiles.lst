@@ -8,6 +8,7 @@
 /home/dapp/Desktop/Assignment2/latest_DSGT_Final/DSGT_Final/src/main/java/be/kuleuven/dsgt4/Item.java
 /home/dapp/Desktop/Assignment2/latest_DSGT_Final/DSGT_Final/src/main/java/be/kuleuven/dsgt4/auth/WebSecurityConfig.java
 /home/dapp/Desktop/Assignment2/latest_DSGT_Final/DSGT_Final/src/main/java/be/kuleuven/dsgt4/auth/SecurityFilter.java
+/home/dapp/Desktop/Assignment2/latest_DSGT_Final/DSGT_Final/src/main/java/be/kuleuven/dsgt4/Cart.java
 /home/dapp/Desktop/Assignment2/latest_DSGT_Final/DSGT_Final/src/main/java/be/kuleuven/dsgt4/User.java
 /home/dapp/Desktop/Assignment2/latest_DSGT_Final/DSGT_Final/src/main/java/be/kuleuven/dsgt4/UserMessage.java
 /home/dapp/Desktop/Assignment2/latest_DSGT_Final/DSGT_Final/src/main/java/be/kuleuven/dsgt4/FirestoreService.java

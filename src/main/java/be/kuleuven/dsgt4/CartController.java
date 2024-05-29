@@ -46,6 +46,7 @@ public class CartController {
 
     @GetMapping("/user/packages/{username}")
     public ResponseEntity<?> getUserPackages(@PathVariable String username) {
+        System.out.println("Inside CartController user/packages/username");
         List<Package> userPackages = firestoreService.getUserPackages(username);
 
         if (userPackages == null) {
@@ -57,6 +58,21 @@ public class CartController {
         }
 
         return ResponseEntity.ok(userPackages);
+    }
+
+    @GetMapping("/api/getAllOrders")
+    public ResponseEntity<?> getAllOrders() {
+        List<Cart> purchasedCarts = firestoreService.getAllOrders();
+
+        if (purchasedCarts == null) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to retrieve all purchased carts.");
+        }
+
+        if (purchasedCarts.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No purchased found");
+        }
+
+        return ResponseEntity.ok(purchasedCarts);
     }
 
     @PostMapping("/remove_from_cart")

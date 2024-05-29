@@ -33,6 +33,7 @@ a {
     z-index: 9999;
     visibility: hidden;
 }
+
 h1 {
     color: #4caf50;
     margin-bottom: 20px;
@@ -111,10 +112,19 @@ h1 {
     position: relative;
     margin: 45px 0;
 }
-#managerButton {
+
+#managerAllOrdersButton {
     position: absolute;
     right: 10px;
     top: 100px;
+    visibility: hidden;
+}
+
+#managerAllCustomersButton {
+    position: absolute;
+    right: 200px;
+    top: 100px;
+    visibility: hidden;
 }
 
 textarea {

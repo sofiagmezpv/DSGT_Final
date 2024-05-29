@@ -12,14 +12,15 @@ var summer;
 var winter;
 var token;
 var cart;
-var manager;
+var managerGetAllOrders;
+var managerAllCustomers;
 
 // we setup the authentication, and then wire up some key events to event handlers
 setupAuth();
 wireGuiUpEvents();
 wireUpAuthChange();
 
-//setup authentication with local or cloud configuration. 
+//setup authentication with local or cloud configuration.
 function setupAuth() {
   let firebaseConfig;
   if (location.hostname === "localhost") {
@@ -60,7 +61,8 @@ function wireGuiUpEvents() {
       winter = document.getElementById("btnWinter");
       summer = document.getElementById("btnSummer");
       cart = document.getElementById("cartButton");
-      manager = document.getElementById("managerButton");
+      managerGetAllOrders = document.getElementById("managerAllOrdersButton");
+      managerAllCustomers = document.getElementById("managerAllCustomersButton");
 
       console.log(winter)
       console.log(summer)
@@ -140,41 +142,25 @@ function wireUpAuthChange() {
       console.log("Token: " + idTokenResult.token);
       console.log(summer)
 
-      manager.style.visibility = "hidden" ;
-
     });
 
     auth.currentUser.getIdTokenResult(auth.currentUser.getIdToken()).then((idTokenResult) => {
       if (idTokenResult.claims.role === 'admin') {
         console.log('User has admin role');
-        // Perform actions for admin users
+        managerGetAllOrders.style.visibility = "visible";
+        managerAllCustomers.style.visibility = "visible";
       } else {
         console.log('User does not have admin role');
-        // Perform actions for non-admin users
+        managerGetAllOrders.style.visibility = "hidden" ;
+        managerAllCustomers.style.visibility = "hidden";
       }
     }).catch((error) => {
       console.error('Error getting ID token result:', error);
     });
 
-//    // Verify the ID token first.
-//    auth.verifyIdToken(idToken)
-//      .then((claims) => {
-//        if (claims.manager === true) {
-//          manager.style.visibility = "visible";
-//                  manager.addEventListener("click", function () {
-//                    console.log('Manager button clicked');
-//                    // Perform actions specific to managers here
-//                    // For example, open a manager-specific UI
-//                  });
-//        }
-//      });
-
-
-    // if manager -> view button and add event listener and if clicked call the UI of the manager (differnt )
-    // if not manager-> nothing
-      manager.addEventListener("click", function () {
-              console.log('cart open clicked');
-              managerPopUp()
+      managerGetAllOrders.addEventListener("click", function () {
+              console.log('manager get all orders clicked');
+              managerAllOrdersPopUp()
                .then(function () {
                       console.log("manager cart");
                   })
@@ -188,6 +174,22 @@ function wireUpAuthChange() {
               token = idTokenResult.token;
               fetchData(token);
             });
+      managerAllCustomers.addEventListener("click", function () {
+                                       console.log('manager get all customers clicked');
+                                       managerAllCustomersPopUp()
+                                        .then(function () {
+                                               console.log("manager cart");
+                                           })
+                                        .catch(function (error) {
+                                               console.log("error opening cart:");
+                                               console.log(error.message);
+                                               alert(error.message);
+                                           });
+
+                                       // Fetch data from server when authentication was successful.
+                                       token = idTokenResult.token;
+                                       fetchData(token);
+                                     });
 
       cart.addEventListener("click", function () {
         console.log('cart open clicked');
@@ -292,10 +294,13 @@ function closePop() {
 //        cartItemsContainer.addEventListener('click', handleRemoveButtonClick);
         const closeCart = document.getElementById("closeCartButton");
         function openCartPopup() {
+            console.log("inside openCartPopup")
             const auth = getAuth();
 
             // Check if the user is authenticated
             if (auth.currentUser) {
+
+            console.log("inside openCartPopup - user authentificated")
                 const username = auth.currentUser.email;
 
                 // Fetch user's packages from the server
@@ -313,6 +318,7 @@ function closePop() {
                     // Iterate over the packages and dynamically populate the cart section
                     packages.forEach(pkg => {
                         const packageElement = document.createElement("div");
+                        console.log("package iteration");
                         packageElement.innerHTML = `
                             <p>${pkg.name} - $${pkg.price.toFixed(2)}</p>
                             <button data-package-id="${pkg.id}" type="button" class="btn btn-danger remove-btn">Remove</button>
@@ -335,7 +341,6 @@ function closePop() {
             } else {
                 console.log("User not authenticated");
             }
-
 
             // Show the cart popup
             const popDialog2 = document.getElementById("cartPopup");
@@ -465,6 +470,56 @@ function closePop() {
                 //style="width: 80%; height: 300px;
                 //class="bg-dark box-shadow mx-auto"
             }
+
+
+//function managerAllOrdersPopUp() {
+//            const auth = getAuth();
+//            // Check if the user is authenticated
+//            if (auth.currentUser) {
+//                const username = auth.currentUser.email;
+//
+//                // Fetch user's packages from the server
+//                fetch(`/api/getAllOrders`, {
+//                    method: 'GET',
+//                    headers: {
+//                        'Content-Type': 'application/json'
+//                    }
+//                })
+//                .then(response => response.json())
+//                .then(carts => {
+//                    // Clear previous items
+//                    cartItemsContainer.innerHTML = "";
+//
+//                    // Iterate over the packages and dynamically populate the cart section
+//                    carts.forEach(cartI => {
+//                        const cartElement = document.createElement("div");
+//                        cartElement.innerHTML = `
+//                            <p>${cartI.name} - $${pkg.price.toFixed(2)}</p>
+//                        `;
+//
+//                        cartItemsContainer.appendChild(cartElement);
+//
+//                        closemanagerAllOrders.addEventListener('click' , () => {
+//                            closeManagerAllOrders();
+//                        });
+//                    });
+//                })
+//                .catch(error => {
+//                    console.error('Error fetching user packages:', error);
+//                });
+//            } else {
+//                console.log("User not authenticated");
+//            }
+//
+//
+//            // Show the cart popup
+//            const popDialog2 = document.getElementById("cartPopup");
+//            popDialog2.style.visibility =
+//                popDialog2.style.visibility === "visible"
+//                    ? "hidden"
+//                    : "visible";
+//        }
+
 function fetchData(token) {
   getHello(token);
   whoami(token);

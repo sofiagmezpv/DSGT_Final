@@ -50,6 +50,43 @@ public class FirestoreService {
         }
     }
 
+    public List<Cart> getAllOrders(){
+        System.out.println("In getAllOrders");
+        List<Cart> allOrders = new ArrayList<>();
+        try {
+            CollectionReference ordersRef = db.collection("orders");
+            ApiFuture<QuerySnapshot> query = ordersRef.get();
+            QuerySnapshot documents = query.get();
+
+
+            // Iterate through each document (username)
+            for (QueryDocumentSnapshot document : documents) {
+                String username = document.getId();
+
+                // Reference to the 'cart' collection for each username
+                CollectionReference cartRef = db.collection("orders")
+                        .document(username)
+                        .collection("cart");
+
+                // Get all documents in the 'cart' collection
+                ApiFuture<QuerySnapshot> cartQuerySnapshot = cartRef.get();
+                List<QueryDocumentSnapshot> cartDocuments = cartQuerySnapshot.get().getDocuments();
+
+                System.out.println("Carts for user: " + username);
+                for (QueryDocumentSnapshot cartDocument : cartDocuments) {
+                    System.out.println(cartDocument.getId() + " => " + cartDocument.getData());
+                    Cart cart = document.toObject(Cart.class);
+                    allOrders.add(cart);
+                }
+            }
+
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return allOrders;
+    }
+
     public List<Package> getUserPackages(String username) {
         System.out.println("In getUserPackages with username: " + username);
         List<Package> userPackages = new ArrayList<>();
