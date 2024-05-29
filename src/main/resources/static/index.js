@@ -135,6 +135,9 @@ function wireUpAuthChange() {
       console.log("Token: " + idTokenResult.token);
       console.log(summer)
 
+      // Fetch packages to show on page
+      fetchPackages(idTokenResult.token);
+
       cart.addEventListener("click", function () {
         console.log('cart open clicked');
         openCartPopup()
@@ -444,6 +447,38 @@ function showUnAuthenticated() {
 
 function addContent(text) {
   document.getElementById("contentdiv").innerHTML += (text + "<br/>");
+}
+
+
+function fetchPackages(token) {
+  fetch('/packages', {
+    headers: { Authorization: 'Bearer ' + token }
+  })
+    .then((response) => response.json())
+    .then((packages) => {
+      console.log(packages);
+      displaypackages(packages)
+    })
+    .catch((error) => {
+      console.error('Error fetching packages:', error);
+    });
+}
+
+
+function displaypackages(packages) {
+  const packagesDiv = document.getElementById('packagesDiv');
+      packagesDiv.innerHTML = ''; // Clear existing content
+
+      packages.forEach(pkg => {
+          const packageElement = document.createElement('div');
+          packageElement.innerHTML = `
+              <h2>${pkg.name}</h2>
+              <p>Price: $${pkg.price}</p>
+              <p>Description: ${pkg.description}</p>
+              <p>${pkg.itemNames}</p>
+          `;
+          packagesDiv.appendChild(packageElement);
+      });
 }
 
 
