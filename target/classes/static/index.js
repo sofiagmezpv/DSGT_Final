@@ -8,8 +8,6 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "https://www.gstatic.com/firebasejs/9.9.4/firebase-auth.js";
-var summer;
-var winter;
 var token;
 var cart;
 
@@ -55,12 +53,8 @@ function wireGuiUpEvents() {
       var signInButton = document.getElementById("btnSignIn");
       var signUpButton = document.getElementById("btnSignUp");
       var logoutButton = document.getElementById("btnLogout");
-      winter = document.getElementById("btnWinter");
-      summer = document.getElementById("btnSummer");
       cart = document.getElementById("cartButton");
 
-      console.log(winter)
-      console.log(summer)
       console.log(logoutButton)
 
       signInButton.addEventListener("click", function () {
@@ -133,7 +127,6 @@ function wireUpAuthChange() {
       showAuthenticated(auth.currentUser.email);
 
       console.log("Token: " + idTokenResult.token);
-      console.log(summer)
 
       // Fetch packages to show on page
       fetchPackages(idTokenResult.token);
@@ -149,44 +142,6 @@ function wireUpAuthChange() {
                 console.log(error.message);
                 alert(error.message);
             });
-
-        // Fetch data from server when authentication was successful.
-        token = idTokenResult.token;
-        fetchData(token);
-      });
-
-      winter.addEventListener("click", function () {
-        console.log('winter in  idToken  clicked'); // Debugging line
-        const itemId = winter.dataset.itemId; // Assuming the "TEST" button also has a data-item-id attribute
-        console.log('Item ID:', itemId); // Debugging line
-        openPop(itemId)
-        .then(function () {
-           console.log("opened called");
-        })
-        .catch(function (error) {
-          console.log("error signInWithEmailAndPassword:");
-          console.log(error.message);
-          alert(error.message);
-        });
-
-        // Fetch data from server when authentication was successful.
-        token = idTokenResult.token;
-        fetchData(token);
-      });
-
-      summer.addEventListener("click", function () {
-        console.log('btnSummer clicked'); // Debugging line
-        const itemId = summer.dataset.itemId; // Assuming the "TEST" button also has a data-item-id attribute
-        console.log('Item ID:', itemId); // Debugging line
-        openPop(itemId)
-        .then(function () {
-          console.log("opened called");
-        })
-        .catch(function (error) {
-          console.log("error signInWithEmailAndPassword:");
-          console.log(error.message);
-          alert(error.message);
-        });
 
         // Fetch data from server when authentication was successful.
         token = idTokenResult.token;
@@ -468,10 +423,17 @@ function fetchPackages(token) {
 function displaypackages(packages) {
   const packagesDiv = document.getElementById('packagesDiv');
     const template = document.getElementById('packageTemplate').content;
+    const templateDark = document.getElementById('packageTemplateDark').content;
     packagesDiv.innerHTML = ''; // Clear existing content
 
+    let int = 0;
     packages.forEach(pkg => {
-      const packageElement = template.cloneNode(true);
+      let packageElement;
+      if (int % 2 === 1) {
+        packageElement = template.cloneNode(true);
+      } else {
+        packageElement = templateDark.cloneNode(true);
+      }
 
       packageElement.querySelector('.card-name').textContent = pkg.name;
       packageElement.querySelector('.card-price').textContent = `$${pkg.price.toFixed(2)}`;
@@ -492,7 +454,7 @@ function displaypackages(packages) {
           alert(error.message);
         });
       });
-
+      int++;
       packagesDiv.appendChild(packageElement);
     });
 }

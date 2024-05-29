@@ -46,7 +46,12 @@
     "name" : "Exotic Student Pack",
     "description" : "Do you dare to be a little exotic?",
     "itemIds" : ["ep3FAfq9y06EYXx14Mt0"]
-  }  ]
+  }, {
+    "id" : "4FcBdF6NTzHu99TyktDB",
+    "name" : "Classic Student Pack",
+    "description" : "All of the classics.",
+    "itemIds" : ["Ndjb0HZE6s3uxnAryOqA"]
+  }   ]
 
 }
 
