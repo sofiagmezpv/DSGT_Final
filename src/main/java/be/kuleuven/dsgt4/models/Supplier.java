@@ -6,14 +6,15 @@ import java.util.List;
 @RestController
 public class Supplier {
         private String id;
-        private String apiKey;
-        private static final String NAMESPACE_URI ="http://127.0.0.1:8100/rest";
+        private int apiKey;
+        //private static final String NAMESPACE_URI ="http://127.0.0.1:8100/rest";
         private String name;
-        private List<Item> items;
-        public String baseUrl;
+        //private List<Item> items;
+        public String baseUrl="http://127.0.0.1:8100/rest";
 
+        public Supplier(){}
 
-        public Supplier(String id,String apiKey, String name, String baseUrl) {
+        public Supplier(int apiKey, String baseUrl,String id, String name) {
                 this.apiKey = apiKey;
                 this.name = name;
                 this.baseUrl = baseUrl;
@@ -28,11 +29,11 @@ public class Supplier {
                 this.id = id;
         }
 
-        public String getApiKey() {
+        public int getApiKey() {
                 return apiKey;
         }
 
-        public void setApiKey(String apiKey) {
+        public void setApiKey(int apiKey) {
                 this.apiKey = apiKey;
         }
 
@@ -45,9 +46,7 @@ public class Supplier {
                 this.name = name;
         }
 
-        public List<Item> getItems() {
-                return items;
-        }
+        //public List<Item> getItems() {return items;}
 
 /*
         public Mono<Integer> getItemById(int id) {
@@ -74,9 +73,9 @@ public class Supplier {
                         });
         }
 */
-        public void setItems(List<Item> items) {
-                this.items = items;
-        }
+        //public void setItems(List<Item> items) {
+        //        this.items = items;
+        //}
 
         public String getBaseUrl() {
                 return baseUrl;
@@ -86,7 +85,5 @@ public class Supplier {
                 this.baseUrl = baseUrl;
         }
 //todo impelment logic
-        public  Mono<Integer> getItemById(String id) {
-                return null;
-        }
+        //public  Mono<Integer> getItemById(String id) {return null;}
 }

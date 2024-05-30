@@ -35,12 +35,14 @@
     "id" : "eGBPA1nEgmAjdmgJg1nE",
     "name" : "Winter Package",
     "description" : "Cozy winter vibes.",
-    "itemIds" : ["Ndjb0HZE6s3uxnAryOqA", "ep3FAfq9y06EYXx14Mt0"]
+    "itemIds" : ["Ndjb0HZE6s3uxnAryOqA", "ep3FAfq9y06EYXx14Mt0"],
+    "reservationId":""
   }, {
     "id" : "mNJ6dIZ7hssWBFKg212",
     "name" : "Summer Package",
     "description" : "Refreshing!",
-    "itemIds" : ["eIRRKA8H6lUF19NWHtMZ", "ep3FAfq9y06EYXx14Mt0"]
+    "itemIds" : ["eIRRKA8H6lUF19NWHtMZ", "ep3FAfq9y06EYXx14Mt0"],
+    "reservationId": ""
   } ]
 
 }

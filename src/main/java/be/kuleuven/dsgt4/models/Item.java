@@ -27,6 +27,7 @@ public class Item {
         this.brand = brand;
         this.id = id;
 
+
     }
 
 
@@ -77,12 +78,16 @@ public class Item {
 
     public void setBrand(String brand) {
         this.brand = brand;
-    }    public Mono<Boolean> checkAvailablity() {
+    }
+
+    public Mono<Boolean> checkAvailablity() {
+        //todo remove
         System.out.println("Checking if item is available");
 
-        return supplier.getItemById(this.id)
-            .map(amount -> amount > 0);
-        }
+        //return supplier.getItemById(this.id)
+        //    .map(amount -> amount > 0);
+        return null;
+    }
 
     public void reserveItem(){
         //TODO implement REST reserve request

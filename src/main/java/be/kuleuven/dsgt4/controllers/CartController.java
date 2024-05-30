@@ -6,6 +6,7 @@ import be.kuleuven.dsgt4.models.Package;
 import be.kuleuven.dsgt4.services.FirestoreService;
 import be.kuleuven.dsgt4.services.PackageService;
 import be.kuleuven.dsgt4.services.SupplierSerivce;
+import com.google.cloud.firestore.Firestore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,37 +24,37 @@ import java.util.List;
 public class CartController {
 
     @Autowired
-    WebClient.Builder webClient;
-    @Autowired
     private FirestoreService firestoreService;
+    //private WebClient.Builder webClientBuilder;
     @Autowired
     private PackageService packageService;
 
     SupplierSerivce supplierLogic;
 
-    public CartController() {
-        this.supplierLogic = new SupplierSerivce();
+    @Autowired
+    public CartController(WebClient.Builder webClientBuilder, FirestoreService firestoreService) {
+        this.supplierLogic = new SupplierSerivce(webClientBuilder,firestoreService);
     }
 
     // Endpoint to add a package to the cart
     @PostMapping("/add_to_cart")
     public ResponseEntity<String> addToCart(@RequestParam("id") String itemId, @RequestParam("username") String username) {
-        System.out.println("printing pack");
         Package pack = packageService.getPackageFromId(itemId);
-        System.out.println("done printing pack");
-        System.out.println(pack);
         if (pack == null) {
             return ResponseEntity.status(404).body("Package not found");
         }
 
         for(Item it : pack.getItems()){
-            this.supplierLogic.reserveItem(it);
+            Mono<Boolean> av = this.supplierLogic.itemAvailable(it.getId(),it.getSupplier());
+            Boolean avaialable = av.block();
+            if(Boolean.FALSE.equals(av.block())){
+                return ResponseEntity.ok("Items can't be added to cart");
+            }
 
         }
 
-
+        supplierLogic.reservePack(pack);
         firestoreService.addItemToUserCart(username, pack);
-
         System.out.println("Inside add item to cart");
         return ResponseEntity.ok("Item added to cart");
     }
@@ -114,7 +115,7 @@ public class CartController {
 //        return null;
 //    }
 
-
+/*
     public Mono<String> fetchdrinks() {
         return this.webClient.baseUrl("http://127.0.0.1:8100/rest").build()
                 .get()
@@ -141,4 +142,6 @@ public class CartController {
                     System.out.println("Mono terminated with signal: " + signalType);
                 });
     }
+
+ */
 }

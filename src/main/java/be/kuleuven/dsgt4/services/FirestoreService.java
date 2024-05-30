@@ -243,5 +243,41 @@ public class FirestoreService {
         return packages;
     }
 
+    public void addReservationIdTopackage(Package pack,String reservationId){
+        System.out.println("Adding reservation ID to package: " + pack.getId());
+        DocumentReference packageRef = db.collection("package").document(pack.getId());
+        // Step 2: Add the reservation ID to the package
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("reservationId", reservationId);
+        ApiFuture<WriteResult> future = packageRef.update(updates);
+        try {
+            WriteResult result = future.get();
+            System.out.println("Reservation ID added to package. Update time: " + result.getUpdateTime());
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+    public String getReservationIdPackage(Package pack) {
+        System.out.println("Fetching reservation ID for package: " + pack.getId());
+        DocumentReference packageRef = db.collection("package").document(pack.getId());
+        ApiFuture<DocumentSnapshot> future = packageRef.get();
+
+        try {
+            DocumentSnapshot document = future.get();
+            if (document.exists()) {
+                String reservationId = document.getString("reservationId");
+                System.out.println("Reservation ID found: " + reservationId);
+                return reservationId;
+            } else {
+                System.out.println("No such package document!");
+                return null;
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
 
 }
