@@ -30,30 +30,30 @@ public class CartController {
 
     // Endpoint to add a package to the cart
     @PostMapping("/add_to_cart")
-    public ResponseEntity<String> addToCart(@RequestParam("id") String itemId, @RequestParam("username") String username) {
+    public ResponseEntity<String> addToCart(@RequestParam("id") String itemId, @RequestParam("uid") String uid) {
 
         Package pack = packageService.getPackageFromId(itemId);
         if (pack == null) {
             return ResponseEntity.status(404).body("Package not found");
         }
 
-        firestoreService.addItemToUserCart(username, pack);
+        firestoreService.addItemToUserCart(uid, pack);
 
         System.out.println("Inside add item to cart");
         return ResponseEntity.ok("Item added to cart");
     }
 
 
-    @GetMapping("/user/packages/{username}")
-    public ResponseEntity<?> getUserPackages(@PathVariable String username) {
-        List<Package> userPackages = firestoreService.getUserPackages(username);
+    @GetMapping("/user/packages/{uidString}")
+    public ResponseEntity<?> getUserPackages(@PathVariable String uidString) {
+        List<Package> userPackages = firestoreService.getUserPackages(uidString);
 
         if (userPackages == null) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to retrieve user packages.");
         }
 
         if (userPackages.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User packages not found for username: " + username);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User packages not found for UID: " + uidString);
         }
 
         return ResponseEntity.ok(userPackages);

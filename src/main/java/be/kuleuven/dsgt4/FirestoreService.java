@@ -51,9 +51,9 @@ public class FirestoreService {
         return usersAll;
     }
 
-    public void addItemToUserCart(String username, Package pack) {
+    public void addItemToUserCart(String uid, Package pack) {
 
-        System.out.println("In addItemToUserCart" + username);
+        System.out.println("In addItemToUserCart" + uid);
 
         Map<String, Object> cartItem = new HashMap<>();
         cartItem.put("id", pack.getId());
@@ -64,7 +64,7 @@ public class FirestoreService {
 
 
         ApiFuture<DocumentReference> future = db.collection("users")
-                .document(username)
+                .document(uid)
                 .collection("cart")
                 .add(cartItem);
 
@@ -76,13 +76,13 @@ public class FirestoreService {
         }
     }
 
-    public List<Package> getUserPackages(String username) {
-        System.out.println("In getUserPackages with username: " + username);
+    public List<Package> getUserPackages(String uidString) {
+        System.out.println("In getUserPackages with username: " + uidString);
         List<Package> userPackages = new ArrayList<>();
 
         try {
             CollectionReference cartRef = db.collection("users")
-                    .document(username)
+                    .document(uidString)
                     .collection("cart");
 
             ApiFuture<QuerySnapshot> query = cartRef.get();

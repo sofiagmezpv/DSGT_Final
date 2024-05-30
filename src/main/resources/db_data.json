@@ -51,8 +51,11 @@
     "name" : "Classic Student Pack",
     "description" : "All of the classics.",
     "itemIds" : ["Ndjb0HZE6s3uxnAryOqA"]
-  }   ]
+  }   ],
 
-}
+  "orders" : [
+
+  ]
+    }
 
 

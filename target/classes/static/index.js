@@ -127,9 +127,11 @@ function wireUpAuthChange() {
           // Update GUI when user is authenticated
           showAuthenticated(auth.currentUser.email);
           console.log("Token: " + idTokenResult.token);
-
           // Fetch packages to show on page
           fetchPackages(idTokenResult.token);
+
+          console.log(auth.currentUser.uid)
+
 
           cart.addEventListener("click", function () {
                   console.log('cart open clicked');
@@ -198,19 +200,17 @@ function wireUpAuthChange() {
 
 function openPop(packageId) {
     const auth = getAuth(); // Assuming this function gets the authentication object
-    let username = ""; // Initialize username variable
-
+    let uidString = ""; // Initialize username variable
+    console.log(auth.currentUser.uid)
     // Check if the user is authenticated
     if (auth.currentUser) {
-        username = auth.currentUser.email; // Retrieve username from currentUser's email
+        uidString = auth.currentUser.uid; // Retrieve username from currentUser's email
     } else {
         console.log("User not authenticated");
-        // Handle the case where the user is not authenticated
-        // You may display a message or redirect to a login page
         return; // Exit the function if user is not authenticated
     }
 
-    fetch(`/add_to_cart?id=${packageId}&username=${username}`, { // Include username in the fetch URL
+    fetch(`/add_to_cart?id=${packageId}&uid=${uidString}`, { // Include username in the fetch URL
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -246,10 +246,10 @@ function openCartPopup() {
 
     // Check if the user is authenticated
     if (auth.currentUser) {
-        const username = auth.currentUser.email;
+        const uidString = auth.currentUser.uid;
 
         // Fetch user's packages from the server
-        fetch(`/user/packages/${username}`, {
+        fetch(`/user/packages/${uidString}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
