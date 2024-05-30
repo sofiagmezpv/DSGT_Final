@@ -74,7 +74,7 @@ h1 {
 .page {
     margin-left: auto;
     margin-right: auto;
-    max-width: 700px;
+    max-width: 90%;
 }
 
 
@@ -177,20 +177,32 @@ label {
     z-index: 1000; /* Ensure the button stays above other elements */
 }
 
-/* Additional styling for the test button */
-#btnSummer {
-    background-color: #007bff; /* Example background color */
-    color: white; /* Text color */
-    padding: 10px 20px; /* Padding around the text */
-    border: none; /* Remove default borders */
-    border-radius: 5px; /* Rounded corners */
-    cursor: pointer; /* Change cursor to pointer on hover */
+
+.card {
+    margin: 15px;
+     flex: 0 0 auto;
 }
-#btnWinter {
-    background-color: #007bff; /* Example background color */
-    color: white; /* Text color */
-    padding: 10px 20px; /* Padding around the text */
-    border: none; /* Remove default borders */
-    border-radius: 5px; /* Rounded corners */
-    cursor: pointer; /* Change cursor to pointer on hover */
+
+#packagesDiv{
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      margin-top: 40px;
+      /*justify-content: center;*/
+}
+.image{
+    margin-left: 30px;
+    margin-top, margin-bottom: auto;
+}
+
+#page-title{
+    font-size: 60px;
+}
+
+#page-subtitle {
+    margin-top: -25px
+}
+
+#top-of-page{
+    margin-top: 70px;
 }

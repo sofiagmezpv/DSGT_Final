@@ -8,8 +8,6 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "https://www.gstatic.com/firebasejs/9.9.4/firebase-auth.js";
-var summer;
-var winter;
 var token;
 var cart;
 
@@ -46,7 +44,6 @@ function setupAuth() {
 }
 
 
-
 function wireGuiUpEvents() {
   // Get references to the email and password inputs, and the sign in, sign out and sign up buttons
   document.addEventListener('DOMContentLoaded', function() {
@@ -56,20 +53,14 @@ function wireGuiUpEvents() {
       var signInButton = document.getElementById("btnSignIn");
       var signUpButton = document.getElementById("btnSignUp");
       var logoutButton = document.getElementById("btnLogout");
-      winter = document.getElementById("btnWinter");
-      summer = document.getElementById("btnSummer");
       cart = document.getElementById("cartButton");
 
-      console.log(winter)
-      console.log(summer)
       console.log(logoutButton)
 
       signInButton.addEventListener("click", function () {
         // Sign in the user using Firebase's signInWithEmailAndPassword method
-
         signInWithEmailAndPassword(getAuth(), email.value, password.value)
           .then(function () {
-
             console.log("signedin");
           })
           .catch(function (error) {
@@ -82,7 +73,6 @@ function wireGuiUpEvents() {
 
       signUpButton.addEventListener("click", function () {
         // Sign up the user using Firebase's createUserWithEmailAndPassword method
-
         createUserWithEmailAndPassword(getAuth(), email.value, password.value)
           .then(function () {
             console.log("created");
@@ -107,6 +97,7 @@ function wireGuiUpEvents() {
 
     });
 }
+
 
 function wireUpAuthChange() {
   var auth = getAuth();
@@ -136,7 +127,9 @@ function wireUpAuthChange() {
       showAuthenticated(auth.currentUser.email);
 
       console.log("Token: " + idTokenResult.token);
-      console.log(summer)
+
+      // Fetch packages to show on page
+      fetchPackages(idTokenResult.token);
 
       cart.addEventListener("click", function () {
         console.log('cart open clicked');
@@ -154,51 +147,12 @@ function wireUpAuthChange() {
         token = idTokenResult.token;
         fetchData(token);
       });
-
-winter.addEventListener("click", function () {
-          console.log('winter in  idToken  clicked'); // Debugging line
-          const itemId = winter.dataset.itemId; // Assuming the "TEST" button also has a data-item-id attribute
-          console.log('Item ID:', itemId); // Debugging line
-          openPop(itemId)
-             .then(function () {
-                  console.log("opened called");
-              })
-             .catch(function (error) {
-                  console.log("error signInWithEmailAndPassword:");
-                  console.log(error.message);
-                  alert(error.message);
-              });
-
-        // Fetch data from server when authentication was successful.
-        token = idTokenResult.token;
-        fetchData(token);
-      });
-
-      summer.addEventListener("click", function () {
-          console.log('btnSummer clicked'); // Debugging line
-          const itemId = summer.dataset.itemId; // Assuming the "TEST" button also has a data-item-id attribute
-          console.log('Item ID:', itemId); // Debugging line
-          openPop(itemId)
-             .then(function () {
-                  console.log("opened called");
-              })
-             .catch(function (error) {
-                  console.log("error signInWithEmailAndPassword:");
-                  console.log(error.message);
-                  alert(error.message);
-              });
-
-        // Fetch data from server when authentication was successful.
-        token = idTokenResult.token;
-        fetchData(token);
-      });
-
-
     });
   });
 }
 
-function openPop(itemId) {
+
+function openPop(packageId) {
     const auth = getAuth(); // Assuming this function gets the authentication object
     let username = ""; // Initialize username variable
 
@@ -212,7 +166,7 @@ function openPop(itemId) {
         return; // Exit the function if user is not authenticated
     }
 
-    fetch(`/add_to_cart?id=${itemId}&username=${username}`, { // Include username in the fetch URL
+    fetch(`/add_to_cart?id=${packageId}&username=${username}`, { // Include username in the fetch URL
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -238,195 +192,204 @@ function closePop() {
 }
 
 
+// Add event listener to the cart items container
+const cartItemsContainer = document.getElementById("cartItems");
+// cartItemsContainer.addEventListener('click', handleRemoveButtonClick);
+const closeCart = document.getElementById("closeCartButton");
 
-        // Add event listener to the cart items container
+function openCartPopup() {
+    const auth = getAuth();
+
+    // Check if the user is authenticated
+    if (auth.currentUser) {
+        const username = auth.currentUser.email;
+
+        // Fetch user's packages from the server
+        fetch(`/user/packages/${username}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(packages => {
+            // Clear previous items
+            cartItemsContainer.innerHTML = "";
+
+            // Iterate over the packages and dynamically populate the cart section
+            packages.forEach(pkg => {
+                const packageElement = document.createElement("div");
+                packageElement.innerHTML = `
+                    <p>${pkg.name} - $${pkg.price.toFixed(2)}</p>
+                    <button data-package-id="${pkg.id}" type="button" class="btn btn-danger remove-btn">Remove</button>
+                `;
+                // Attach event listener to the Remove button
+                packageElement.querySelector('.remove-btn').addEventListener('click', () => {
+                    removePackageFromCart(pkg.id);
+                });
+
+                cartItemsContainer.appendChild(packageElement);
+
+                closeCart.addEventListener('click' , () => {
+                    closeCartPop();
+                });
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching user packages:', error);
+        });
+    } else {
+        console.log("User not authenticated");
+    }
+
+    // Show the cart popup
+    const popDialog2 = document.getElementById("cartPopup");
+    popDialog2.style.visibility =
+        popDialog2.style.visibility === "visible"
+            ? "hidden"
+            : "visible";
+}
+
+
+function removePackageFromCart(packageId) {
+    const auth = getAuth(); // Assuming this function gets the authentication object
+    let username = ""; // Initialize username variable
+
+    // Check if the user is authenticated
+    if (auth.currentUser) {
+        username = auth.currentUser.email; // Retrieve username from currentUser's email
+    } else {
+        console.log("User not authenticated");
+        // Handle the case where the user is not authenticated
+        // You may display a message or redirect to a login page
+        return; // Exit the function if user is not authenticated
+    }
+
+    // Send a DELETE request to the server to remove the package
+    fetch(`/remove_from_cart?id=${packageId}&username=${username}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(() => {
+        console.log(`Package with ID ${packageId} removed from cart.`);
+        // Reload the cart content directly here
         const cartItemsContainer = document.getElementById("cartItems");
-//        cartItemsContainer.addEventListener('click', handleRemoveButtonClick);
-        const closeCart = document.getElementById("closeCartButton");
-        function openCartPopup() {
-            const auth = getAuth();
+        cartItemsContainer.innerHTML = ""; // Clear previous items
 
-            // Check if the user is authenticated
-            if (auth.currentUser) {
-                const username = auth.currentUser.email;
-
-                // Fetch user's packages from the server
-                fetch(`/user/packages/${username}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => response.json())
-                .then(packages => {
-                    // Clear previous items
-                    cartItemsContainer.innerHTML = "";
-
-                    // Iterate over the packages and dynamically populate the cart section
-                    packages.forEach(pkg => {
-                        const packageElement = document.createElement("div");
-                        packageElement.innerHTML = `
-                            <p>${pkg.name} - $${pkg.price.toFixed(2)}</p>
-                            <button data-package-id="${pkg.id}" type="button" class="btn btn-danger remove-btn">Remove</button>
-                        `;
-                        // Attach event listener to the Remove button
-                        packageElement.querySelector('.remove-btn').addEventListener('click', () => {
-                            removePackageFromCart(pkg.id);
-                        });
-
-                        cartItemsContainer.appendChild(packageElement);
-
-                        closeCart.addEventListener('click' , () => {
-                            closeCartPop();
-                        });
-                    });
-                })
-                .catch(error => {
-                    console.error('Error fetching user packages:', error);
-                });
-            } else {
-                console.log("User not authenticated");
-            }
+        fetchCurrentCartItems(); // Call your function to fetch the updated cart items
+    })
+     .catch(error => {
+        console.error('Error removing package from cart:', error);
+    });
+}
 
 
-            // Show the cart popup
-            const popDialog2 = document.getElementById("cartPopup");
-            popDialog2.style.visibility =
-                popDialog2.style.visibility === "visible"
-                    ? "hidden"
-                    : "visible";
+// Example function to fetch the current cart items
+function fetchCurrentCartItems() {
+    const auth = getAuth(); // Assuming this function gets the authentication object
+    let username = ""; // Initialize username variable
+
+    // Check if the user is authenticated
+    if (auth.currentUser) {
+        username = auth.currentUser.email; // Retrieve username from currentUser's email
+    } else {
+        console.log("User not authenticated");
+        // Handle the case where the user is not authenticated
+        // You may display a message or redirect to a login page
+        return;
+    }
+
+    // Fetch user's packages from the server
+    fetch(`/user/packages/${username}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
         }
-
-        function removePackageFromCart(packageId) {
-            const auth = getAuth(); // Assuming this function gets the authentication object
-            let username = ""; // Initialize username variable
-
-            // Check if the user is authenticated
-            if (auth.currentUser) {
-                username = auth.currentUser.email; // Retrieve username from currentUser's email
-            } else {
-                console.log("User not authenticated");
-                // Handle the case where the user is not authenticated
-                // You may display a message or redirect to a login page
-                return; // Exit the function if user is not authenticated
-            }
-
-            // Send a DELETE request to the server to remove the package
-            fetch(`/remove_from_cart?id=${packageId}&username=${username}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-          .then(() => {
-                console.log(`Package with ID ${packageId} removed from cart.`);
-                // Reload the cart content directly here
-                const cartItemsContainer = document.getElementById("cartItems");
-                cartItemsContainer.innerHTML = ""; // Clear previous items
-
-                fetchCurrentCartItems(); // Call your function to fetch the updated cart items
-            })
-          .catch(error => {
-                console.error('Error removing package from cart:', error);
+    })
+   .then(response => response.json())
+   .then(packages => {
+        // Populate the cart section with the fetched packages
+        const cartItemsContainer = document.getElementById("cartItems");
+        cartItemsContainer.innerHTML = "";
+        packages.forEach(pkg => {
+            const packageElement = document.createElement("div");
+            packageElement.innerHTML = `
+                <p>${pkg.name} - $${pkg.price.toFixed(2)}</p>
+                <button data-package-id="${pkg.id}" type="button" class="btn btn-danger remove-btn">Remove</button>
+            `;
+            packageElement.querySelector('.remove-btn').addEventListener('click', () => {
+                removePackageFromCart(pkg.id); // Pass both the document ID and the package ID
             });
-        }
-
-        // Example function to fetch the current cart items
-        function fetchCurrentCartItems() {
-            const auth = getAuth(); // Assuming this function gets the authentication object
-            let username = ""; // Initialize username variable
-
-            // Check if the user is authenticated
-            if (auth.currentUser) {
-                username = auth.currentUser.email; // Retrieve username from currentUser's email
-            } else {
-                console.log("User not authenticated");
-                // Handle the case where the user is not authenticated
-                // You may display a message or redirect to a login page
-                return;
-            }
-
-            // Fetch user's packages from the server
-            fetch(`/user/packages/${username}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-           .then(response => response.json())
-           .then(packages => {
-                // Populate the cart section with the fetched packages
-                const cartItemsContainer = document.getElementById("cartItems");
-                cartItemsContainer.innerHTML = "";
-                packages.forEach(pkg => {
-                    const packageElement = document.createElement("div");
-                    packageElement.innerHTML = `
-                        <p>${pkg.name} - $${pkg.price.toFixed(2)}</p>
-                        <button data-package-id="${pkg.id}" type="button" class="btn btn-danger remove-btn">Remove</button>
-                    `;
-                    packageElement.querySelector('.remove-btn').addEventListener('click', () => {
-                        removePackageFromCart(pkg.id); // Pass both the document ID and the package ID
-                    });
-                    cartItemsContainer.appendChild(packageElement);
-                });
-            })
-           .catch(error => {
-                console.error('Error fetching user packages:', error);
-            });
-        }
+            cartItemsContainer.appendChild(packageElement);
+        });
+    })
+   .catch(error => {
+        console.error('Error fetching user packages:', error);
+    });
+}
 
 
-            function closeCartPop() {
-                const popDialog3 = document.getElementById("cartPopup");
-                popDialog3.style.visibility = "hidden";
-            }
+function closeCartPop() {
+    const popDialog3 = document.getElementById("cartPopup");
+    popDialog3.style.visibility = "hidden";
+}
 
 
-            function buy()
-            {
-                const popDialog4 =
-                    document.getElementById(
-                        "paymentPopup"
-                    );
-                popDialog4.style.visibility =
-                    popDialog4.style.visibility ===
-                    "visible"
-                        ? "hidden"
-                        : "visible";
-            }
-            function closePayment() {
-                const popDialog5 = document.getElementById("paymentPopup");
-                popDialog5.style.visibility = "hidden";
-            }
-            function donePurchase() {
-                const paymentPopup = document.getElementById("paymentPopup");
-                const cartPopup = document.getElementById("cartPopup");
-                const confirmationPopup = document.getElementById("confirmationPopup");
+function buy() {
+    const popDialog4 =
+        document.getElementById(
+            "paymentPopup"
+        );
+    popDialog4.style.visibility =
+        popDialog4.style.visibility ===
+        "visible"
+            ? "hidden"
+            : "visible";
+}
 
-                paymentPopup.style.visibility = "hidden";
-                cartPopup.style.visibility = "hidden";
-                confirmationPopup.style.visibility = "visible";
 
-                closeConfirmation(); // Call closeConfirmation function after showing confirmation popup
-            }
+function closePayment() {
+    const popDialog5 = document.getElementById("paymentPopup");
+    popDialog5.style.visibility = "hidden";
+}
 
-            function closeConfirmation() {
-                const popDialog6 = document.getElementById("confirmationPopup");
-                popDialog6.style.visibility = "hidden";
-                //class="bg-light box-shadow mx-auto"
-                //style="width: 80%; height: 300px;
-                //class="bg-dark box-shadow mx-auto"
-            }
+
+function donePurchase() {
+    const paymentPopup = document.getElementById("paymentPopup");
+    const cartPopup = document.getElementById("cartPopup");
+    const confirmationPopup = document.getElementById("confirmationPopup");
+
+    paymentPopup.style.visibility = "hidden";
+    cartPopup.style.visibility = "hidden";
+    confirmationPopup.style.visibility = "visible";
+
+    closeConfirmation(); // Call closeConfirmation function after showing confirmation popup
+}
+
+
+function closeConfirmation() {
+    const popDialog6 = document.getElementById("confirmationPopup");
+    popDialog6.style.visibility = "hidden";
+    //class="bg-light box-shadow mx-auto"
+    //style="width: 80%; height: 300px;
+    //class="bg-dark box-shadow mx-auto"
+}
+
+
 function fetchData(token) {
   getHello(token);
   whoami(token);
 }
-function showAuthenticated(username) {
 
+
+function showAuthenticated(username) {
   document.getElementById("namediv").innerHTML = "Hello " + username;
   document.getElementById("logindiv").style.display = "none";
   document.getElementById("contentdiv").style.display = "block";
 }
+
 
 function showUnAuthenticated() {
   document.getElementById("namediv").innerHTML = "";
@@ -436,9 +399,66 @@ function showUnAuthenticated() {
   document.getElementById("contentdiv").style.display = "none";
 }
 
+
 function addContent(text) {
   document.getElementById("contentdiv").innerHTML += (text + "<br/>");
 }
+
+
+function fetchPackages(token) {
+  fetch('/packages', {
+    headers: { Authorization: 'Bearer ' + token }
+  })
+    .then((response) => response.json())
+    .then((packages) => {
+      console.log(packages);
+      displaypackages(packages)
+    })
+    .catch((error) => {
+      console.error('Error fetching packages:', error);
+    });
+}
+
+
+function displaypackages(packages) {
+  const packagesDiv = document.getElementById('packagesDiv');
+    const template = document.getElementById('packageTemplate').content;
+    const templateDark = document.getElementById('packageTemplateDark').content;
+    packagesDiv.innerHTML = ''; // Clear existing content
+
+    let int = 0;
+    packages.forEach(pkg => {
+      let packageElement;
+      if (int % 2 === 1) {
+        packageElement = template.cloneNode(true);
+      } else {
+        packageElement = templateDark.cloneNode(true);
+      }
+
+      packageElement.querySelector('.card-name').textContent = pkg.name;
+      packageElement.querySelector('.card-price').textContent = `$${pkg.price.toFixed(2)}`;
+      packageElement.querySelector('.card-description').textContent = pkg.description;
+      packageElement.querySelector('.card-items').textContent = pkg.itemNames;
+      packageElement.querySelector('.card-button').dataset.packageId = pkg.id;
+
+      const button = packageElement.querySelector('.card-button');
+      button.addEventListener("click", function () {
+        const packageId = this.dataset.packageId;
+        console.log('Package ID:', packageId); // Debugging line
+        openPop(packageId)
+        .then(function () {
+          console.log("Popup opened successfully");
+        })
+        .catch(function (error) {
+          console.log("Error opening popup:", error.message);
+          alert(error.message);
+        });
+      });
+      int++;
+      packagesDiv.appendChild(packageElement);
+    });
+}
+
 
 // calling /api/hello on the rest service to illustrate text based data retrieval
 function getHello(token) {
