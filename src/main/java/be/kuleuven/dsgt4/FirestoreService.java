@@ -94,25 +94,31 @@ public class FirestoreService {
         return usersAll;
     }
 
-    public void addUserToDb(String uid, String username){
+    public void addUserToDb(String uid, String username) {
         System.out.println("in addUserToDb Firestore service method");
 
         Map<String, Object> userItem = new HashMap<>();
         userItem.put("id", uid);
         userItem.put("username", username);
 
-        // Use set instead of add to specify the document path
-        ApiFuture<WriteResult> future = db.collection("users").document(uid).set(userItem);
+        DocumentReference docRef = db.collection("users").document(uid);
+        ApiFuture<DocumentSnapshot> getDoc = docRef.get();
 
-        // Handle potential exceptions
         try {
-            WriteResult result = future.get();
-            System.out.println("Update time: " + result.getUpdateTime());
+            DocumentSnapshot snapshot = getDoc.get();
+            if (!snapshot.exists()) {
+                // Document does not exist, proceed to create it
+                ApiFuture<WriteResult> future = docRef.set(userItem);
+                WriteResult result = future.get();
+                System.out.println("Document added successfully");
+            } else {
+                System.out.println("User already exists in the database.");
+            }
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
-
     }
+
     public void addItemToUserCart(String uid, Package pack) {
 
         System.out.println("In addItemToUserCart" + uid);

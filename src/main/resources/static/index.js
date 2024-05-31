@@ -74,7 +74,7 @@ function wireGuiUpEvents() {
       createUserWithEmailAndPassword(auth, email.value, password.value)
      .then(cred => {
           console.log('into signup db methods');
-          addUserCred(cred);
+//          addUserCred(cred);
         })
      .catch(error => { // Catch any errors that occur during the Firestore operation
           console.error("Error adding user to Firestore:", error);
@@ -120,6 +120,7 @@ function wireUpAuthChange() {
       console.log("Token:", idTokenResult.token);
       fetchPackages(idTokenResult.token);
 
+      addUserCred(auth.currentUser.uid, auth.currentUser.email);
       console.log(auth.currentUser.uid);
 
       cart.addEventListener("click", function () {
@@ -210,8 +211,8 @@ function openPop(packageId) {
     setTimeout(closePop, 1000);
 }
 
-function addUserCred(cred){
-    fetch(`/addUserCred?uid=${cred.user.uid}&username=${cred.user.email}`, {
+function addUserCred(uid, email){
+    fetch(`/addUserCred?uid=${uid}&username=${email}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
