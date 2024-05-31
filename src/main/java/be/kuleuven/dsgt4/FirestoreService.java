@@ -72,24 +72,23 @@ public class FirestoreService {
     public List<User> getAllCustomers() {
         System.out.println("In getAllCustomers ");
         List<User> usersAll = new ArrayList<>();
-//        try {
-//            CollectionReference usersRef = db.collection("users");
-//            ApiFuture<QuerySnapshot> query = usersRef.get();
-//            QuerySnapshot querySnapshot = query.get();
-//            System.out.println("Query snapshot size: " + querySnapshot.size());
-//
-//            for (QueryDocumentSnapshot document : querySnapshot) {
-//                String email = document.getString("email");
-//                String role = document.getString("role");
-//                System.out.println("User email: " + email + ", role: " + role);
-//
-//                // Create a User object and add it to the list
-//                User user = new User(uid, email, role);
-//                usersAll.add(user);
-//            }
-//        } catch (InterruptedException | ExecutionException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            CollectionReference usersRef = db.collection("users");
+            ApiFuture<QuerySnapshot> query = usersRef.get();
+            QuerySnapshot querySnapshot = query.get();
+            System.out.println("Query snapshot size: " + querySnapshot.size());
+
+            for (QueryDocumentSnapshot document : querySnapshot) {
+                String email = document.getString("email");
+                String role = document.getString("role");
+
+                // Create a User object and add it to the list
+                User user = new User(email, role);
+                usersAll.add(user);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
 
         return usersAll;
     }
@@ -97,8 +96,9 @@ public class FirestoreService {
     public void addUserToDb(String uid, String username) {
         System.out.println("in addUserToDb Firestore service method");
         Map<String, Object> userItem = new HashMap<>();
-        userItem.put("id", uid);
-        userItem.put("username", username);
+        userItem.put("uid", uid);
+        userItem.put("email", username);
+        userItem.put("role", "");
 
         DocumentReference docRef = db.collection("users").document(uid);
         ApiFuture<DocumentSnapshot> getDoc = docRef.get();

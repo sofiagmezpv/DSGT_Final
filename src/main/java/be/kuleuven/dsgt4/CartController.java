@@ -101,15 +101,16 @@ public class CartController {
 
     @GetMapping("/api/getAllCustomers")
     public ResponseEntity<?> getAllCustomers() {
-    List<User> allUsers = firestoreService.getAllCustomers();
 
-    if (allUsers == null) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to retrieve user packages.");
-    }
+        List<User> allUsers = firestoreService.getAllCustomers();
 
-    if (allUsers.isEmpty()) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User packages not found for username: ");
-    }
+        if (allUsers == null) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to retrieve user packages.");
+        }
+
+        if (allUsers.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User packages not found for username: ");
+        }
 
     return ResponseEntity.ok(allUsers);
     }

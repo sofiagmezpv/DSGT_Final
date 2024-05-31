@@ -145,7 +145,7 @@ function wireUpAuthChange() {
 
         managerGetAllOrders.addEventListener("click", function () {
           console.log('manager get all orders clicked');
-          managerAllOrdersPopUp()
+          managerAllOrdersPopUp(idTokenResult.token)
             .then(function () {
               console.log("manager cart");
             })
@@ -159,7 +159,7 @@ function wireUpAuthChange() {
 
         managerAllCustomers.addEventListener("click", function () {
           console.log('manager get all customers clicked');
-          managerAllCustomersPopUp()
+          managerAllCustomersPopUp(idTokenResult.token)
             .then(function () {
               console.log("manager cart");
             })
@@ -541,29 +541,37 @@ function managerAllOrdersPopUp() {
                     : "visible";
 }
 
-function managerAllCustomersPopUp(){
+
+function managerAllCustomersPopUp(token){
 
     // Fetch user's packages from the server
     fetch(`/api/getAllCustomers`, {
         method: 'GET',
-        headers: { Authorization: 'Bearer {token}' }
+        headers: { Authorization: 'Bearer ' + token }
     })
    .then(response => response.json())
    .then(users => {
-        // Populate the cart section with the fetched packages
         const usersItemsContainer = document.getElementById("usersItems");
         usersItemsContainer.innerHTML = "";
 
-    })
+        users.forEach(userI => {
+            const usersElement = document.createElement("div");
+            usersElement.innerHTML = `
+                <p>${userI.email}</p>
+            `;
+            usersItemsContainer.appendChild(usersElement);
+        });
+   })
    .catch(error => {
         console.error('Error fetching user packages:', error);
-    });
+   });
    const popDialogOrders = document.getElementById("usersPopup");
                popDialogOrders.style.visibility =
                    popDialogOrders.style.visibility === "visible"
                        ? "hidden"
                        : "visible";
 }
+
 // calling /api/hello on the rest service to illustrate text based data retrieval
 function getHello(token) {
 

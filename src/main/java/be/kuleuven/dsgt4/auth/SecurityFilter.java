@@ -42,7 +42,7 @@ public class SecurityFilter extends OncePerRequestFilter {
             DecodedJWT jwt = JWT.require(Algorithm.none())
                     .withIssuer("https://securetoken.google.com/" + projectId)
                     .build().verify(token);
-
+            System.out.println("This is filter token: " + token);
             var email = jwt.getClaim("email");
             var role = jwt.getClaim("role");
 
