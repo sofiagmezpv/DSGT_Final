@@ -1,9 +1,11 @@
 package be.kuleuven.dsgt4;
 
 
+import be.kuleuven.dsgt4.auth.WebSecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -11,8 +13,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 // Controller class to handle HTTP requests
 @RestController
@@ -26,6 +31,16 @@ public class CartController {
 
     public CartController(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.baseUrl("http://127.0.0.1:8100/rest").build();
+    }
+
+
+    @PostMapping("/addUserCred")
+        public ResponseEntity<String> addUserCred(@RequestParam("uid") String uid, @RequestParam("username") String username) {
+
+        firestoreService.addUserToDb(uid, username);
+
+        System.out.println("Inside add item to cart");
+        return ResponseEntity.ok("User added to cart");
     }
 
     // Endpoint to add a package to the cart
@@ -43,6 +58,16 @@ public class CartController {
         return ResponseEntity.ok("Item added to cart");
     }
 
+//    @PostMapping ("/api/adduser")
+//    public ResponseEntity<String>  adduser() throws InterruptedException, ExecutionException {
+//        System.out.println("Inside api adduser");
+//        var user = WebSecurityConfig.getUser();
+//
+//        firestoreService.addUserToDb(user);
+//
+//        System.out.println("Inside api adduser");
+//        return ResponseEntity.ok("user added to cart");
+//    }
 
     @GetMapping("/user/packages/{uidString}")
     public ResponseEntity<?> getUserPackages(@PathVariable String uidString) {
@@ -60,7 +85,7 @@ public class CartController {
     }
 
     @PostMapping("/remove_from_cart")
-    public ResponseEntity<String> removeFromCart(@RequestParam("id") String itemId, @RequestParam("username") String username) {
+    public ResponseEntity<String> removeFromCart(@RequestParam("id") String itemId, @RequestParam("uid") String uidString) {
         System.out.println("Cart Controller Remove");
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -68,7 +93,7 @@ public class CartController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
         }
         // Optionally, update the Firestore database to reflect the change in the cart
-        firestoreService.removeItemFromUserCart(username, itemId);
+        firestoreService.removeItemFromUserCart(uidString, itemId);
 
         return ResponseEntity.ok("Item removed from cart");
     }

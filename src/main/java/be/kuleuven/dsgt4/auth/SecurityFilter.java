@@ -41,12 +41,17 @@ public class SecurityFilter extends OncePerRequestFilter {
             DecodedJWT jwt = JWT.require(Algorithm.none())
                     .withIssuer("https://securetoken.google.com/" + projectId)
                     .build().verify(token);
+
             var email = jwt.getClaim("email");
             var role = jwt.getClaim("role");
+            var uid = jwt.getClaim("uid");
+            var name = jwt.getClaim("name");
+
             //System.out.println(token);
             System.out.println(email);
             System.out.println(role);
-            var user = new User(email.asString(),role.asString());
+            System.out.println(uid);
+            var user = new User(uid.asString(), name.asString(),email.asString(),role.asString());
             SecurityContext context = SecurityContextHolder.getContext();
             context.setAuthentication(new FirebaseAuthentication(user));
         }catch(JWTVerificationException e){

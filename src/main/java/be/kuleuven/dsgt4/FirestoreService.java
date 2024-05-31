@@ -19,38 +19,100 @@ import java.util.Map;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.auth.oauth2.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.stereotype.Service;
+import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import com.google.cloud.firestore.WriteBatch;
+import com.google.cloud.firestore.WriteResult;
+import com.google.cloud.firestore.*;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class FirestoreService {
 
     private final Firestore db;
     private final ResourceLoader loader;
 
+//    public List<User> getAllUsersWithRoles() {
+//        List<User> users = new ArrayList<>();
+//        try {
+//            ListUsersPage page = FirebaseAuth.getInstance().listUsers(null);
+//            while (page != null) {
+//                for (UserRecord userRecord : page.getValues()) {
+//                    String email = userRecord.getEmail();
+//                    String role = userRecord.getCustomClaims().get("role") != null
+//                            ? userRecord.getCustomClaims().get("role").toString()
+//                            : "";
+//                    users.add(new User(email, role));
+//                }
+//                page = page.getNextPage();
+//            }
+//        } catch (FirebaseAuthException e) {
+//            e.printStackTrace();
+//        }
+//        return users;
+//    }
+
 
     public List<User> getAllCustomers() {
         System.out.println("In getAllCustomers ");
         List<User> usersAll = new ArrayList<>();
-        try {
-            CollectionReference usersRef = db.collection("users");
-            ApiFuture<QuerySnapshot> query = usersRef.get();
-            QuerySnapshot querySnapshot = query.get();
-            System.out.println("Query snapshot size: " + querySnapshot.size());
-
-            for (QueryDocumentSnapshot document : querySnapshot) {
-                String email = document.getString("email");
-                String role = document.getString("role");
-                System.out.println("User email: " + email + ", role: " + role);
-
-                // Create a User object and add it to the list
-                User user = new User(email, role);
-                usersAll.add(user);
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            CollectionReference usersRef = db.collection("users");
+//            ApiFuture<QuerySnapshot> query = usersRef.get();
+//            QuerySnapshot querySnapshot = query.get();
+//            System.out.println("Query snapshot size: " + querySnapshot.size());
+//
+//            for (QueryDocumentSnapshot document : querySnapshot) {
+//                String email = document.getString("email");
+//                String role = document.getString("role");
+//                System.out.println("User email: " + email + ", role: " + role);
+//
+//                // Create a User object and add it to the list
+//                User user = new User(uid, email, role);
+//                usersAll.add(user);
+//            }
+//        } catch (InterruptedException | ExecutionException e) {
+//            e.printStackTrace();
+//        }
 
         return usersAll;
     }
 
+    public void addUserToDb(String uid, String username){
+        System.out.println("in addUserToDb Firestore service method");
+
+        Map<String, Object> userItem = new HashMap<>();
+        userItem.put("id", uid);
+        userItem.put("username", username);
+
+        // Use set instead of add to specify the document path
+        ApiFuture<WriteResult> future = db.collection("users").document(uid).set(userItem);
+
+        // Handle potential exceptions
+        try {
+            WriteResult result = future.get();
+            System.out.println("Update time: " + result.getUpdateTime());
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+    }
     public void addItemToUserCart(String uid, Package pack) {
 
         System.out.println("In addItemToUserCart" + uid);
@@ -61,9 +123,10 @@ public class FirestoreService {
         cartItem.put("description", pack.getDescription());
         cartItem.put("price", pack.getPrice());
         cartItem.put("items", pack.getItems());
+//        cartItem.put("uid")
 
 
-        ApiFuture<DocumentReference> future = db.collection("users")
+        ApiFuture<DocumentReference> future = db.collection("carts")
                 .document(uid)
                 .collection("cart")
                 .add(cartItem);
@@ -81,7 +144,7 @@ public class FirestoreService {
         List<Package> userPackages = new ArrayList<>();
 
         try {
-            CollectionReference cartRef = db.collection("users")
+            CollectionReference cartRef = db.collection("carts")
                     .document(uidString)
                     .collection("cart");
 
@@ -113,11 +176,11 @@ public class FirestoreService {
         return userPackages;
     }
 
-    public void removeItemFromUserCart(String username, String itemId) {
+    public void removeItemFromUserCart(String uidString, String itemId) {
         System.out.println("Into RemoveItemFromUserCart");
 
         // Query to find the document(s) where id matches the itemId
-        Query query = db.collection("users").document(username).collection("cart")
+        Query query = db.collection("carts").document(uidString).collection("cart")
                 .whereEqualTo("id", itemId);
 
         // Execute the query asynchronously
@@ -198,6 +261,7 @@ public class FirestoreService {
         this.db = db;
         this.loader = loader;
     }
+
 
     @PostConstruct
     void initializeDB() {
