@@ -34,12 +34,13 @@ public class CartController {
     }
 
 
-    @PostMapping("/addUserCred")
+    @PostMapping("api/addUserCred")
         public ResponseEntity<String> addUserCred(@RequestParam("uid") String uid, @RequestParam("username") String username) {
+            User user = WebSecurityConfig.getUser();
+            System.out.println(user.getEmail());
+            firestoreService.addUserToDb(uid, user.getEmail());
 
-        firestoreService.addUserToDb(uid, username);
-
-        System.out.println("Inside add item to cart");
+            System.out.println("Inside add user");
         return ResponseEntity.ok("User added to cart");
     }
 

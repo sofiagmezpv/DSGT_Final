@@ -96,7 +96,6 @@ public class FirestoreService {
 
     public void addUserToDb(String uid, String username) {
         System.out.println("in addUserToDb Firestore service method");
-
         Map<String, Object> userItem = new HashMap<>();
         userItem.put("id", uid);
         userItem.put("username", username);

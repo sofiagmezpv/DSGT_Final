@@ -120,7 +120,7 @@ function wireUpAuthChange() {
       console.log("Token:", idTokenResult.token);
       fetchPackages(idTokenResult.token);
 
-      addUserCred(auth.currentUser.uid, auth.currentUser.email);
+      addUserCred(idTokenResult.token, auth.currentUser.uid, auth.currentUser.email);
       console.log(auth.currentUser.uid);
 
       cart.addEventListener("click", function () {
@@ -211,12 +211,11 @@ function openPop(packageId) {
     setTimeout(closePop, 1000);
 }
 
-function addUserCred(uid, email){
-    fetch(`/addUserCred?uid=${uid}&username=${email}`, {
+function addUserCred(token, uid, email){
+    console.log(token)
+    fetch(`/api/addUserCred?uid=${uid}&username=${email}`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        }
+        headers: { Authorization: 'Bearer ' + token }
     })
     .then(() => {
         console.log('added user');
