@@ -13,5 +13,6 @@ be/kuleuven/dsgt4/CartController.class
 be/kuleuven/dsgt4/PackageController.class
 be/kuleuven/dsgt4/User.class
 be/kuleuven/dsgt4/auth/SecurityFilter.class
+be/kuleuven/dsgt4/Order.class
 be/kuleuven/dsgt4/PackageService.class
 be/kuleuven/dsgt4/Supplier.class

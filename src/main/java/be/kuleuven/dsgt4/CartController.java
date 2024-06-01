@@ -59,16 +59,6 @@ public class CartController {
         return ResponseEntity.ok("Item added to cart");
     }
 
-//    @PostMapping ("/api/adduser")
-//    public ResponseEntity<String>  adduser() throws InterruptedException, ExecutionException {
-//        System.out.println("Inside api adduser");
-//        var user = WebSecurityConfig.getUser();
-//
-//        firestoreService.addUserToDb(user);
-//
-//        System.out.println("Inside api adduser");
-//        return ResponseEntity.ok("user added to cart");
-//    }
 
     @GetMapping("/user/packages/{uidString}")
     public ResponseEntity<?> getUserPackages(@PathVariable String uidString) {
@@ -119,17 +109,17 @@ public class CartController {
     @GetMapping("/api/getAllOrders")
     public ResponseEntity<?> getAllOrders() {
         System.out.println("Inside api/getAllOrders");
-        List<Cart> purchasedCarts = firestoreService.getAllOrders();
+        List<Order> allPurchasedOrders = firestoreService.getAllOrders();
 
-        if (purchasedCarts == null) {
+        if (allPurchasedOrders == null) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to retrieve all purchased carts.");
         }
 
-        if (purchasedCarts.isEmpty()) {
+        if (allPurchasedOrders.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No purchased found");
         }
 
-        return ResponseEntity.ok(purchasedCarts);
+        return ResponseEntity.ok(allPurchasedOrders);
     }
 
 

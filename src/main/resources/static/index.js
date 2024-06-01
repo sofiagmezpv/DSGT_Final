@@ -19,6 +19,17 @@ setupAuth();
 wireGuiUpEvents();
 wireUpAuthChange();
 
+//pop up buttons
+const closeCart = document.getElementById("closeCartButton");
+const closeUsers = document.getElementById("closeUsersButton")
+const closeOrders = document.getElementById("closeOrdersButton")
+
+//pop up dialogs
+const cartpop = document.getElementById("cartPopup");
+const userspop = document.getElementById("usersPopup");
+const orderspop = document.getElementById("ordersPopup");
+
+
 function setupAuth() {
   let firebaseConfig;
   if (location.hostname === "localhost") {
@@ -236,8 +247,7 @@ function closePop() {
 
 // Add event listener to the cart items container
 const cartItemsContainer = document.getElementById("cartItems");
-// cartItemsContainer.addEventListener('click', handleRemoveButtonClick);
-const closeCart = document.getElementById("closeCartButton");
+
 
 function openCartPopup() {
     const auth = getAuth();
@@ -286,12 +296,7 @@ function openCartPopup() {
         console.log("User not authenticated");
     }
 
-    // Show the cart popup
-    const popDialog2 = document.getElementById("cartPopup");
-    popDialog2.style.visibility =
-        popDialog2.style.visibility === "visible"
-            ? "hidden"
-            : "visible";
+    cartpop.style.visibility = "visible"
 }
 
 
@@ -320,7 +325,7 @@ function removePackageFromCart(packageId) {
         const cartItemsContainer = document.getElementById("cartItems");
         cartItemsContainer.innerHTML = ""; // Clear previous items
 
-        fetchCurrentCartItems(); // Call your function to fetch the updated cart items
+        openCartPopup();
     })
      .catch(error => {
         console.error('Error removing package from cart:', error);
@@ -332,7 +337,7 @@ function removePackageFromCart(packageId) {
 function fetchCurrentCartItems() {
     const auth = getAuth(); // Assuming this function gets the authentication object
     let username = ""; // Initialize username variable
-
+    console.log("fetch current cart items");
     // Check if the user is authenticated
     if (auth.currentUser) {
         username = auth.currentUser.email; // Retrieve username from currentUser's email
@@ -372,12 +377,17 @@ function fetchCurrentCartItems() {
     });
 }
 
-
 function closeCartPop() {
-    const popDialog3 = document.getElementById("cartPopup");
-    popDialog3.style.visibility = "hidden";
+    cartpop.style.visibility = "hidden";
 }
 
+function closeUsersPop(){
+   userspop.style.visibility = "hidden";
+}
+
+function closeOrdersPop(){
+    orderspop.style.visibility = "hidden";
+}
 
 function buy() {
     const popDialog4 =
@@ -501,7 +511,7 @@ function displaypackages(packages) {
     });
 }
 
-function managerAllOrdersPopUp() {
+function managerAllOrdersPopUp(token) {
             console.log('Token in manager all orders')
             const auth = getAuth();
             // Check if the user is authenticated
@@ -509,23 +519,23 @@ function managerAllOrdersPopUp() {
                 // Fetch user's packages from the server
                 fetch(`/api/getAllOrders`, {
                     method: 'GET',
-                    headers: { Authorization: 'Bearer {token}' }
+                    headers: { Authorization: 'Bearer ' + token }
                 })
                 .then(response => response.json())
-                .then(carts => {
-                //                    // Clear previous items
-                                    const orderItemsContainer = document.getElementById("orderItems");
-                                    orderItemsContainer.innerHTML = "";
+                .then(orders => {
+                    const ordersItemsContainer = document.getElementById("ordersItems");
+                    ordersItemsContainer.innerHTML = "";
 
-                                    // Iterate over the packages and dynamically populate the cart section
-                                    carts.forEach(cartI => {
-                                        const cartElement = document.createElement("div");
-                                        cartElement.innerHTML = `
-                                            <p>${cartI.name} - $${pkg.price.toFixed(2)}</p>
-                                        `;
-                                        orderItemsContainer.appendChild(cartElement);
-                                    });
-                                })
+                            orders.forEach(orderI => {
+                            const ordersElement = document.createElement("div");
+                            ordersElement.innerHTML = `
+                                <p>Order ID: ${orderI.id}</p>
+                                <p>Packages: ${orderI.packages.join(", ")}</p>
+                                <p>Price: ${orderI.price}</p>
+                                `;
+                            ordersItemsContainer.appendChild(ordersElement);
+                            });
+                })
                 .catch(error => {
                     console.error('Error fetching user packages:', error);
                 });
@@ -539,6 +549,9 @@ function managerAllOrdersPopUp() {
                 popDialogOrders.style.visibility === "visible"
                     ? "hidden"
                     : "visible";
+            closeOrders.addEventListener('click' , () => {
+                closeOrdersPop();
+            });
 }
 
 
@@ -570,6 +583,10 @@ function managerAllCustomersPopUp(token){
                    popDialogOrders.style.visibility === "visible"
                        ? "hidden"
                        : "visible";
+
+   closeUsers.addEventListener('click' , () => {
+        closeUsersPop();
+   });
 }
 
 // calling /api/hello on the rest service to illustrate text based data retrieval

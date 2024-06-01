@@ -1,61 +1,77 @@
 {
-
-    "item" : [ {
-      "id" : "Ndjb0HZE6s3uxnAryOqA",
-      "name" : "Nalu Original",
-      "price" : 1.08,
-      "description" : "An amazing new taste of Nalu Drinks with less calories and a boost of energy.",
-      "brand" : "NALU",
-      "supplierId" : "SCImO9FqmkJELue1zi8f"
-    }, {
-      "id" : "ep3FAfq9y06EYXx14Mt0",
-      "name" : "Nalu Passion",
-      "price" : 1.41,
-      "description" : "Introducing Nalu Passion, a refreshing, fruity blend of blueberry, pear, blackberry, peach, açai, Goji berries and mangosteen for the most passionate among us.",
-      "brand" : "NALU",
-      "supplierId" : "SCImO9FqmkJELue1zi8f"
-    }, {
-      "id" : "eIRRKA8H6lUF19NWHtMZ",
-      "name" : "Red Bull Green Edition",
-      "price" : 1.65,
-      "description" : "The Red Bull Green Edition with the exotic flavor of cactus fruit.",
-      "brand" : "REDBULL",
-      "supplierId" : "SCImO9FqmkJELue1zi8f"
-    } ],
-
-  "supplier" : [ {
-    "id" : "SCImO9FqmkJELue1zi8f",
-    "name" : "Caffeine shop",
-    "apiKey" : 1234,
-    "baseUrl" : "http://127.0.0.1:8100/rest"
-  } ],
-
-
-  "package" : [ {
-    "id" : "eGBPA1nEgmAjdmgJg1nE",
-    "name" : "Winter Student Pack",
-    "description" : "Cozy winter vibes.",
-    "itemIds" : ["Ndjb0HZE6s3uxnAryOqA", "ep3FAfq9y06EYXx14Mt0"]
-  }, {
-    "id" : "mNJ6dIZ7hssWBFKg212",
-    "name" : "Summer Student Pack",
-    "description" : "Refreshing!",
-    "itemIds" : ["eIRRKA8H6lUF19NWHtMZ", "ep3FAfq9y06EYXx14Mt0"]
-  }, {
-    "id" : "m8moXv3I8NLVvENGkRcp",
-    "name" : "Exotic Student Pack",
-    "description" : "Do you dare to be a little exotic?",
-    "itemIds" : ["ep3FAfq9y06EYXx14Mt0"]
-  }, {
-    "id" : "4FcBdF6NTzHu99TyktDB",
-    "name" : "Classic Student Pack",
-    "description" : "All of the classics.",
-    "itemIds" : ["Ndjb0HZE6s3uxnAryOqA"]
-  }   ],
-
-  "orders" : [
-
-  ]
+  "item": [
+    {
+      "id": "Ndjb0HZE6s3uxnAryOqA",
+      "name": "Nalu Original",
+      "price": 1.08,
+      "description": "An amazing new taste of Nalu Drinks with less calories and a boost of energy.",
+      "brand": "NALU",
+      "supplierId": "SCImO9FqmkJELue1zi8f"
+    },
+    {
+      "id": "ep3FAfq9y06EYXx14Mt0",
+      "name": "Nalu Passion",
+      "price": 1.41,
+      "description": "Introducing Nalu Passion, a refreshing, fruity blend of blueberry, pear, blackberry, peach, açai, Goji berries and mangosteen for the most passionate among us.",
+      "brand": "NALU",
+      "supplierId": "SCImO9FqmkJELue1zi8f"
+    },
+    {
+      "id": "eIRRKA8H6lUF19NWHtMZ",
+      "name": "Red Bull Green Edition",
+      "price": 1.65,
+      "description": "The Red Bull Green Edition with the exotic flavor of cactus fruit.",
+      "brand": "REDBULL",
+      "supplierId": "SCImO9FqmkJELue1zi8f"
     }
+  ],
 
+  "supplier": [
+    {
+      "id": "SCImO9FqmkJELue1zi8f",
+      "name": "Caffeine shop",
+      "apiKey": 1234,
+      "baseUrl": "http://127.0.0.1:8100/rest"
+    }
+  ],
 
+  "package": [
+    {
+      "id": "eGBPA1nEgmAjdmgJg1nE",
+      "name": "Winter Student Pack",
+      "description": "Cozy winter vibes.",
+      "itemIds": ["Ndjb0HZE6s3uxnAryOqA", "ep3FAfq9y06EYXx14Mt0"]
+    },
+    {
+      "id": "mNJ6dIZ7hssWBFKg212",
+      "name": "Summer Student Pack",
+      "description": "Refreshing!",
+      "itemIds": ["eIRRKA8H6lUF19NWHtMZ", "ep3FAfq9y06EYXx14Mt0"]
+    },
+    {
+      "id": "m8moXv3I8NLVvENGkRcp",
+      "name": "Exotic Student Pack",
+      "description": "Do you dare to be a little exotic?",
+      "itemIds": ["ep3FAfq9y06EYXx14Mt0"]
+    },
+    {
+      "id": "4FcBdF6NTzHu99TyktDB",
+      "name": "Classic Student Pack",
+      "description": "All of the classics.",
+      "itemIds": ["Ndjb0HZE6s3uxnAryOqA"]
+    }
+  ],
+
+  "orders": [
+    {
+      "id": "eEJhVR4yAeTrSYZMgqB2a",
+      "packages": [
+        "4FcBdF6NTzHu99TyktDB",
+        "eGBPA1nEgmAjdmgJg1nE"
+      ],
+      "uid": "Jk6LpReaJMqWYJDNTppfS8p0fMpF",
+      "ts": "2024-06-01T12:19:21Z",
+      "price": 2
+    }
+  ]
+}

@@ -133,7 +133,7 @@ public class FirestoreService {
 
         ApiFuture<DocumentReference> future = db.collection("carts")
                 .document(uid)
-                .collection("cart")
+                .collection("packages")
                 .add(cartItem);
 
         try {
@@ -151,7 +151,7 @@ public class FirestoreService {
         try {
             CollectionReference cartRef = db.collection("carts")
                     .document(uidString)
-                    .collection("cart");
+                    .collection("packages");
 
             ApiFuture<QuerySnapshot> query = cartRef.get();
             QuerySnapshot querySnapshot = query.get();
@@ -185,7 +185,7 @@ public class FirestoreService {
         System.out.println("Into RemoveItemFromUserCart");
 
         // Query to find the document(s) where id matches the itemId
-        Query query = db.collection("carts").document(uidString).collection("cart")
+        Query query = db.collection("carts").document(uidString).collection("packages")
                 .whereEqualTo("id", itemId);
 
         // Execute the query asynchronously
@@ -223,40 +223,20 @@ public class FirestoreService {
         }
     }
 
-    public List<Cart> getAllOrders(){
+    public List<Order> getAllOrders(){
         System.out.println("In getAllOrders");
-        List<Cart> allOrders = new ArrayList<>();
-//        try {
-//            CollectionReference ordersRef = db.collection("orders");
-//            ApiFuture<QuerySnapshot> query = ordersRef.get();
-//            QuerySnapshot documents = query.get();
-//
-//
-//            // Iterate through each document (username)
-//            for (QueryDocumentSnapshot document : documents) {
-//                String username = document.getId();
-//
-//                // Reference to the 'cart' collection for each username
-//                CollectionReference cartRef = db.collection("orders")
-//                        .document(username)
-//                        .collection("cart");
-//
-//                // Get all documents in the 'cart' collection
-//                ApiFuture<QuerySnapshot> cartQuerySnapshot = cartRef.get();
-//                List<QueryDocumentSnapshot> cartDocuments = cartQuerySnapshot.get().getDocuments();
-//
-//                System.out.println("Carts for user: " + username);
-//                for (QueryDocumentSnapshot cartDocument : cartDocuments) {
-//                    System.out.println(cartDocument.getId() + " => " + cartDocument.getData());
-//                    Cart cart = document.toObject(Cart.class);
-//                    allOrders.add(cart);
-//                }
-//            }
-//
-//        } catch (InterruptedException | ExecutionException e) {
-//            e.printStackTrace();
-//        }
+        List<Order> allOrders = new ArrayList<>();
+        ApiFuture<QuerySnapshot> future = db.collection("orders").get();
 
+        try {
+            List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+            for (QueryDocumentSnapshot document : documents) {
+                Order order = document.toObject(Order.class);
+                allOrders.add(order);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
         return allOrders;
     }
 
