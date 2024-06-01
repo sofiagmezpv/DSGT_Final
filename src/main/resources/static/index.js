@@ -257,7 +257,7 @@ function openCartPopup() {
         closeCart.addEventListener('click' , () => {
             closeCartPop();
         });
-        
+
         const uidString = auth.currentUser.uid;
 
         // Fetch user's packages from the server

@@ -254,6 +254,10 @@ function openCartPopup() {
 
     // Check if the user is authenticated
     if (auth.currentUser) {
+        closeCart.addEventListener('click' , () => {
+            closeCartPop();
+        });
+        
         const uidString = auth.currentUser.uid;
 
         // Fetch user's packages from the server
@@ -282,9 +286,6 @@ function openCartPopup() {
 
                 cartItemsContainer.appendChild(packageElement);
 
-                closeCart.addEventListener('click' , () => {
-                    closeCartPop();
-                });
 
 
             });
