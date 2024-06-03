@@ -1,5 +1,7 @@
-package be.kuleuven.dsgt4;
+package be.kuleuven.dsgt4.controllers;
 
+import be.kuleuven.dsgt4.services.FirestoreService;
+import be.kuleuven.dsgt4.models.Package;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

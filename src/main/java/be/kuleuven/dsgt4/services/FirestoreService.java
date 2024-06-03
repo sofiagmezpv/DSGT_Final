@@ -246,7 +246,6 @@ public class FirestoreService {
     public void addReservationIdTopackage(Package pack,String reservationId){
         System.out.println("Adding reservation ID to package: " + pack.getId());
         DocumentReference packageRef = db.collection("package").document(pack.getId());
-        // Step 2: Add the reservation ID to the package
         Map<String, Object> updates = new HashMap<>();
         updates.put("reservationId", reservationId);
         ApiFuture<WriteResult> future = packageRef.update(updates);
@@ -265,9 +264,7 @@ public class FirestoreService {
         try {
             DocumentSnapshot document = future.get();
             if (document.exists()) {
-                String reservationId = document.getString("reservationId");
-                System.out.println("Reservation ID found: " + reservationId);
-                return reservationId;
+                return document.getString("reservationId");
             } else {
                 System.out.println("No such package document!");
                 return null;

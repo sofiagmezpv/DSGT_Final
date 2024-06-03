@@ -89,6 +89,16 @@ public class CartController {
         return ResponseEntity.ok("Item removed from cart");
     }
 
+    @PostMapping("/buy_cart")
+    public ResponseEntity<String> buyCart(@RequestParam("username") String username){
+        System.out.println("*****user wants to buy******");
+        List<Package> packages= firestoreService.getUserPackages(username);
+        for(Package pack:packages){
+            supplierLogic.buyPack(pack);
+        }
+        return ResponseEntity.ok("Item all bought");
+    }
+
 
 
 
@@ -103,6 +113,7 @@ public class CartController {
     @PostMapping("/pay")
     public ResponseEntity<String> pay() {
         // Implement logic to process payment
+        System.out.println("trying to pay");
         return ResponseEntity.ok("Payment processed successfully. Total amount: " /*+ total*/);
     }
 

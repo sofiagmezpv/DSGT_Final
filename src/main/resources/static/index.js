@@ -54,6 +54,7 @@ function wireGuiUpEvents() {
       var signUpButton = document.getElementById("btnSignUp");
       var logoutButton = document.getElementById("btnLogout");
       cart = document.getElementById("cartButton");
+      var buyButton = document.getElementById("buyButton");
 
       console.log(logoutButton)
 
@@ -229,11 +230,15 @@ function openCartPopup() {
                 });
 
                 cartItemsContainer.appendChild(packageElement);
-
+                buyButton.addEventListener('click' ,() => {
+                                            buyRequest();
+                                            });
                 closeCart.addEventListener('click' , () => {
                     closeCartPop();
                 });
+
             });
+
         })
         .catch(error => {
             console.error('Error fetching user packages:', error);
@@ -337,17 +342,39 @@ function closeCartPop() {
 }
 
 
-function buy() {
-    const popDialog4 =
-        document.getElementById(
-            "paymentPopup"
-        );
-    popDialog4.style.visibility =
-        popDialog4.style.visibility ===
-        "visible"
-            ? "hidden"
-            : "visible";
+function buyRequest(){
+    const auth = getAuth(); // Assuming this function gets the authentication object
+    let username = ""; // Initialize username variable
+
+    // Check if the user is authenticated
+    if (auth.currentUser) {
+        username = auth.currentUser.email; // Retrieve username from currentUser's email
+    } else {
+        console.log("User not authenticated");
+        // Handle the case where the user is not authenticated
+        // You may display a message or redirect to a login page
+        return; // Exit the function if user is not authenticated
+    }
+    console.log("bying")
+        fetch(`/buy_cart?username=${username}`, { // Include username in the fetch URL
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ /* Item details */ })
+     })
+        .then(response => response.text())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error buying items to cart:', error));
+
+        const popDialog = document.getElementById("popupDialog");
+        popDialog.style.visibility = popDialog.style.visibility === "visible" ? "hidden" : "visible";
+
+        setTimeout(closePop, 1000);
 }
+
+
+
 
 
 function closePayment() {

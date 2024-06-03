@@ -74,11 +74,13 @@ public class SupplierSerivce {
     }
 
     public void buyPack(Package pack){
+        String reservationId = firestoreService.getReservationIdPackage(pack);
         for(Item i: pack.getItems()){
-            String reservationId = firestoreService.getReservationIdPackage(pack);
+            System.out.println("buying item in pack"+i.getName());
+
             this.webClientBuilder.baseUrl(i.getSupplier().getBaseUrl()).build()
                     .get()
-                    .uri("drinksId/{id}/reserve/{reservationId}/{packageId}/{code}","Ndjb0HZE6s3uxnAryOqA",reservationId,pack.getId(),1234)
+                    .uri("/drinksId/{reservationId}/buy/{code}",reservationId,1234)
                     .retrieve()
                     .bodyToMono(Boolean.class);
         }

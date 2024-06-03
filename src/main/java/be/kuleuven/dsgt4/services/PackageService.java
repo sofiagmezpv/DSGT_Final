@@ -9,10 +9,12 @@ import be.kuleuven.dsgt4.models.Supplier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import be.kuleuven.dsgt4.Dsgt4Application;
 
 @Service
 public class PackageService {
 
+    @Autowired
     private final WebClient.Builder webClientBuilder;
 
     @Autowired
@@ -39,11 +41,6 @@ public class PackageService {
         Item item1 = new Item("1","item1", "Item A", 100.0,"1","nanu");
         Item item2 = new Item("2","item1", "Item A", 100.0,"2","nanu");
         Item item3 = new Item("3","item1", "Item A", 100.0,"1","nanu");
-
-
-
-
-
         if (id == 1) {
             return new Package("1", "Summer Student Pack", "Ideal summer vibes", List.of(item1,item2),"");
         } else if (id == 2) {
@@ -54,4 +51,6 @@ public class PackageService {
         }
 
     }
+
+
 }
