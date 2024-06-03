@@ -1,6 +1,10 @@
-package be.kuleuven.dsgt4;
+package be.kuleuven.dsgt4.services;
 
+import be.kuleuven.dsgt4.models.Item;
+import be.kuleuven.dsgt4.models.Package;
+import be.kuleuven.dsgt4.models.Supplier;
 import com.google.api.core.ApiFuture;
+import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
@@ -27,7 +31,7 @@ public class FirestoreService {
 
     public void addItemToUserCart(String username, Package pack) {
 
-        System.out.println("In addItemToUserCart" + username);
+        System.out.println("In addItemToUserCart " + username);
 
         Map<String, Object> cartItem = new HashMap<>();
         cartItem.put("id", pack.getId());
@@ -35,6 +39,9 @@ public class FirestoreService {
         cartItem.put("description", pack.getDescription());
         cartItem.put("price", pack.getPrice());
         cartItem.put("items", pack.getItems());
+
+        Timestamp currentTimeStamp = Timestamp.now();
+        cartItem.put("timestamp", currentTimeStamp);
 
 
         ApiFuture<DocumentReference> future = db.collection("users")
@@ -211,6 +218,7 @@ public class FirestoreService {
         for (Item item : items) {
             itemsMap.put(item.getId(), item);
         }
+        System.out.println("items in pack:"+items);
 
         try {
             List<QueryDocumentSnapshot> documents = db.collection("package").get().get().getDocuments();
@@ -234,6 +242,39 @@ public class FirestoreService {
         }
         return packages;
     }
+
+    public void addReservationIdTopackage(Package pack,String reservationId){
+        System.out.println("Adding reservation ID to package: " + pack.getId());
+        DocumentReference packageRef = db.collection("package").document(pack.getId());
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("reservationId", reservationId);
+        ApiFuture<WriteResult> future = packageRef.update(updates);
+        try {
+            WriteResult result = future.get();
+            System.out.println("Reservation ID added to package. Update time: " + result.getUpdateTime());
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+    public String getReservationIdPackage(Package pack) {
+        System.out.println("Fetching reservation ID for package: " + pack.getId());
+        DocumentReference packageRef = db.collection("package").document(pack.getId());
+        ApiFuture<DocumentSnapshot> future = packageRef.get();
+
+        try {
+            DocumentSnapshot document = future.get();
+            if (document.exists()) {
+                return document.getString("reservationId");
+            } else {
+                System.out.println("No such package document!");
+                return null;
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
 
 }

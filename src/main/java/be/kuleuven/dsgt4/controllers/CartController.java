@@ -1,6 +1,12 @@
-package be.kuleuven.dsgt4;
+package be.kuleuven.dsgt4.controllers;
 
 
+import be.kuleuven.dsgt4.models.Item;
+import be.kuleuven.dsgt4.models.Package;
+import be.kuleuven.dsgt4.services.FirestoreService;
+import be.kuleuven.dsgt4.services.PackageService;
+import be.kuleuven.dsgt4.services.SupplierSerivce;
+import com.google.cloud.firestore.Firestore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,34 +17,44 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
 import java.util.List;
 
 // Controller class to handle HTTP requests
 @RestController
 public class CartController {
-    private final WebClient webClient;
 
     @Autowired
     private FirestoreService firestoreService;
+    //private WebClient.Builder webClientBuilder;
     @Autowired
     private PackageService packageService;
 
-    public CartController(WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder.baseUrl("http://127.0.0.1:8100/rest").build();
+    SupplierSerivce supplierLogic;
+
+    @Autowired
+    public CartController(WebClient.Builder webClientBuilder, FirestoreService firestoreService) {
+        this.supplierLogic = new SupplierSerivce(webClientBuilder,firestoreService);
     }
 
     // Endpoint to add a package to the cart
     @PostMapping("/add_to_cart")
     public ResponseEntity<String> addToCart(@RequestParam("id") String itemId, @RequestParam("username") String username) {
-
         Package pack = packageService.getPackageFromId(itemId);
         if (pack == null) {
             return ResponseEntity.status(404).body("Package not found");
         }
 
-        firestoreService.addItemToUserCart(username, pack);
+        for(Item it : pack.getItems()){
+            Mono<Boolean> av = this.supplierLogic.itemAvailable(it.getId(),it.getSupplier());
+            Boolean avaialable = av.block();
+            if(Boolean.FALSE.equals(av.block())){
+                return ResponseEntity.ok("Items can't be added to cart");
+            }
 
+        }
+
+        supplierLogic.reservePack(pack);
+        firestoreService.addItemToUserCart(username, pack);
         System.out.println("Inside add item to cart");
         return ResponseEntity.ok("Item added to cart");
     }
@@ -73,6 +89,16 @@ public class CartController {
         return ResponseEntity.ok("Item removed from cart");
     }
 
+    @PostMapping("/buy_cart")
+    public ResponseEntity<String> buyCart(@RequestParam("username") String username){
+        System.out.println("*****user wants to buy******");
+        List<Package> packages= firestoreService.getUserPackages(username);
+        for(Package pack:packages){
+            supplierLogic.buyPack(pack);
+        }
+        return ResponseEntity.ok("Item all bought");
+    }
+
 
 
 
@@ -87,6 +113,7 @@ public class CartController {
     @PostMapping("/pay")
     public ResponseEntity<String> pay() {
         // Implement logic to process payment
+        System.out.println("trying to pay");
         return ResponseEntity.ok("Payment processed successfully. Total amount: " /*+ total*/);
     }
 
@@ -99,9 +126,10 @@ public class CartController {
 //        return null;
 //    }
 
-
+/*
     public Mono<String> fetchdrinks() {
-        return this.webClient.get()
+        return this.webClient.baseUrl("http://127.0.0.1:8100/rest").build()
+                .get()
                 .uri("/drinks/1234")
                 .retrieve()
                 .bodyToMono(String.class);
@@ -126,4 +154,5 @@ public class CartController {
                 });
     }
 
+ */
 }

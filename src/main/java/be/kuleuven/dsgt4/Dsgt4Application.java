@@ -61,7 +61,7 @@ public class Dsgt4Application {
 	 * You can use this builder to create a Spring WebClient instance which can be used to make REST-calls.
 	 */
 	@Bean
-	WebClient.Builder webClientBuilder(HypermediaWebClientConfigurer configurer) {
+	public WebClient.Builder webClientBuilder(HypermediaWebClientConfigurer configurer) {
 		return configurer.registerHypermediaTypes(WebClient.builder()
 				.clientConnector(new ReactorClientHttpConnector(HttpClient.create()))
 				.codecs(clientCodecConfigurer -> clientCodecConfigurer.defaultCodecs().maxInMemorySize(100 * 1024 * 1024)));

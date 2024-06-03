@@ -1,8 +1,10 @@
-package be.kuleuven.dsgt4;
+package be.kuleuven.dsgt4.models;
 
+
+import reactor.core.publisher.Mono;
 
 // Class representing an item
-class Item {
+public class Item {
     private String description;
     private String name;
     private double price;
@@ -23,6 +25,9 @@ class Item {
         this.price = price;
         this.supplierId = supplierId;
         this.brand = brand;
+        this.id = id;
+
+
     }
 
 
@@ -74,5 +79,20 @@ class Item {
     public void setBrand(String brand) {
         this.brand = brand;
     }
+
+    public Mono<Boolean> checkAvailablity() {
+        //todo remove
+        System.out.println("Checking if item is available");
+
+        //return supplier.getItemById(this.id)
+        //    .map(amount -> amount > 0);
+        return null;
+    }
+
+    public void reserveItem(){
+        //TODO implement REST reserve request
+        System.out.println("reserving item");
+    }
+
 }
 

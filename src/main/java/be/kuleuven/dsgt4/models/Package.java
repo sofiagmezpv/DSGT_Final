@@ -1,4 +1,4 @@
-package be.kuleuven.dsgt4;
+package be.kuleuven.dsgt4.models;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +12,7 @@ public class Package extends Object {
     private String id;
     private List<String> itemIds;
     private List<Item> items;
+    private String reservationId;
 
     // Default constructor required for Jackson deserialization
     public Package() {
@@ -20,12 +21,13 @@ public class Package extends Object {
     }
 
     // Constructor
-    public Package(String id, String name, String description, List<String> ItemIds) {
+    public Package(String id, String name, String description, List<Item> ItemIds,String reservationId) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.itemIds = itemIds;
+        this.reservationId = "";
     }
 
     public String getName() {
@@ -45,11 +47,19 @@ public class Package extends Object {
     }
 
     public void updatePrice() {
-        double newPrice = 0;
+        double newPrice = 4;
         for (Item item : items) {
             newPrice += item.getPrice();
         }
         this.price = newPrice;
+    }
+
+    public void setReservationId(String id)
+    {
+            reservationId = id;
+    }
+    public String getReservationId(){
+        return  reservationId;
     }
 
     public List<Item> getItems() {
