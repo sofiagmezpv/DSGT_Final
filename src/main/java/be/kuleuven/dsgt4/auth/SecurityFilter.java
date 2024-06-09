@@ -33,20 +33,26 @@ public class SecurityFilter extends OncePerRequestFilter {
         // TODO: (level 1) decode Identity Token and assign correct email and role
         // TODO: (level 2) verify Identity Token
         try {
+
             String token = request.getHeader("Authorization");
             token = token.substring(7);
             var projectId = "demo-distributed-systems-kul";
             DecodedJWT jwt = JWT.require(Algorithm.none())
                     .withIssuer("https://securetoken.google.com/" + projectId)
                     .build().verify(token);
+            System.out.println("This is filter token: " + token);
             var email = jwt.getClaim("email");
             var role = jwt.getClaim("role");
+
             //System.out.println(token);
             System.out.println(email);
             System.out.println(role);
+
             var user = new User(email.asString(),role.asString());
+            System.out.println("User object created: " + user.getEmail()); // Debugging line
             SecurityContext context = SecurityContextHolder.getContext();
             context.setAuthentication(new FirebaseAuthentication(user));
+
         }catch(JWTVerificationException e){
             System.out.println("verification exception");
         }

@@ -1,8 +1,10 @@
 package be.kuleuven.dsgt4.services;
 
 import be.kuleuven.dsgt4.models.Item;
+import be.kuleuven.dsgt4.models.Order;
 import be.kuleuven.dsgt4.models.Package;
 import be.kuleuven.dsgt4.models.Supplier;
+import be.kuleuven.dsgt4.models.User;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.*;
@@ -23,15 +25,108 @@ import java.util.Map;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.auth.oauth2.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.stereotype.Service;
+import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import com.google.cloud.firestore.WriteBatch;
+import com.google.cloud.firestore.WriteResult;
+import com.google.cloud.firestore.*;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class FirestoreService {
 
     private final Firestore db;
     private final ResourceLoader loader;
 
-    public void addItemToUserCart(String username, Package pack) {
+//    public List<User> getAllUsersWithRoles() {
+//        List<User> users = new ArrayList<>();
+//        try {
+//            ListUsersPage page = FirebaseAuth.getInstance().listUsers(null);
+//            while (page != null) {
+//                for (UserRecord userRecord : page.getValues()) {
+//                    String email = userRecord.getEmail();
+//                    String role = userRecord.getCustomClaims().get("role") != null
+//                            ? userRecord.getCustomClaims().get("role").toString()
+//                            : "";
+//                    users.add(new User(email, role));
+//                }
+//                page = page.getNextPage();
+//            }
+//        } catch (FirebaseAuthException e) {
+//            e.printStackTrace();
+//        }
+//        return users;
+//    }
 
-        System.out.println("In addItemToUserCart " + username);
+
+    public List<User> getAllCustomers() {
+        System.out.println("In getAllCustomers ");
+        List<User> usersAll = new ArrayList<>();
+        try {
+            CollectionReference usersRef = db.collection("users");
+            ApiFuture<QuerySnapshot> query = usersRef.get();
+            QuerySnapshot querySnapshot = query.get();
+            System.out.println("Query snapshot size: " + querySnapshot.size());
+
+            for (QueryDocumentSnapshot document : querySnapshot) {
+                String email = document.getString("email");
+                String role = document.getString("role");
+
+                // Create a User object and add it to the list
+                User user = new User(email, role);
+                usersAll.add(user);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return usersAll;
+    }
+
+    public void addUserToDb(String uid, String username) {
+        System.out.println("in addUserToDb Firestore service method");
+        Map<String, Object> userItem = new HashMap<>();
+        userItem.put("uid", uid);
+        userItem.put("email", username);
+        userItem.put("role", "");
+
+        DocumentReference docRef = db.collection("users").document(uid);
+        ApiFuture<DocumentSnapshot> getDoc = docRef.get();
+
+        try {
+            DocumentSnapshot snapshot = getDoc.get();
+            if (!snapshot.exists()) {
+                // Document does not exist, proceed to create it
+                ApiFuture<WriteResult> future = docRef.set(userItem);
+                WriteResult result = future.get();
+                System.out.println("Document added successfully");
+            } else {
+                System.out.println("User already exists in the database.");
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addItemToUserCart(String uid, Package pack) {
+
+        System.out.println("In addItemToUserCart" + uid);
 
         Map<String, Object> cartItem = new HashMap<>();
         cartItem.put("id", pack.getId());
@@ -39,14 +134,15 @@ public class FirestoreService {
         cartItem.put("description", pack.getDescription());
         cartItem.put("price", pack.getPrice());
         cartItem.put("items", pack.getItems());
+//        cartItem.put("uid")
 
         Timestamp currentTimeStamp = Timestamp.now();
         cartItem.put("timestamp", currentTimeStamp);
 
 
-        ApiFuture<DocumentReference> future = db.collection("users")
-                .document(username)
-                .collection("cart")
+        ApiFuture<DocumentReference> future = db.collection("carts")
+                .document(uid)
+                .collection("packages")
                 .add(cartItem);
 
         try {
@@ -57,14 +153,14 @@ public class FirestoreService {
         }
     }
 
-    public List<Package> getUserPackages(String username) {
-        System.out.println("In getUserPackages with username: " + username);
+    public List<Package> getUserPackages(String uidString) {
+        System.out.println("In getUserPackages with username: " + uidString);
         List<Package> userPackages = new ArrayList<>();
 
         try {
-            CollectionReference cartRef = db.collection("users")
-                    .document(username)
-                    .collection("cart");
+            CollectionReference cartRef = db.collection("carts")
+                    .document(uidString)
+                    .collection("packages");
 
             ApiFuture<QuerySnapshot> query = cartRef.get();
             QuerySnapshot querySnapshot = query.get();
@@ -94,11 +190,11 @@ public class FirestoreService {
         return userPackages;
     }
 
-    public void removeItemFromUserCart(String username, String itemId) {
+    public void removeItemFromUserCart(String uidString, String itemId) {
         System.out.println("Into RemoveItemFromUserCart");
 
         // Query to find the document(s) where id matches the itemId
-        Query query = db.collection("users").document(username).collection("cart")
+        Query query = db.collection("carts").document(uidString).collection("packages")
                 .whereEqualTo("id", itemId);
 
         // Execute the query asynchronously
@@ -136,6 +232,22 @@ public class FirestoreService {
         }
     }
 
+    public List<Order> getAllOrders(){
+        System.out.println("In getAllOrders");
+        List<Order> allOrders = new ArrayList<>();
+        ApiFuture<QuerySnapshot> future = db.collection("orders").get();
+
+        try {
+            List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+            for (QueryDocumentSnapshot document : documents) {
+                Order order = document.toObject(Order.class);
+                allOrders.add(order);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return allOrders;
+    }
 
 
     @Autowired
@@ -143,6 +255,7 @@ public class FirestoreService {
         this.db = db;
         this.loader = loader;
     }
+
 
     @PostConstruct
     void initializeDB() {

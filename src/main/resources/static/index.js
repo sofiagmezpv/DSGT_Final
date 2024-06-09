@@ -1,6 +1,4 @@
-import {
-  initializeApp
-} from "https://www.gstatic.com/firebasejs/9.9.4/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.4/firebase-app.js";
 import {
   getAuth,
   connectAuthEmulator,
@@ -8,15 +6,30 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "https://www.gstatic.com/firebasejs/9.9.4/firebase-auth.js";
+import { getFirestore, collection, addDoc , getDocs } from 'https://www.gstatic.com/firebasejs/9.9.4/firebase-firestore.js';
+
+let db;
 var token;
 var cart;
+var managerGetAllOrders;
+var managerAllCustomers;
 
-// we setup the authentication, and then wire up some key events to event handlers
+// Setup authentication and wire up event handlers
 setupAuth();
 wireGuiUpEvents();
 wireUpAuthChange();
 
-//setup authentication with local or cloud configuration. 
+//pop up buttons
+const closeCart = document.getElementById("closeCartButton");
+const closeUsers = document.getElementById("closeUsersButton")
+const closeOrders = document.getElementById("closeOrdersButton")
+
+//pop up dialogs
+const cartpop = document.getElementById("cartPopup");
+const userspop = document.getElementById("usersPopup");
+const orderspop = document.getElementById("ordersPopup");
+
+
 function setupAuth() {
   let firebaseConfig;
   if (location.hostname === "localhost") {
@@ -30,78 +43,71 @@ function setupAuth() {
     };
   }
 
-  // signout any existing user. Removes any token still in the auth context
   const firebaseApp = initializeApp(firebaseConfig);
   const auth = getAuth(firebaseApp);
+  db = getFirestore(firebaseApp);
+
   try {
     auth.signOut();
-  } catch (err) { }
+  } catch (err) {
+    console.error('Error signing out:', err);
+  }
 
-  // connect to local emulator when running on localhost
   if (location.hostname === "localhost") {
     connectAuthEmulator(auth, "http://localhost:8082", { disableWarnings: true });
   }
 }
 
-
 function wireGuiUpEvents() {
-  // Get references to the email and password inputs, and the sign in, sign out and sign up buttons
-  document.addEventListener('DOMContentLoaded', function() {
-      // Get references to the email and password inputs, and the sign in, sign out and sign up buttons
-      var email = document.getElementById("email");
-      var password = document.getElementById("password");
-      var signInButton = document.getElementById("btnSignIn");
-      var signUpButton = document.getElementById("btnSignUp");
-      var logoutButton = document.getElementById("btnLogout");
-      cart = document.getElementById("cartButton");
-      var buyButton = document.getElementById("buyButton");
+  document.addEventListener('DOMContentLoaded', function () {
+    var email = document.getElementById("email");
+    var password = document.getElementById("password");
+    var signInButton = document.getElementById("btnSignIn");
+    var signUpButton = document.getElementById("btnSignUp");
+    var logoutButton = document.getElementById("btnLogout");
+    cart = document.getElementById("cartButton");
+    managerGetAllOrders = document.getElementById("managerAllOrdersButton");
+    managerAllCustomers = document.getElementById("managerAllCustomersButton");
 
-      console.log(logoutButton)
-
-      signInButton.addEventListener("click", function () {
-        // Sign in the user using Firebase's signInWithEmailAndPassword method
-        signInWithEmailAndPassword(getAuth(), email.value, password.value)
-          .then(function () {
-            console.log("signedin");
-          })
-          .catch(function (error) {
-            // Show an error message
-            console.log("error signInWithEmailAndPassword:")
-            console.log(error.message);
-            alert(error.message);
-          });
-      });
-
-      signUpButton.addEventListener("click", function () {
-        // Sign up the user using Firebase's createUserWithEmailAndPassword method
-        createUserWithEmailAndPassword(getAuth(), email.value, password.value)
-          .then(function () {
-            console.log("created");
-          })
-          .catch(function (error) {
-            // Show an error message
-            console.log("error createUserWithEmailAndPassword:");
-            console.log(error.message);
-            alert(error.message);
-          });
-      });
-
-      logoutButton.addEventListener("click", function () {
-          try {
-              var auth = getAuth();
-              auth.signOut();
-          } catch (err) {
-              // Handle the error here if needed
-              console.error(err); // Example: log the error to the console
-          }
-      });
-
+    signInButton.addEventListener("click", function () {
+      signInWithEmailAndPassword(getAuth(), email.value, password.value)
+        .then(function () {
+          console.log("signed in");
+        })
+        .catch(function (error) {
+          console.error("error signInWithEmailAndPassword:", error.message);
+          alert(error.message);
+        });
     });
+
+    signUpButton.addEventListener("click", function () {
+      const auth = getAuth();
+      createUserWithEmailAndPassword(auth, email.value, password.value)
+     .then(cred => {
+          console.log('into signup db methods');
+//          addUserCred(cred);
+        })
+     .catch(error => { // Catch any errors that occur during the Firestore operation
+          console.error("Error adding user to Firestore:", error);
+          alert("Failed to add user to Firestore. Please try again.");
+        });
+    });
+
+
+
+    logoutButton.addEventListener("click", function () {
+      try {
+        const auth = getAuth();
+        auth.signOut();
+      } catch (err) {
+        console.error('Error signing out:', err);
+      }
+    });
+  });
 }
 
-
 function wireUpAuthChange() {
-  var auth = getAuth();
+  const auth = getAuth();
   onAuthStateChanged(auth, (user) => {
     console.log("onAuthStateChanged");
     if (user == null) {
@@ -120,54 +126,86 @@ function wireUpAuthChange() {
       return;
     }
 
-    auth.currentUser.getIdTokenResult().then((idTokenResult) => {
-
-      console.log("Hello " + auth.currentUser.email)
-
-      // Update GUI when user is authenticated
+    auth.currentUser.getIdTokenResult(auth.currentUser.getIdToken()).then((idTokenResult) => {
       showAuthenticated(auth.currentUser.email);
-
-      console.log("Token: " + idTokenResult.token);
-
-      // Fetch packages to show on page
+      console.log("Token:", idTokenResult.token);
       fetchPackages(idTokenResult.token);
+
+      addUserCred(idTokenResult.token, auth.currentUser.uid, auth.currentUser.email);
+      console.log(auth.currentUser.uid);
 
       cart.addEventListener("click", function () {
         console.log('cart open clicked');
         openCartPopup()
-         .then(function () {
-                console.log("opened cart");
-            })
-         .catch(function (error) {
-                console.log("error opening cart:");
-                console.log(error.message);
-                alert(error.message);
-            });
+          .then(function () {
+            console.log("opened cart");
+          })
+          .catch(function (error) {
+            console.error("error opening cart:", error.message);
+            alert(error.message);
+          });
 
-        // Fetch data from server when authentication was successful.
         token = idTokenResult.token;
         fetchData(token);
       });
+
+      if (idTokenResult.claims.role === 'admin') {
+        console.log('User has admin role');
+        managerGetAllOrders.style.visibility = "visible";
+        managerAllCustomers.style.visibility = "visible";
+
+        managerGetAllOrders.addEventListener("click", function () {
+          console.log('manager get all orders clicked');
+          managerAllOrdersPopUp(idTokenResult.token)
+            .then(function () {
+              console.log("manager cart");
+            })
+            .catch(function (error) {
+              console.error("error opening cart:", error.message);
+              alert(error.message);
+            });
+          token = idTokenResult.token;
+          fetchData(token);
+        });
+
+        managerAllCustomers.addEventListener("click", function () {
+          console.log('manager get all customers clicked');
+          managerAllCustomersPopUp(idTokenResult.token)
+            .then(function () {
+              console.log("manager cart");
+            })
+            .catch(function (error) {
+              console.error("error opening cart:", error.message);
+              alert(error.message);
+            });
+          token = idTokenResult.token;
+          fetchData(token);
+        });
+
+      } else {
+        console.log('User does not have admin role');
+        managerGetAllOrders.style.visibility = "hidden";
+        managerAllCustomers.style.visibility = "hidden";
+      }
+    }).catch((error) => {
+      console.error('Error getting ID token result:', error);
     });
   });
 }
 
-
 function openPop(packageId) {
     const auth = getAuth(); // Assuming this function gets the authentication object
-    let username = ""; // Initialize username variable
-
+    let uidString = ""; // Initialize username variable
+    console.log(auth.currentUser.uid)
     // Check if the user is authenticated
     if (auth.currentUser) {
-        username = auth.currentUser.email; // Retrieve username from currentUser's email
+        uidString = auth.currentUser.uid; // Retrieve username from currentUser's email
     } else {
         console.log("User not authenticated");
-        // Handle the case where the user is not authenticated
-        // You may display a message or redirect to a login page
         return; // Exit the function if user is not authenticated
     }
 
-    fetch(`/add_to_cart?id=${packageId}&username=${username}`, { // Include username in the fetch URL
+    fetch(`/add_to_cart?id=${packageId}&uid=${uidString}`, { // Include username in the fetch URL
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -184,6 +222,20 @@ function openPop(packageId) {
     setTimeout(closePop, 1000);
 }
 
+function addUserCred(token, uid, email){
+    console.log(token)
+    fetch(`/api/addUserCred?uid=${uid}&username=${email}`, {
+        method: 'POST',
+        headers: { Authorization: 'Bearer ' + token }
+    })
+    .then(() => {
+        console.log('added user');
+    })
+     .catch(error => {
+        console.error('Error removing package from cart:', error);
+    });
+
+}
 
 // Define closePop function
 function closePop() {
@@ -195,18 +247,21 @@ function closePop() {
 
 // Add event listener to the cart items container
 const cartItemsContainer = document.getElementById("cartItems");
-// cartItemsContainer.addEventListener('click', handleRemoveButtonClick);
-const closeCart = document.getElementById("closeCartButton");
+
 
 function openCartPopup() {
     const auth = getAuth();
 
     // Check if the user is authenticated
     if (auth.currentUser) {
-        const username = auth.currentUser.email;
+        closeCart.addEventListener('click' , () => {
+            closeCartPop();
+        });
+
+        const uidString = auth.currentUser.uid;
 
         // Fetch user's packages from the server
-        fetch(`/user/packages/${username}`, {
+        fetch(`/user/packages/${uidString}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -247,31 +302,24 @@ function openCartPopup() {
         console.log("User not authenticated");
     }
 
-    // Show the cart popup
-    const popDialog2 = document.getElementById("cartPopup");
-    popDialog2.style.visibility =
-        popDialog2.style.visibility === "visible"
-            ? "hidden"
-            : "visible";
+    cartpop.style.visibility = "visible"
 }
 
 
 function removePackageFromCart(packageId) {
-    const auth = getAuth(); // Assuming this function gets the authentication object
-    let username = ""; // Initialize username variable
+    const auth = getAuth();
+    let uidString = "";
 
     // Check if the user is authenticated
     if (auth.currentUser) {
-        username = auth.currentUser.email; // Retrieve username from currentUser's email
+        uidString = auth.currentUser.uid; // Retrieve username from currentUser's email
     } else {
         console.log("User not authenticated");
-        // Handle the case where the user is not authenticated
-        // You may display a message or redirect to a login page
         return; // Exit the function if user is not authenticated
     }
 
     // Send a DELETE request to the server to remove the package
-    fetch(`/remove_from_cart?id=${packageId}&username=${username}`, {
+    fetch(`/remove_from_cart?id=${packageId}&uid=${uidString}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -283,7 +331,7 @@ function removePackageFromCart(packageId) {
         const cartItemsContainer = document.getElementById("cartItems");
         cartItemsContainer.innerHTML = ""; // Clear previous items
 
-        fetchCurrentCartItems(); // Call your function to fetch the updated cart items
+        openCartPopup();
     })
      .catch(error => {
         console.error('Error removing package from cart:', error);
@@ -295,7 +343,7 @@ function removePackageFromCart(packageId) {
 function fetchCurrentCartItems() {
     const auth = getAuth(); // Assuming this function gets the authentication object
     let username = ""; // Initialize username variable
-
+    console.log("fetch current cart items");
     // Check if the user is authenticated
     if (auth.currentUser) {
         username = auth.currentUser.email; // Retrieve username from currentUser's email
@@ -307,7 +355,7 @@ function fetchCurrentCartItems() {
     }
 
     // Fetch user's packages from the server
-    fetch(`/user/packages/${username}`, {
+    fetch(`/user/packages/${uidString}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -335,12 +383,17 @@ function fetchCurrentCartItems() {
     });
 }
 
-
 function closeCartPop() {
-    const popDialog3 = document.getElementById("cartPopup");
-    popDialog3.style.visibility = "hidden";
+    cartpop.style.visibility = "hidden";
 }
 
+function closeUsersPop(){
+   userspop.style.visibility = "hidden";
+}
+
+function closeOrdersPop(){
+    orderspop.style.visibility = "hidden";
+}
 
 function buyRequest(){
     const auth = getAuth(); // Assuming this function gets the authentication object
@@ -486,6 +539,83 @@ function displaypackages(packages) {
     });
 }
 
+function managerAllOrdersPopUp(token) {
+            console.log('Token in manager all orders')
+            const auth = getAuth();
+            // Check if the user is authenticated
+            if (auth.currentUser) {
+                // Fetch user's packages from the server
+                fetch(`/api/getAllOrders`, {
+                    method: 'GET',
+                    headers: { Authorization: 'Bearer ' + token }
+                })
+                .then(response => response.json())
+                .then(orders => {
+                    const ordersItemsContainer = document.getElementById("ordersItems");
+                    ordersItemsContainer.innerHTML = "";
+
+                            orders.forEach(orderI => {
+                            const ordersElement = document.createElement("div");
+                            ordersElement.innerHTML = `
+                                <p>Order ID: ${orderI.id}</p>
+                                <p>Packages: ${orderI.packages.join(", ")}</p>
+                                <p>Price: ${orderI.price}</p>
+                                `;
+                            ordersItemsContainer.appendChild(ordersElement);
+                            });
+                })
+                .catch(error => {
+                    console.error('Error fetching user packages:', error);
+                });
+            } else {
+                console.log("User not authenticated");
+            }
+
+            // Show the cart popup
+            const popDialogOrders = document.getElementById("ordersPopup");
+            popDialogOrders.style.visibility =
+                popDialogOrders.style.visibility === "visible"
+                    ? "hidden"
+                    : "visible";
+            closeOrders.addEventListener('click' , () => {
+                closeOrdersPop();
+            });
+}
+
+
+function managerAllCustomersPopUp(token){
+
+    // Fetch user's packages from the server
+    fetch(`/api/getAllCustomers`, {
+        method: 'GET',
+        headers: { Authorization: 'Bearer ' + token }
+    })
+   .then(response => response.json())
+   .then(users => {
+        const usersItemsContainer = document.getElementById("usersItems");
+        usersItemsContainer.innerHTML = "";
+
+        users.forEach(userI => {
+            const usersElement = document.createElement("div");
+            usersElement.innerHTML = `
+                <p>${userI.email}</p>
+            `;
+            usersItemsContainer.appendChild(usersElement);
+        });
+   })
+   .catch(error => {
+        console.error('Error fetching user packages:', error);
+   });
+   const popDialogOrders = document.getElementById("usersPopup");
+               popDialogOrders.style.visibility =
+                   popDialogOrders.style.visibility === "visible"
+                       ? "hidden"
+                       : "visible";
+
+   closeUsers.addEventListener('click' , () => {
+        closeUsersPop();
+   });
+}
 
 // calling /api/hello on the rest service to illustrate text based data retrieval
 function getHello(token) {

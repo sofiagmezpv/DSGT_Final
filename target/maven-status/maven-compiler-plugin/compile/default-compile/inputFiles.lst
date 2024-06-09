@@ -3,6 +3,7 @@
 /home/stijn/Desktop/DSGT_Final/src/main/java/be/kuleuven/dsgt4/models/Package.java
 /home/stijn/Desktop/DSGT_Final/src/main/java/be/kuleuven/dsgt4/auth/WebSecurityConfig.java
 /home/stijn/Desktop/DSGT_Final/src/main/java/be/kuleuven/dsgt4/controllers/ViewController.java
+/home/stijn/Desktop/DSGT_Final/src/main/java/be/kuleuven/dsgt4/models/Order.java
 /home/stijn/Desktop/DSGT_Final/src/main/java/be/kuleuven/dsgt4/services/PackageService.java
 /home/stijn/Desktop/DSGT_Final/src/main/java/be/kuleuven/dsgt4/controllers/CartController.java
 /home/stijn/Desktop/DSGT_Final/src/main/java/be/kuleuven/dsgt4/models/Supplier.java
@@ -14,3 +15,4 @@
 /home/stijn/Desktop/DSGT_Final/src/main/java/be/kuleuven/dsgt4/Dsgt4Application.java
 /home/stijn/Desktop/DSGT_Final/src/main/java/be/kuleuven/dsgt4/auth/SecurityFilter.java
 /home/stijn/Desktop/DSGT_Final/src/main/java/be/kuleuven/dsgt4/models/Item.java
+/home/stijn/Desktop/DSGT_Final/src/main/java/be/kuleuven/dsgt4/models/Cart.java
