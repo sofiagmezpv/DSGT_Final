@@ -17,11 +17,11 @@ public class Package extends Object {
     // Default constructor required for Jackson deserialization
     public Package() {
         // Initialize suppliers to an empty list
-        this.items = new ArrayList<>();
+        //this.items = new ArrayList<>();
     }
 
     // Constructor
-    public Package(String id, String name, String description, List<Item> ItemIds,String reservationId) {
+    public Package(String id, String name, String description, List<String> itemIds,String reservationId) {
         this.id = id;
         this.name = name;
         this.description = description;

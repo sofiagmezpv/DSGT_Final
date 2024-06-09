@@ -42,9 +42,9 @@ public class PackageService {
         Item item2 = new Item("2","item1", "Item A", 100.0,"2","nanu");
         Item item3 = new Item("3","item1", "Item A", 100.0,"1","nanu");
         if (id == 1) {
-            return new Package("1", "Summer Student Pack", "Ideal summer vibes", List.of(item1,item2),"");
+            return new Package("1", "Summer Student Pack", "Ideal summer vibes", List.of(item1.getId(),item2.getId()),"");
         } else if (id == 2) {
-            return new Package("2", "Winter Student Pack", "Ideal winter vibes", List.of(item2, item3),"");
+            return new Package("2", "Winter Student Pack", "Ideal winter vibes", List.of(item2.getId(), item3.getId()),"");
         } else {
             // Default or null return, adjust as needed for your application
             return null;

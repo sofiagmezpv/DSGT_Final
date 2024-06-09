@@ -55,7 +55,7 @@
                 <h2 id="page-subtitle">No worries.. we got you!</h2>
             </div>
             <div>
-                <button id="cartButton" class="btn btn-secondary" onclick="openCartPopup()">
+                <button id="cartButton" class="btn btn-secondary">
                     <img src="/images/shopping_cart.svg" alt="Cart" style="width: 24px; height: 24px;">
                 </button>
             </div>
@@ -67,16 +67,16 @@
             <h1>Cart</h1>
             <button id="closeCartButton" class="btn btn-secondary">close cart</button>
             <div id="cartItems"></div> <!-- This is where the cart items will be displayed -->
-            <button type="button" class="btn btn-secondary" onclick="buy()">Pay and Order</button>
+            <button type="button" id= "buyButton" class="btn btn-secondary">Pay and Order</button>
         </div>
         <div class = "popupCart " id="paymentPopup">
             <h1>Payment</h1>
-            <button type="button" class="btn btn-secondary" onclick="donePurchase">Pay</button>
-            <button type="button" class="btn btn-secondary" onclick="closePayment()">Cancel</button>
+            <button type="button" class="btn btn-secondary">Pay</button>
+            <button type="button" class="btn btn-secondary">Cancel</button>
         </div>
         <div class = "popupCart " id="confirmationPopup">
             <h1>Order Confirmed</h1>
-            <button type="button" class="btn btn-secondary" onclick="closeConfirmation">Great</button>
+            <button type="button" class="btn btn-secondary">Great</button>
         </div>
     </div>
 
