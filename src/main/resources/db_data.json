@@ -32,8 +32,15 @@
       "name": "Caffeine shop",
       "apiKey": 1234,
       "baseUrl": "http://127.0.0.1:8100/rest"
-    }
+    },
+    {
+        "id": "SBRr41FqmkIELeu1Gi8f",
+        "name": "Snack shop",
+        "apiKey": 1234,
+        "baseUrl": "http://127.0.0.1:8200/rest"
+      }
   ],
+
 
   "package" : [ {
     "id" : "eGBPA1nEgmAjdmgJg1nE",

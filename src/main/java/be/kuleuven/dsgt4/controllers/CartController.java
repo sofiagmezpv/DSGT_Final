@@ -68,7 +68,7 @@ public class CartController {
 
         }
 
-        supplierLogic.reservePack(pack);
+        supplierLogic.reservePack(pack,uid);
         firestoreService.addItemToUserCart(uid, pack);
 
 
@@ -138,23 +138,32 @@ public class CartController {
         return ResponseEntity.ok(allPurchasedOrders);
     }
 
+
+    //TODO TEST this function
+        //test buying
+        //test removing
     @PostMapping("/buy_cart")
-    public ResponseEntity<String> buyCart(@RequestParam("username") String username) {
+    public ResponseEntity<String> buyCart(@RequestParam("uid") String uidString) {
         System.out.println("*****user wants to buy******");
-        List<Package> packages = firestoreService.getUserPackages(username);
-        for (Package pack : packages) {
-            supplierLogic.buyPack(pack);
+        List<Package> packages = firestoreService.getUserPackages(uidString);
+        System.out.println(uidString + " has  packages:" + packages);
+        for(Package pack: packages) {
+            Boolean status = supplierLogic.checkreservation(pack,uidString);
+            System.out.println("all packages available: " + status);
+            if (status)
+            {
+                supplierLogic.buyPack(pack,uidString);
+                return ResponseEntity.ok("Item all bought");
+            } else {
+                for(Item it:pack.getItems()){
+                    removeFromCart(it.getId(),uidString);
+                }
+                supplierLogic.releasePack(pack,uidString);
+            }
         }
-        return ResponseEntity.ok("Item all bought");
+        return null;
     }
 
-
-    // Endpoint to remove an item from the cart
-//    @PostMapping("/remove_from_cart")
-//    public ResponseEntity<String> removeFromCart(@RequestParam("id") int itemId)  {
-//        cart.removeItem(itemId);
-//        return ResponseEntity.ok("Item removed from cart");
-//    }
 
     // Endpoint to proceed to payment
     @PostMapping("/pay")

@@ -32,35 +32,42 @@
       "name": "Caffeine shop",
       "apiKey": 1234,
       "baseUrl": "http://127.0.0.1:8100/rest"
-    }
+    },
+    {
+        "id": "SBRr41FqmkIELeu1Gi8f",
+        "name": "Snack shop",
+        "apiKey": 1234,
+        "baseUrl": "http://127.0.0.1:8200/rest"
+      }
   ],
 
-  "package": [
-    {
-      "id": "eGBPA1nEgmAjdmgJg1nE",
-      "name": "Winter Student Pack",
-      "description": "Cozy winter vibes.",
-      "itemIds": ["Ndjb0HZE6s3uxnAryOqA", "ep3FAfq9y06EYXx14Mt0"]
-    },
-    {
-      "id": "mNJ6dIZ7hssWBFKg212",
-      "name": "Summer Student Pack",
-      "description": "Refreshing!",
-      "itemIds": ["eIRRKA8H6lUF19NWHtMZ", "ep3FAfq9y06EYXx14Mt0"]
-    },
-    {
-      "id": "m8moXv3I8NLVvENGkRcp",
-      "name": "Exotic Student Pack",
-      "description": "Do you dare to be a little exotic?",
-      "itemIds": ["ep3FAfq9y06EYXx14Mt0"]
-    },
-    {
-      "id": "4FcBdF6NTzHu99TyktDB",
-      "name": "Classic Student Pack",
-      "description": "All of the classics.",
-      "itemIds": ["Ndjb0HZE6s3uxnAryOqA"]
-    }
-  ],
+
+  "package" : [ {
+    "id" : "eGBPA1nEgmAjdmgJg1nE",
+    "name" : "Winter Student Pack",
+    "description" : "Cozy winter vibes.",
+    "itemIds" : ["Ndjb0HZE6s3uxnAryOqA", "ep3FAfq9y06EYXx14Mt0"],
+    "reservationId":""
+  }, {
+    "id" : "mNJ6dIZ7hssWBFKg212",
+    "name" : "Summer Student Pack",
+    "description" : "Refreshing!",
+    "itemIds" : ["eIRRKA8H6lUF19NWHtMZ", "ep3FAfq9y06EYXx14Mt0"],
+    "reservationId": ""
+  }, {
+    "id" : "m8moXv3I8NLVvENGkRcp",
+    "name" : "Exotic Student Pack",
+    "description" : "Do you dare to be a little exotic?",
+    "itemIds" : ["ep3FAfq9y06EYXx14Mt0"],
+    "reservationId": ""
+  }, {
+    "id" : "4FcBdF6NTzHu99TyktDB",
+    "name" : "Classic Student Pack",
+    "description" : "All of the classics.",
+    "itemIds" : ["Ndjb0HZE6s3uxnAryOqA"],
+    "reservationId": ""
+  }   ],
+
 
   "orders": [
     {
@@ -84,4 +91,3 @@
     }
   ]
 }
-

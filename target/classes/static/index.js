@@ -398,10 +398,11 @@ function closeOrdersPop(){
 function buyRequest(){
     const auth = getAuth(); // Assuming this function gets the authentication object
     let username = ""; // Initialize username variable
-
+    let uidString=""
     // Check if the user is authenticated
     if (auth.currentUser) {
         username = auth.currentUser.email; // Retrieve username from currentUser's email
+        uidString =  auth.currentUser.uid;
     } else {
         console.log("User not authenticated");
         // Handle the case where the user is not authenticated
@@ -409,7 +410,7 @@ function buyRequest(){
         return; // Exit the function if user is not authenticated
     }
     console.log("bying")
-        fetch(`/buy_cart?username=${username}`, { // Include username in the fetch URL
+        fetch(`/buy_cart?uid=${uidString}`, { // Include username in the fetch URL
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

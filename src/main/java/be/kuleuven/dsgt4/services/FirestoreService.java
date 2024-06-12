@@ -134,6 +134,7 @@ public class FirestoreService {
         cartItem.put("description", pack.getDescription());
         cartItem.put("price", pack.getPrice());
         cartItem.put("items", pack.getItems());
+        cartItem.put("reservationId",pack.getReservationId());
 //        cartItem.put("uid")
 
         Timestamp currentTimeStamp = Timestamp.now();
@@ -154,7 +155,7 @@ public class FirestoreService {
     }
 
     public List<Package> getUserPackages(String uidString) {
-        System.out.println("In getUserPackages with username: " + uidString);
+        //System.out.println("In getUserPackages with username: " + uidString);
         List<Package> userPackages = new ArrayList<>();
 
         try {
@@ -356,36 +357,77 @@ public class FirestoreService {
         return packages;
     }
 
-    public void addReservationIdTopackage(Package pack,String reservationId){
+
+
+
+    public void addReservationIdToPackage(Package pack, String reservationId, String uid) {
         System.out.println("Adding reservation ID to package: " + pack.getId());
-        DocumentReference packageRef = db.collection("package").document(pack.getId());
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("reservationId", reservationId);
-        ApiFuture<WriteResult> future = packageRef.update(updates);
-        try {
-            WriteResult result = future.get();
-            System.out.println("Reservation ID added to package. Update time: " + result.getUpdateTime());
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-    }
-    public String getReservationIdPackage(Package pack) {
-        System.out.println("Fetching reservation ID for package: " + pack.getId());
-        DocumentReference packageRef = db.collection("package").document(pack.getId());
-        ApiFuture<DocumentSnapshot> future = packageRef.get();
+        CollectionReference packagesRef = db.collection("carts").document(uid).collection("packages");
+
+        // Create a query to find the document with the matching package ID
+        Query query = packagesRef.whereEqualTo("id", pack.getId());
 
         try {
-            DocumentSnapshot document = future.get();
-            if (document.exists()) {
-                return document.getString("reservationId");
+            // Execute the query
+            ApiFuture<QuerySnapshot> querySnapshot = query.get();
+            List<QueryDocumentSnapshot> documents = querySnapshot.get().getDocuments();
+
+            if (!documents.isEmpty()) {
+                // Document found, update the reservation ID
+                QueryDocumentSnapshot document = documents.get(0); // Assuming there's only one match
+                DocumentReference packageDocRef = document.getReference();
+
+                Map<String, Object> updates = new HashMap<>();
+                updates.put("reservationId", reservationId);
+
+                ApiFuture<WriteResult> updateFuture = packageDocRef.update(updates);
+                WriteResult result = updateFuture.get();
+                System.out.println("Reservation ID added to package. Update time: " + result.getUpdateTime());
             } else {
-                System.out.println("No such package document!");
-                return null;
+                // Document not found
+                System.err.println("Package document not found: " + pack.getId());
             }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            return null;
+        } catch (InterruptedException e) {
+            System.err.println("Update operation was interrupted");
+            Thread.currentThread().interrupt(); // Restore interrupted status
+        } catch (ExecutionException e) {
+            System.err.println("Update operation failed: " + e.getMessage());
         }
+    }
+
+    public String getReservationIdFromPackage(Package pack, String uid) {
+        System.out.println("Retrieving reservation ID from package: " + pack.getId());
+        CollectionReference packagesRef = db.collection("carts").document(uid).collection("packages");
+
+        // Create a query to find the document with the matching package ID
+        Query query = packagesRef.whereEqualTo("id", pack.getId());
+
+        try {
+            // Execute the query
+            ApiFuture<QuerySnapshot> querySnapshot = query.get();
+            List<QueryDocumentSnapshot> documents = querySnapshot.get().getDocuments();
+
+            if (documents.size() > 0) {
+                // Document found, retrieve the reservation ID
+                DocumentSnapshot document = documents.get(0); // Assuming there's only one match
+                if (document.contains("reservationId")) {
+                    String reservationId = document.getString("reservationId");
+                    System.out.println("Reservation ID retrieved: " + reservationId);
+                    return reservationId;
+                } else {
+                    System.err.println("Reservation ID not found in the package document");
+                }
+            } else {
+                // Document not found
+                System.err.println("Package document not found: " + pack.getId());
+            }
+        } catch (InterruptedException e) {
+            System.err.println("Retrieve operation was interrupted");
+            Thread.currentThread().interrupt(); // Restore interrupted status
+        } catch (ExecutionException e) {
+            System.err.println("Retrieve operation failed: " + e.getMessage());
+        }
+        return null;
     }
 
 

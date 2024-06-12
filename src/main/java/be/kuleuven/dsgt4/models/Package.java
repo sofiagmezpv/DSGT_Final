@@ -1,11 +1,19 @@
 package be.kuleuven.dsgt4.models;
 
+import be.kuleuven.dsgt4.services.FirestoreService;
+import com.google.cloud.Timestamp;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Package extends Object {
 
+
+
+
+    private Timestamp timestamp;
     private String description;
     private String name;
     private double price;
@@ -18,6 +26,8 @@ public class Package extends Object {
     public Package() {
         // Initialize suppliers to an empty list
         //this.items = new ArrayList<>();
+
+        timestamp = null;
     }
 
     // Constructor
@@ -27,7 +37,8 @@ public class Package extends Object {
         this.description = description;
         this.price = price;
         this.itemIds = itemIds;
-        this.reservationId = "";
+        this.reservationId = reservationId;
+        this.timestamp = null;
     }
 
     public String getName() {
@@ -58,8 +69,9 @@ public class Package extends Object {
     {
             reservationId = id;
     }
+
     public String getReservationId(){
-        return  reservationId;
+        return this.reservationId;
     }
 
     public List<Item> getItems() {
@@ -80,5 +92,13 @@ public class Package extends Object {
 
     public void setItemIds(List<String> itemIds) {
         this.itemIds = itemIds;
+    }
+
+    public Timestamp getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Timestamp timestamp){
+        this.timestamp = timestamp;
     }
 }
