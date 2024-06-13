@@ -61,15 +61,17 @@ public class CartController {
 
         for (Item it : pack.getItems()) {
             Mono<Boolean> av = this.supplierLogic.itemAvailable(it.getId(), it.getSupplier());
-            Boolean avaialable = av.block();
-            if (Boolean.FALSE.equals(av.block())) {
+            Boolean available = av.block();
+            System.out.println("item available:"+available);
+            if (!available) {
+                //to do make visible on screen
                 return ResponseEntity.ok("Items can't be added to cart");
             }
 
         }
-
-        supplierLogic.reservePack(pack,uid);
         firestoreService.addItemToUserCart(uid, pack);
+        supplierLogic.reservePack(pack,uid);
+
 
 
         return ResponseEntity.ok("Item added to cart");

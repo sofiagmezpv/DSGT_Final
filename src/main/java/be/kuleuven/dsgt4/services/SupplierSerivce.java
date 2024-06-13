@@ -58,23 +58,26 @@ public class SupplierSerivce {
     public Mono<Item> getItemFromRest(String Itemid,Supplier sub){
         System.out.println("baseurl supplier= " + sub.getBaseUrl()+ " itemid="+ Itemid+" apikey= "+sub.getApiKey());
         return webClientBuilder.baseUrl(sub.getBaseUrl()).build()
-                .get().uri("/drinksId/{id}/{code}",Itemid,1234)
+                .get().uri("/itemId/{id}/{code}",Itemid,1234)
                 .retrieve()
                 .bodyToMono(Item.class);
 
     }
 
     public void reservePack(Package pack,String uid){
+        System.out.println("***RESERVING PACK****");
+        String reservationId = generateReservationId();
         for(Item i: pack.getItems()){
-            String reservationId = generateReservationId();
             //pack.setReservationId(reservationId);
-            firestoreService.addReservationIdToPackage(pack,reservationId,uid);
+            System.out.println(i.getSupplier());
             this.webClientBuilder.baseUrl(i.getSupplier().getBaseUrl()).build()
                     .post()
-                    .uri("itemId/{id}/reserve/{reservationId}/{code}",i.getId(),reservationId,1234)
+                    .uri("/itemId/{id}/reserve/{reservationId}/{code}",i.getId(),reservationId,1234)
                     .retrieve()
-                    .bodyToMono(Boolean.class);
+                    .bodyToMono(String.class)
+                    .block();
         }
+        firestoreService.addReservationIdToPackage(pack,reservationId,uid);
     }
 
     public void buyPack(Package pack,String uid){
@@ -107,7 +110,7 @@ public class SupplierSerivce {
         System.out.println("pack reservation id: "+reservationId);
         List<Mono<Boolean>> checks = pack.getItems().stream()
                 .map(it -> webClientBuilder.baseUrl(it.getSupplier().getBaseUrl()).build()
-                        .get()
+                        .post()
                         .uri("/itemId/{id}/checkReservation/{reservationId}/{code}", it.getId(), reservationId, 1234)
                         .retrieve()
                         .bodyToMono(Boolean.class))

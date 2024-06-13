@@ -361,17 +361,16 @@ public class FirestoreService {
 
 
     public void addReservationIdToPackage(Package pack, String reservationId, String uid) {
-        System.out.println("Adding reservation ID to package: " + pack.getId());
+        //System.out.println("Adding reservation ID to package: " + pack.getId());
         CollectionReference packagesRef = db.collection("carts").document(uid).collection("packages");
-
+        System.out.println("uid:"+uid);
         // Create a query to find the document with the matching package ID
         Query query = packagesRef.whereEqualTo("id", pack.getId());
-
         try {
             // Execute the query
             ApiFuture<QuerySnapshot> querySnapshot = query.get();
             List<QueryDocumentSnapshot> documents = querySnapshot.get().getDocuments();
-
+            System.out.println("documents:"+documents);
             if (!documents.isEmpty()) {
                 // Document found, update the reservation ID
                 QueryDocumentSnapshot document = documents.get(0); // Assuming there's only one match
@@ -385,7 +384,7 @@ public class FirestoreService {
                 System.out.println("Reservation ID added to package. Update time: " + result.getUpdateTime());
             } else {
                 // Document not found
-                System.err.println("Package document not found: " + pack.getId());
+                System.err.println("Package document not found:" + pack.getId()+".");
             }
         } catch (InterruptedException e) {
             System.err.println("Update operation was interrupted");
