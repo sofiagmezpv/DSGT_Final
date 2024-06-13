@@ -10,6 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.awt.*;
 import java.security.SecureRandom;
 import java.util.Random;
 
@@ -81,7 +82,7 @@ public class SupplierSerivce {
     }
 
     public void buyPack(Package pack,String uid){
-        String reservationId = firestoreService.getReservationIdFromPackage(pack,uid);
+        String reservationId = firestoreService.getReservationIdFromPackage(pack.getId(),uid);
         //String reservationId = pack.getReservationId();
         for(Item i: pack.getItems()){
             System.out.println("buying item in pack"+i.getName());
@@ -105,7 +106,7 @@ public class SupplierSerivce {
 
     public Boolean checkreservation(Package pack,String uid) {
 
-        String reservationId = firestoreService.getReservationIdFromPackage(pack,uid);
+        String reservationId = firestoreService.getReservationIdFromPackage(pack.getId(),uid);
         //String reservationId = pack.getReservationId();
         System.out.println("pack reservation id: "+reservationId);
         List<Mono<Boolean>> checks = pack.getItems().stream()
@@ -123,9 +124,8 @@ public class SupplierSerivce {
 
     public void releasePack(Package pack, String uid) {
         // @PostMapping("/releaseReservation/{reservationId}/{code}")
-        String reservationId = firestoreService.getReservationIdFromPackage(pack,uid);
-        //String reservationId = pack.getReservationId();
-
+        String reservationId = firestoreService.getReservationIdFromPackage(pack.getId(),uid);
+        System.out.println("reservation id for removal:" + reservationId);
         for(Item it :pack.getItems()){
             webClientBuilder.baseUrl(it.getSupplier().getBaseUrl()).build()
                     .post()

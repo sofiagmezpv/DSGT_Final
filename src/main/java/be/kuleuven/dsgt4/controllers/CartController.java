@@ -94,16 +94,19 @@ public class CartController {
     }
 
     @PostMapping("/remove_from_cart")
-    public ResponseEntity<String> removeFromCart(@RequestParam("id") String itemId, @RequestParam("uid") String uidString) {
-        System.out.println("Cart Controller Remove");
-
+    public ResponseEntity<String> removeFromCart(@RequestParam("id") String packageId, @RequestParam("uid") String uidString) {
+        System.out.println("Cart Controller Remove with id:"+packageId);
+        Package pack = packageService.getPackageFromId(packageId);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!authentication.isAuthenticated()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
         }
+        //supplierLogic.releasePack(firestoreService.getUserPackages());
         // Optionally, update the Firestore database to reflect the change in the cart
-        firestoreService.removeItemFromUserCart(uidString, itemId);
 
+
+        supplierLogic.releasePack(pack,uidString);
+        firestoreService.removeItemFromUserCart(uidString, packageId);
         return ResponseEntity.ok("Item removed from cart");
     }
 

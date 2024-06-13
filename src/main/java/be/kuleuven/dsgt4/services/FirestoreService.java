@@ -26,27 +26,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.List;
-
-import com.google.auth.oauth2.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.stereotype.Service;
-import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
-import java.util.concurrent.ExecutionException;
-import com.google.cloud.firestore.WriteBatch;
-import com.google.cloud.firestore.WriteResult;
-import com.google.cloud.firestore.*;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class FirestoreService {
@@ -394,12 +374,13 @@ public class FirestoreService {
         }
     }
 
-    public String getReservationIdFromPackage(Package pack, String uid) {
-        System.out.println("Retrieving reservation ID from package: " + pack.getId());
+    public String getReservationIdFromPackage(String id, String uid) {
+
+        System.out.println("Retrieving reservation ID from package: " + id);
         CollectionReference packagesRef = db.collection("carts").document(uid).collection("packages");
 
         // Create a query to find the document with the matching package ID
-        Query query = packagesRef.whereEqualTo("id", pack.getId());
+        Query query = packagesRef.whereEqualTo("id", id);
 
         try {
             // Execute the query
@@ -418,7 +399,7 @@ public class FirestoreService {
                 }
             } else {
                 // Document not found
-                System.err.println("Package document not found: " + pack.getId());
+                System.err.println("Package document not found: " + id);
             }
         } catch (InterruptedException e) {
             System.err.println("Retrieve operation was interrupted");
