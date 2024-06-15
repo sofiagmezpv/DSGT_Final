@@ -69,14 +69,21 @@ public class SupplierSerivce {
         System.out.println("***RESERVING PACK****");
         String reservationId = generateReservationId();
         for(Item i: pack.getItems()){
-            //pack.setReservationId(reservationId);
-            System.out.println(i.getSupplier());
-            this.webClientBuilder.baseUrl(i.getSupplier().getBaseUrl()).build()
-                    .post()
-                    .uri("/itemId/{id}/reserve/{reservationId}/{code}",i.getId(),reservationId,1234)
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
+            try {
+                this.webClientBuilder.baseUrl(i.getSupplier().getBaseUrl()).build()
+                        .post()
+                        .uri("/itemId/{id}/reserve/{reservationId}/{code}", i.getId(), reservationId, 1234)
+                        .retrieve()
+                        .bodyToMono(String.class)
+                        .doOnError(error -> {
+                            // Handle the error, e.g., log it, or take specific action
+                            System.err.println("Error reserving item: " + i.getId() + " - " + error.getMessage());
+                        })
+                        .block();
+            } catch (Exception e) {
+                System.err.println("Failed to reserve item " + i.getId() + ": " + e.getMessage());
+                return; //make sure only to to add reservationIdTOpackage when all items are oke
+            }
         }
         firestoreService.addReservationIdToPackage(pack,reservationId,uid);
     }
@@ -84,14 +91,22 @@ public class SupplierSerivce {
     public void buyPack(Package pack,String uid){
         String reservationId = firestoreService.getReservationIdFromPackage(pack.getId(),uid);
         //String reservationId = pack.getReservationId();
-        for(Item i: pack.getItems()){
-            System.out.println("buying item in pack"+i.getName());
-
-            this.webClientBuilder.baseUrl(i.getSupplier().getBaseUrl()).build()
-                    .get()
-                    .uri("/itemId/{reservationId}/buy/{code}",reservationId,1234)
-                    .retrieve()
-                    .bodyToMono(Boolean.class);
+        for (Item i : pack.getItems()) {
+            try {
+                this.webClientBuilder.baseUrl(i.getSupplier().getBaseUrl()).build()
+                        .get()
+                        .uri("/itemId/{reservationId}/buy/{code}", reservationId, 1234)
+                        .retrieve()
+                        .bodyToMono(Boolean.class)
+                        .doOnError(error -> {
+                            // Handle the error, e.g., log it, or take specific action
+                            System.err.println("Error buying item: " + i.getId() + " - " + error.getMessage());
+                        })
+                        .block();
+            } catch (Exception e) {
+                System.err.println("Failed to buy item " + i.getId() + ": " + e.getMessage());
+                return;
+            }
         }
         firestoreService.moveToOrder(pack.getId(),uid);
     }
@@ -123,15 +138,20 @@ public class SupplierSerivce {
     }
 
     public void releasePack(Package pack, String uid) {
-        String reservationId = firestoreService.getReservationIdFromPackage(pack.getId(),uid);
+        String reservationId = firestoreService.getReservationIdFromPackage(pack.getId(), uid);
         System.out.println("**RELEASING PACKAGES***");
-        for(Item it :pack.getItems()){
-            webClientBuilder.baseUrl(it.getSupplier().getBaseUrl()).build()
-                    .post()
-                    .uri("/releaseReservation/{reservationId}/{code}",reservationId,1234)
-                    .retrieve()
-                    .bodyToMono(Void.class)
-                    .block(); // Block to ensure the request is sent and completed;
+        for (Item it : pack.getItems()) {
+            try {
+                webClientBuilder.baseUrl(it.getSupplier().getBaseUrl()).build()
+                        .post()
+                        .uri("/releaseReservation/{reservationId}/{code}", reservationId, 1234)
+                        .retrieve()
+                        .bodyToMono(Void.class)
+                        .block(); // Blocking call to ensure the request completes
+            } catch (Exception e) {
+                System.err.println("Failed to release reservation for item " + it.getId() + ": " + e.getMessage());
+
+            }
         }
     }
 }
