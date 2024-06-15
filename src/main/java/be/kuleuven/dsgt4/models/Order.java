@@ -74,4 +74,8 @@ public class Order {
                 ", price=" + price +
                 '}';
     }
+
+    public void setReservationId(String reservationIdHere) {
+        this.reservationId = reservationIdHere;
+    }
 }

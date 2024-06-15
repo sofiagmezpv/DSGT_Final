@@ -94,10 +94,10 @@ public class SupplierSerivce {
         for (Item i : pack.getItems()) {
             try {
                 this.webClientBuilder.baseUrl(i.getSupplier().getBaseUrl()).build()
-                        .get()
-                        .uri("/itemId/{reservationId}/buy/{code}", reservationId, 1234)
+                        .post()
+                        .uri("/buy/{reservationId}/{code}", reservationId, 1234)
                         .retrieve()
-                        .bodyToMono(Boolean.class)
+                        .bodyToMono(String.class)
                         .doOnError(error -> {
                             // Handle the error, e.g., log it, or take specific action
                             System.err.println("Error buying item: " + i.getId() + " - " + error.getMessage());
@@ -113,9 +113,10 @@ public class SupplierSerivce {
 
     public Mono<Boolean> itemAvailable(String id,Supplier sub) {
         System.out.println("baseurl supplier= " + sub.getBaseUrl()+ " itemid="+ id+" apikey= "+sub.getApiKey());
-        //TODO check with mathilde
+
         return webClientBuilder.baseUrl(sub.getBaseUrl()).build()
-                .post().uri("/itemId/{id}/checkAvailability/{code}",id,1234)
+                .post()
+                .uri("/itemId/{id}/checkAvailability/{code}",id,1234)
                 .retrieve()
                 .bodyToMono(Boolean.class);
     }

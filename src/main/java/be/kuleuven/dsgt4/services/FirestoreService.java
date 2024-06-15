@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
+import java.security.SecureRandom;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import com.google.cloud.firestore.WriteBatch;
@@ -416,6 +417,8 @@ public class FirestoreService {
         CollectionReference packagesRef = db.collection("carts").document(uid).collection("packages");
         CollectionReference ordersRef = db.collection("orders");
         Query query = packagesRef.whereEqualTo("id", id);
+        Timestamp timestamp = getUserPackages(uid).get(0).getTimestamp();
+        String reservationId = getReservationIdFromPackage(getUserPackages(uid).get(0).getId(),uid);
 
         try {
             // Execute the query
@@ -423,23 +426,36 @@ public class FirestoreService {
             List<QueryDocumentSnapshot> documents = querySnapshot.get().getDocuments();
 
             if (!documents.isEmpty()) {
-                // Document found, copy it to the orders collection and delete it from the packages collection
-                DocumentSnapshot document = documents.get(0); // Assuming there's only one match
-                Map<String, Object> packageData = document.getData();
+                // List to store package IDs
+                List<String> packageIds = new ArrayList<>();
+                // Loop through documents and collect package IDs
+                for (DocumentSnapshot document : documents) {
+                    String packageId = document.getId(); // Assuming id is the document ID
+                    packageIds.add(packageId);
 
-                // Copy document data to the orders collection
-                DocumentReference newOrderRef = ordersRef.document();
-                ApiFuture<WriteResult> writeFuture = newOrderRef.set(packageData);
+                    // Delete the document from the packages collection
+                    ApiFuture<WriteResult> deleteFuture = document.getReference().delete();
+                    WriteResult deleteResult = deleteFuture.get();
+                    System.out.println("Package deleted from packages. Delete time: " + deleteResult.getUpdateTime());
+                }
+
+                // Create new Order object
+                Order order = new Order();
+                order.setId(generatedRandomOrder()); // Set a unique order ID, or generate dynamically
+                order.setPackages(packageIds);
+                order.setUid(uid);
+                order.setTs(timestamp.toString()); // Set timestamp or use a date/time library
+                order.setPrice(0.0); // Set the price accordingly
+                order.setReservationId(reservationId); // Set reservation ID if applicable
+
+                // Save the Order object to Firestore
+                DocumentReference newOrderRef = ordersRef.document(order.getId());
+                ApiFuture<WriteResult> writeFuture = newOrderRef.set(order);
                 WriteResult writeResult = writeFuture.get();
-                System.out.println("Package moved to orders. Write time: " + writeResult.getUpdateTime());
-
-                // Delete the document from the packages collection
-                ApiFuture<WriteResult> deleteFuture = document.getReference().delete();
-                WriteResult deleteResult = deleteFuture.get();
-                System.out.println("Package deleted from packages. Delete time: " + deleteResult.getUpdateTime());
+                System.out.println("Order created in orders collection. Write time: " + writeResult.getUpdateTime());
             } else {
-                // Document not found
-                System.err.println("Package document not found: " + id);
+                // Documents not found
+                System.err.println("Package documents not found: " + id);
             }
         } catch (InterruptedException e) {
             System.err.println("Operation was interrupted");
@@ -447,5 +463,16 @@ public class FirestoreService {
         } catch (ExecutionException e) {
             System.err.println("Operation failed: " + e.getMessage());
         }
+    }
+
+    public String generatedRandomOrder(){
+        int length = 10;
+        String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        Random RANDOM = new SecureRandom();
+        StringBuilder sb = new StringBuilder(length );
+        for (int i = 0; i < length; i++) {
+            sb.append(CHARACTERS.charAt(RANDOM.nextInt(CHARACTERS.length())));
+        }
+        return sb.toString();
     }
 }
