@@ -145,24 +145,29 @@ public class FirestoreService {
 
             ApiFuture<QuerySnapshot> query = cartRef.get();
             QuerySnapshot querySnapshot = query.get();
+            if(querySnapshot.size()!=0) {
+                System.out.println("Query snapshot size: " + querySnapshot.size());
 
-            System.out.println("Query snapshot size: " + querySnapshot.size());
-
-            // Iterate over the documents in the query result
-            for (QueryDocumentSnapshot document : querySnapshot) {
-                boolean isFull = false;
-                System.out.println("Cart Id: " + document.getId());
-                Package pack = document.toObject(Package.class);
-//                for(Item item : pack.getItems() ){
-//                    Supplier supplier = item.getSupplier();
-//                    int id = item.getId();
-//                    System.out.print("Item id: " + id);;
-//                    System.out.println("Item supplier: " + supplier.getName());
-//                    // make REST Supplier request to supplier to check the availability of each item in pack
-////                    if(not okay then delete the package)
-//
-//                }
-                userPackages.add(pack);
+                // Iterate over the documents in the query result
+                for (QueryDocumentSnapshot document : querySnapshot) {
+                    boolean isFull = false;
+                    System.out.println("Cart Id: " + document.getId());
+                    Package pack = document.toObject(Package.class);
+                    //                for(Item item : pack.getItems() ){
+                    //                    Supplier supplier = item.getSupplier();
+                    //                    int id = item.getId();
+                    //                    System.out.print("Item id: " + id);;
+                    //                    System.out.println("Item supplier: " + supplier.getName());
+                    //                    // make REST Supplier request to supplier to check the availability of each item in pack
+                    ////                    if(not okay then delete the package)
+                    //
+                    //                }
+                    userPackages.add(pack);
+                }
+            }
+            else{
+                System.out.println("****NO packages found ***");
+                return null;
             }
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
@@ -230,13 +235,11 @@ public class FirestoreService {
         return allOrders;
     }
 
-
     @Autowired
     public FirestoreService(Firestore db, ResourceLoader loader) {
         this.db = db;
         this.loader = loader;
     }
-
 
     @PostConstruct
     void initializeDB() {
@@ -337,9 +340,6 @@ public class FirestoreService {
         return packages;
     }
 
-
-
-
     public void addReservationIdToPackage(Package pack, String reservationId, String uid) {
         //System.out.println("Adding reservation ID to package: " + pack.getId());
         CollectionReference packagesRef = db.collection("carts").document(uid).collection("packages");
@@ -411,5 +411,41 @@ public class FirestoreService {
     }
 
 
+    public void moveToOrder(String id, String uid) {
+        System.out.println("****trying to move to order list****");
+        CollectionReference packagesRef = db.collection("carts").document(uid).collection("packages");
+        CollectionReference ordersRef = db.collection("orders");
+        Query query = packagesRef.whereEqualTo("id", id);
 
+        try {
+            // Execute the query
+            ApiFuture<QuerySnapshot> querySnapshot = query.get();
+            List<QueryDocumentSnapshot> documents = querySnapshot.get().getDocuments();
+
+            if (!documents.isEmpty()) {
+                // Document found, copy it to the orders collection and delete it from the packages collection
+                DocumentSnapshot document = documents.get(0); // Assuming there's only one match
+                Map<String, Object> packageData = document.getData();
+
+                // Copy document data to the orders collection
+                DocumentReference newOrderRef = ordersRef.document();
+                ApiFuture<WriteResult> writeFuture = newOrderRef.set(packageData);
+                WriteResult writeResult = writeFuture.get();
+                System.out.println("Package moved to orders. Write time: " + writeResult.getUpdateTime());
+
+                // Delete the document from the packages collection
+                ApiFuture<WriteResult> deleteFuture = document.getReference().delete();
+                WriteResult deleteResult = deleteFuture.get();
+                System.out.println("Package deleted from packages. Delete time: " + deleteResult.getUpdateTime());
+            } else {
+                // Document not found
+                System.err.println("Package document not found: " + id);
+            }
+        } catch (InterruptedException e) {
+            System.err.println("Operation was interrupted");
+            Thread.currentThread().interrupt(); // Restore interrupted status
+        } catch (ExecutionException e) {
+            System.err.println("Operation failed: " + e.getMessage());
+        }
+    }
 }

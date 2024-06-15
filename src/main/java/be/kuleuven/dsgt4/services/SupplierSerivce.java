@@ -93,7 +93,9 @@ public class SupplierSerivce {
                     .retrieve()
                     .bodyToMono(Boolean.class);
         }
+        firestoreService.moveToOrder(pack.getId(),uid);
     }
+
     public Mono<Boolean> itemAvailable(String id,Supplier sub) {
         System.out.println("baseurl supplier= " + sub.getBaseUrl()+ " itemid="+ id+" apikey= "+sub.getApiKey());
         //TODO check with mathilde
@@ -103,9 +105,7 @@ public class SupplierSerivce {
                 .bodyToMono(Boolean.class);
     }
 
-
     public Boolean checkreservation(Package pack,String uid) {
-
         String reservationId = firestoreService.getReservationIdFromPackage(pack.getId(),uid);
         //String reservationId = pack.getReservationId();
         System.out.println("pack reservation id: "+reservationId);
@@ -123,9 +123,8 @@ public class SupplierSerivce {
     }
 
     public void releasePack(Package pack, String uid) {
-        // @PostMapping("/releaseReservation/{reservationId}/{code}")
         String reservationId = firestoreService.getReservationIdFromPackage(pack.getId(),uid);
-        System.out.println("reservation id for removal:" + reservationId);
+        System.out.println("**RELEASING PACKAGES***");
         for(Item it :pack.getItems()){
             webClientBuilder.baseUrl(it.getSupplier().getBaseUrl()).build()
                     .post()
@@ -134,6 +133,5 @@ public class SupplierSerivce {
                     .bodyToMono(Void.class)
                     .block(); // Block to ensure the request is sent and completed;
         }
-
     }
 }

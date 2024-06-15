@@ -159,13 +159,13 @@ public class CartController {
             {
                 supplierLogic.buyPack(pack,uidString);
                 return ResponseEntity.ok("Item all bought");
-            } else {
-                for(Item it:pack.getItems()){
-                    removeFromCart(it.getId(),uidString);
-                }
-                supplierLogic.releasePack(pack,uidString);
             }
-        }
+            else {
+                    System.out.println("could by packages with id:"+pack.getId());
+                    removeFromCart(pack.getId(),uidString);
+
+                }
+            }
         return null;
     }
 
