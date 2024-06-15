@@ -23,10 +23,44 @@
       "description": "The Red Bull Green Edition with the exotic flavor of cactus fruit.",
       "brand": "REDBULL",
       "supplierId": "SCImO9FqmkJELue1zi8f"
+    },
+    {
+      "id" : "qw1Bb1rjrEM2bDJfo6W3",
+      "name" : "Aiki Chicken",
+      "description" : "Aïki chicken, the winner among noodles in a handy cup to take with you. Add boiling water, wait 3 minutes and you're done!",
+      "brand" : "AIKI",
+      "price" : 2.48,
+      "supplierId": "SBRr41FqmkIELeu1Gi8f"
+    },
+    {
+      "id" : "zUCsIhTuwLjgP2o329jX",
+      "name" : "Aiki Hot & Spicy",
+      "description" : "Aïki, the winner among noodles in a handy cup to take with you. Add boiling water, wait 3 minutes and you're done!",
+      "brand" : "AIKI",
+      "price" : 2.09,
+      "supplierId": "SBRr41FqmkIELeu1Gi8f"
+    },
+    {
+      "id" : "W3ckU0jMdgjM0X0QK3xL",
+      "name" : "Lay's Naturel",
+      "description" : "Delicious potatoes, crispy fried with a little salt, a true classic in its iconic red bag.",
+      "brand" : "LAYS",
+      "price" : 3.78,
+      "supplierId": "SBRr41FqmkIELeu1Gi8f"
+    },
+    {
+      "id" : "2SvJNCAcCfjfnuVADpr2",
+      "name" : "Lay's Paprika",
+      "description" : "A bit sweet and nicely spiced, a favorite for years.",
+      "brand" : "LAYS",
+      "price" : 2.99,
+      "supplierId": "SBRr41FqmkIELeu1Gi8f"
     }
+
   ],
 
-  "supplier": [
+
+"supplier": [
     {
       "id": "SCImO9FqmkJELue1zi8f",
       "name": "Caffeine shop",
@@ -46,25 +80,25 @@
     "id" : "eGBPA1nEgmAjdmgJg1nE",
     "name" : "Winter Student Pack",
     "description" : "Cozy winter vibes.",
-    "itemIds" : ["Ndjb0HZE6s3uxnAryOqA", "ep3FAfq9y06EYXx14Mt0"],
+    "itemIds" : ["Ndjb0HZE6s3uxnAryOqA", "ep3FAfq9y06EYXx14Mt0", "zUCsIhTuwLjgP2o329jX"],
     "reservationId":""
   }, {
     "id" : "mNJ6dIZ7hssWBFKg212",
     "name" : "Summer Student Pack",
     "description" : "Refreshing!",
-    "itemIds" : ["eIRRKA8H6lUF19NWHtMZ", "ep3FAfq9y06EYXx14Mt0"],
+    "itemIds" : ["eIRRKA8H6lUF19NWHtMZ", "ep3FAfq9y06EYXx14Mt0", "2SvJNCAcCfjfnuVADpr2"],
     "reservationId": ""
   }, {
     "id" : "m8moXv3I8NLVvENGkRcp",
     "name" : "Exotic Student Pack",
     "description" : "Do you dare to be a little exotic?",
-    "itemIds" : ["ep3FAfq9y06EYXx14Mt0"],
+    "itemIds" : ["ep3FAfq9y06EYXx14Mt0", "2SvJNCAcCfjfnuVADpr2"],
     "reservationId": ""
   }, {
     "id" : "4FcBdF6NTzHu99TyktDB",
     "name" : "Classic Student Pack",
     "description" : "All of the classics.",
-    "itemIds" : ["Ndjb0HZE6s3uxnAryOqA"],
+    "itemIds" : ["Ndjb0HZE6s3uxnAryOqA", "W3ckU0jMdgjM0X0QK3xL", "qw1Bb1rjrEM2bDJfo6W3"],
     "reservationId": ""
   }   ],
 
