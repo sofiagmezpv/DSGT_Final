@@ -90,7 +90,6 @@ public class SupplierSerivce {
 
     public void buyPack(Package pack,String uid){
         String reservationId = firestoreService.getReservationIdFromPackage(pack.getId(),uid);
-        //String reservationId = pack.getReservationId();
         for (Item i : pack.getItems()) {
             try {
                 this.webClientBuilder.baseUrl(i.getSupplier().getBaseUrl()).build()
@@ -108,7 +107,7 @@ public class SupplierSerivce {
                 return;
             }
         }
-        firestoreService.moveToOrder(pack.getId(),uid);
+
     }
 
     public Mono<Boolean> itemAvailable(String id,Supplier sub) {
@@ -154,5 +153,10 @@ public class SupplierSerivce {
 
             }
         }
+    }
+
+    public void movePacktoOrder(String uidString) {
+        firestoreService.moveToOrder(uidString);
+        firestoreService.removePackagesFromUser(uidString);
     }
 }

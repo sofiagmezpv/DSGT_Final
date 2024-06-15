@@ -107,7 +107,7 @@ public class FirestoreService {
 
     public void addItemToUserCart(String uid, Package pack) {
 
-        System.out.println("In addItemToUserCart" + uid);
+        System.out.println("In addItemToUserCart: " + uid);
 
         Map<String, Object> cartItem = new HashMap<>();
         cartItem.put("id", pack.getId());
@@ -152,7 +152,7 @@ public class FirestoreService {
                 // Iterate over the documents in the query result
                 for (QueryDocumentSnapshot document : querySnapshot) {
                     boolean isFull = false;
-                    System.out.println("Cart Id: " + document.getId());
+                    System.out.println("package Id: " + document.getId());
                     Package pack = document.toObject(Package.class);
                     //                for(Item item : pack.getItems() ){
                     //                    Supplier supplier = item.getSupplier();
@@ -377,7 +377,7 @@ public class FirestoreService {
 
     public String getReservationIdFromPackage(String id, String uid) {
 
-        System.out.println("Retrieving reservation ID from package: " + id);
+        System.out.println("Retrieving reservation ID from package with id: " + id);
         CollectionReference packagesRef = db.collection("carts").document(uid).collection("packages");
 
         // Create a query to find the document with the matching package ID
@@ -412,16 +412,15 @@ public class FirestoreService {
     }
 
 
-    public void moveToOrder(String id, String uid) {
+    public void moveToOrder(String uid) {
         System.out.println("****trying to move to order list****");
         CollectionReference packagesRef = db.collection("carts").document(uid).collection("packages");
         CollectionReference ordersRef = db.collection("orders");
-        //Query query = packagesRef.whereEqualTo("id", id);
-        Timestamp timestamp = getUserPackages(uid).get(0).getTimestamp();
-        String reservationId = getReservationIdFromPackage(getUserPackages(uid).get(0).getId(),uid);
         List<Package> packages = getUserPackages(uid);
         try {
             if (!packages.isEmpty()) {
+                Timestamp timestamp = getUserPackages(uid).get(0).getTimestamp();
+                String reservationId = getReservationIdFromPackage(getUserPackages(uid).get(0).getId(),uid);
                 // List to store package IDs
                 List<String> packageIds = new ArrayList<>();
                 // Loop through documents and collect package IDs
@@ -444,12 +443,11 @@ public class FirestoreService {
                 ApiFuture<WriteResult> writeFuture = newOrderRef.set(order);
                 WriteResult writeResult = writeFuture.get();
                 System.out.println("Order created in orders collection. Write time: " + writeResult.getUpdateTime());
-                //TODO delete all packages from user
-                removePackagesFromUser(uid);
+
 
             } else {
                 // Documents not found
-                System.err.println("Package documents not found: " + id);
+                System.err.println("not all packages moved");
             }
         } catch (InterruptedException e) {
             System.err.println("Operation was interrupted");
@@ -459,7 +457,7 @@ public class FirestoreService {
         }
     }
 
-    private void removePackagesFromUser(String uid) {
+    void removePackagesFromUser(String uid) {
         System.out.println("removing packages");
         Query query = db.collection("carts").document(uid).collection("packages");
         ApiFuture<QuerySnapshot> querySnapshotApiFuture = query.get();

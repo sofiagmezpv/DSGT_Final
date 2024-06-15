@@ -392,6 +392,7 @@ function closeOrdersPop(){
 }
 
 function buyRequest(){
+
     const auth = getAuth();
     let username = "";
     let uidString = "";

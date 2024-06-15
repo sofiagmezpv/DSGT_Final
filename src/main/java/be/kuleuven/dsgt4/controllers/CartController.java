@@ -60,9 +60,9 @@ public class CartController {
         }
 
         for (Item it : pack.getItems()) {
-            Mono<Boolean> av = this.supplierLogic.itemAvailable(it.getId(), it.getSupplier());
+            Mono<Boolean> av = supplierLogic.itemAvailable(it.getId(), it.getSupplier());
             Boolean available = av.block();
-            System.out.println("item available:"+available);
+            System.out.println("item available:" + available);
             if (!available) {
                 //to do make visible on screen
                 return ResponseEntity.ok("Items can't be added to cart");
@@ -70,7 +70,7 @@ public class CartController {
 
         }
         firestoreService.addItemToUserCart(uid, pack);
-        supplierLogic.reservePack(pack,uid);
+        supplierLogic.reservePack(pack, uid);
 
 
 
@@ -154,24 +154,25 @@ public class CartController {
         //test removing
     @PostMapping("/buy_cart")
     public ResponseEntity<String> buyCart(@RequestParam("uid") String uidString) {
+        System.out.println("");
         System.out.println("*****user wants to buy******");
+        System.out.println("");
         List<Package> packages = firestoreService.getUserPackages(uidString);
-        System.out.println(uidString + " has  packages:" + packages);
+        System.out.println(uidString + " has packages:" + packages);
         for(Package pack: packages) {
             Boolean status = supplierLogic.checkreservation(pack,uidString);
-            System.out.println("all packages available: " + status);
-            if (status)
+            System.out.println("package available: " + status);
+            if (!status)
             {
-                supplierLogic.buyPack(pack,uidString);
-                return ResponseEntity.ok("Item all bought");
+                return ResponseEntity.ok("Coudn't buy pack");
             }
-            else {
-                    System.out.println("could by packages with id:"+pack.getId());
-                    removeFromCart(pack.getId(),uidString);
+        }
+        for(Package pack:packages){
+            supplierLogic.buyPack(pack,uidString);
+        }
 
-                }
-            }
-        return null;
+        supplierLogic.movePacktoOrder(uidString);
+        return ResponseEntity.ok("Item all bought");
     }
 
 
