@@ -167,7 +167,7 @@ public class FirestoreService {
             }
             else{
                 System.out.println("****NO packages found ***");
-                return null;
+                return userPackages;
             }
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();

@@ -8,17 +8,19 @@ public class Order {
     private String uid;
     private String ts;
     private double price;
+    private String reservationId;
 
     // Default constructor (necessary for Firestore)
     public Order() {}
 
     // Parameterized constructor for convenience
-    public Order(String id, List<String> packages, String uid, String ts, double price) {
+    public Order(String id, List<String> packages, String uid, String ts, double price, String reservationId) {
         this.id = id;
         this.packages = packages;
         this.uid = uid;
         this.ts = ts;
         this.price = price;
+        this.reservationId = reservationId;
     }
 
     // Getters and setters

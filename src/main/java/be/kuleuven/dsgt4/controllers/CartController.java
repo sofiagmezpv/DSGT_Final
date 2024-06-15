@@ -82,12 +82,9 @@ public class CartController {
     public ResponseEntity<?> getUserPackages(@PathVariable String uidString) {
         List<Package> userPackages = firestoreService.getUserPackages(uidString);
 
+        System.out.println("Size Package List" + userPackages.size());
         if (userPackages == null) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to retrieve user packages.");
-        }
-
-        if (userPackages.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User packages not found for UID: " + uidString);
         }
 
         return ResponseEntity.ok(userPackages);
@@ -111,7 +108,11 @@ public class CartController {
     }
 
     @GetMapping("/api/getAllCustomers")
-    public ResponseEntity<?> getAllCustomers() {
+    public ResponseEntity<?> getAllCustomers(Authentication authentication) {
+        if (authentication == null || authentication.getAuthorities().stream()
+                .noneMatch(auth -> auth.getAuthority().equals("ROLE_MANAGER"))) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied");
+        }
 
         List<User> allUsers = firestoreService.getAllCustomers();
 
@@ -128,7 +129,11 @@ public class CartController {
 
 
     @GetMapping("/api/getAllOrders")
-    public ResponseEntity<?> getAllOrders() {
+    public ResponseEntity<?> getAllOrders(Authentication authentication) {
+        if (authentication == null || authentication.getAuthorities().stream()
+                .noneMatch(auth -> auth.getAuthority().equals("ROLE_MANAGER"))) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied");
+        }
         System.out.println("Inside api/getAllOrders");
         List<Order> allPurchasedOrders = firestoreService.getAllOrders();
 
