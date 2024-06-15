@@ -416,32 +416,23 @@ public class FirestoreService {
         System.out.println("****trying to move to order list****");
         CollectionReference packagesRef = db.collection("carts").document(uid).collection("packages");
         CollectionReference ordersRef = db.collection("orders");
-        Query query = packagesRef.whereEqualTo("id", id);
+        //Query query = packagesRef.whereEqualTo("id", id);
         Timestamp timestamp = getUserPackages(uid).get(0).getTimestamp();
         String reservationId = getReservationIdFromPackage(getUserPackages(uid).get(0).getId(),uid);
-
+        List<Package> packages = getUserPackages(uid);
         try {
-            // Execute the query
-            ApiFuture<QuerySnapshot> querySnapshot = query.get();
-            List<QueryDocumentSnapshot> documents = querySnapshot.get().getDocuments();
-
-            if (!documents.isEmpty()) {
+            if (!packages.isEmpty()) {
                 // List to store package IDs
                 List<String> packageIds = new ArrayList<>();
                 // Loop through documents and collect package IDs
-                for (DocumentSnapshot document : documents) {
-                    String packageId = document.getId(); // Assuming id is the document ID
+                for (Package pack : packages) {
+                    String packageId = pack.getId(); // Assuming id is the document ID
                     packageIds.add(packageId);
-
-                    // Delete the document from the packages collection
-                    ApiFuture<WriteResult> deleteFuture = document.getReference().delete();
-                    WriteResult deleteResult = deleteFuture.get();
-                    System.out.println("Package deleted from packages. Delete time: " + deleteResult.getUpdateTime());
                 }
-
+                System.out.println("****printing all the packageIds*****:"+packageIds);
                 // Create new Order object
                 Order order = new Order();
-                order.setId(generatedRandomOrder()); // Set a unique order ID, or generate dynamically
+                order.setId("testing id for 2 packages"); // Set a unique order ID, or generate dynamically
                 order.setPackages(packageIds);
                 order.setUid(uid);
                 order.setTs(timestamp.toString()); // Set timestamp or use a date/time library
@@ -453,6 +444,9 @@ public class FirestoreService {
                 ApiFuture<WriteResult> writeFuture = newOrderRef.set(order);
                 WriteResult writeResult = writeFuture.get();
                 System.out.println("Order created in orders collection. Write time: " + writeResult.getUpdateTime());
+                //TODO delete all packages from user
+                removePackagesFromUser(uid);
+
             } else {
                 // Documents not found
                 System.err.println("Package documents not found: " + id);
@@ -462,6 +456,33 @@ public class FirestoreService {
             Thread.currentThread().interrupt(); // Restore interrupted status
         } catch (ExecutionException e) {
             System.err.println("Operation failed: " + e.getMessage());
+        }
+    }
+
+    private void removePackagesFromUser(String uid) {
+        System.out.println("removing packages");
+        Query query = db.collection("carts").document(uid).collection("packages");
+        ApiFuture<QuerySnapshot> querySnapshotApiFuture = query.get();
+        try {
+            QuerySnapshot querySnapshot = querySnapshotApiFuture.get();
+            if (!querySnapshot.isEmpty()) {
+                DocumentSnapshot document = querySnapshot.getDocuments().get(0);
+                ApiFuture<WriteResult> deleteFuture = document.getReference().delete();
+                try {
+                    WriteResult deleteResult = deleteFuture.get();
+                    if (deleteResult.getUpdateTime()!= null) {
+                        System.out.println("Document deleted with ID: " + document.getId());
+                    } else {
+                        System.err.println("Unsuccessful delete operation: ");
+                    }
+                } catch (Exception e) {
+                    System.err.println("An error occurred during the delete operation: " + e.getMessage());
+                }
+            } else {
+                System.out.println("No packages found");
+            }
+        } catch (Exception e) {
+            System.err.println("An error occurred during the query operation: " + e.getMessage());
         }
     }
 
