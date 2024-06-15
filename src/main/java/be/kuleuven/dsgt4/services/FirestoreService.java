@@ -431,7 +431,7 @@ public class FirestoreService {
                 System.out.println("****printing all the packageIds*****:"+packageIds);
                 // Create new Order object
                 Order order = new Order();
-                order.setId("testing id for 2 packages"); // Set a unique order ID, or generate dynamically
+                order.setId(generatedRandomOrder()); // Set a unique order ID, or generate dynamically
                 order.setPackages(packageIds);
                 order.setUid(uid);
                 order.setTs(timestamp.toString()); // Set timestamp or use a date/time library
@@ -464,17 +464,21 @@ public class FirestoreService {
         try {
             QuerySnapshot querySnapshot = querySnapshotApiFuture.get();
             if (!querySnapshot.isEmpty()) {
-                DocumentSnapshot document = querySnapshot.getDocuments().get(0);
-                ApiFuture<WriteResult> deleteFuture = document.getReference().delete();
-                try {
-                    WriteResult deleteResult = deleteFuture.get();
-                    if (deleteResult.getUpdateTime()!= null) {
-                        System.out.println("Document deleted with ID: " + document.getId());
-                    } else {
-                        System.err.println("Unsuccessful delete operation: ");
+                List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
+                // Start from the second document (index 1)
+                for (int i = 0; i < documents.size(); i++) {
+                    DocumentSnapshot document = documents.get(i);
+                    ApiFuture<WriteResult> deleteFuture = document.getReference().delete();
+                    try {
+                        WriteResult deleteResult = deleteFuture.get();
+                        if (deleteResult.getUpdateTime() != null) {
+                            System.out.println("Document deleted with ID: " + document.getId());
+                        } else {
+                            System.err.println("Unsuccessful delete operation for document ID: " + document.getId());
+                        }
+                    } catch (Exception e) {
+                        System.err.println("An error occurred during the delete operation for document ID: " + document.getId() + " - " + e.getMessage());
                     }
-                } catch (Exception e) {
-                    System.err.println("An error occurred during the delete operation: " + e.getMessage());
                 }
             } else {
                 System.out.println("No packages found");
