@@ -373,9 +373,11 @@ public class FirestoreRepository {
                 // List to store package IDs
                 List<String> packageIds = new ArrayList<>();
                 // Loop through documents and collect package IDs
+                double totalprice = 0;
                 for (Package pack : packages) {
                     String packageId = pack.getId(); // Assuming id is the document ID
                     packageIds.add(packageId);
+                    totalprice = totalprice +pack.getPrice();
                 }
                 System.out.println("****printing all the packageIds*****:"+packageIds);
                 // Create new Order object
@@ -384,7 +386,7 @@ public class FirestoreRepository {
                 order.setPackages(packageIds);
                 order.setUid(uid);
                 order.setTs(timestamp.toString()); // Set timestamp or use a date/time library
-                order.setPrice(0.0); // Set the price accordingly
+                order.setPrice(totalprice); // Set the price accordingly
                 order.setReservationId(reservationId); // Set reservation ID if applicable
 
                 // Save the Order object to Firestore

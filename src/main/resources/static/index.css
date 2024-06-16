@@ -178,6 +178,10 @@ label {
     z-index: 1000; /* Ensure the button stays above other elements */
 }
 
+#ordersPopup, #usersPopup {
+    max-height: 90%;
+    overflow-y: auto;
+}
 
 .card {
     margin: 15px;
