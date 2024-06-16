@@ -364,12 +364,31 @@ public class FirestoreRepository {
     public void moveToOrder(String uid) {
         System.out.println("****trying to move to order list****");
         CollectionReference packagesRef = db.collection("carts").document(uid).collection("packages");
+        CollectionReference cartsRef = db.collection("carts");
         CollectionReference ordersRef = db.collection("orders");
         List<Package> packages = getUserPackages(uid);
+
+
+
         try {
             if (!packages.isEmpty()) {
+
                 Timestamp timestamp = getUserPackages(uid).get(0).getTimestamp();
                 String reservationId = getReservationIdFromPackage(getUserPackages(uid).get(0).getId(),uid);
+
+                String orderId = generateOrderId(uid, reservationId); // Generate the unique order ID
+
+                // Check if an order with the same ID already exists
+                DocumentReference existingOrderRef = ordersRef.document(orderId);
+                ApiFuture<DocumentSnapshot> futureOrderDoc = existingOrderRef.get();
+                DocumentSnapshot orderDoc = futureOrderDoc.get();
+
+                if (orderDoc.exists()) {
+                    System.out.println("Order with this ID already exists. Skipping creation.");
+                    return;
+                }
+
+
                 // List to store package IDs
                 List<String> packageIds = new ArrayList<>();
                 // Loop through documents and collect package IDs
@@ -382,7 +401,7 @@ public class FirestoreRepository {
                 System.out.println("****printing all the packageIds*****:"+packageIds);
                 // Create new Order object
                 Order order = new Order();
-                order.setId(generatedRandomOrder()); // Set a unique order ID, or generate dynamically
+                order.setId(orderId); // Set a unique order ID, or generate dynamically
                 order.setPackages(packageIds);
                 order.setUid(uid);
                 order.setTs(timestamp.toString()); // Set timestamp or use a date/time library
@@ -406,6 +425,12 @@ public class FirestoreRepository {
         } catch (ExecutionException e) {
             System.err.println("Operation failed: " + e.getMessage());
         }
+    }
+
+
+    private String generateOrderId(String uid, String cartId) {
+        // Combine user ID and cart ID to create a unique order ID
+        return uid + "-" + cartId;
     }
 
     public void removePackagesFromUser(String uid) {
