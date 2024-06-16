@@ -1,10 +1,7 @@
 package be.kuleuven.dsgt4.models;
 
-import be.kuleuven.dsgt4.services.FirestoreService;
 import com.google.cloud.Timestamp;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

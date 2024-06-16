@@ -1,4 +1,4 @@
-package be.kuleuven.dsgt4.services;
+package be.kuleuven.dsgt4.repositories;
 
 import be.kuleuven.dsgt4.models.Item;
 import be.kuleuven.dsgt4.models.Order;
@@ -30,30 +30,46 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 
 @Service
-public class FirestoreService {
+public class FirestoreRepository {
 
     private final Firestore db;
     private final ResourceLoader loader;
 
-//    public List<User> getAllUsersWithRoles() {
-//        List<User> users = new ArrayList<>();
-//        try {
-//            ListUsersPage page = FirebaseAuth.getInstance().listUsers(null);
-//            while (page != null) {
-//                for (UserRecord userRecord : page.getValues()) {
-//                    String email = userRecord.getEmail();
-//                    String role = userRecord.getCustomClaims().get("role") != null
-//                            ? userRecord.getCustomClaims().get("role").toString()
-//                            : "";
-//                    users.add(new User(email, role));
-//                }
-//                page = page.getNextPage();
-//            }
-//        } catch (FirebaseAuthException e) {
-//            e.printStackTrace();
-//        }
-//        return users;
-//    }
+    @Autowired
+    public FirestoreRepository(Firestore db, ResourceLoader loader) {
+        this.db = db;
+        this.loader = loader;
+    }
+
+    @PostConstruct
+    void initializeDB() {
+        Resource resource = loader.getResource("classpath:db_data.json");
+        ObjectMapper mapper = new ObjectMapper();
+        try (InputStream inputStream = resource.getInputStream()) {
+            // Read JSON into a Map
+            Map<String, Object> firestoreData = mapper.readValue(inputStream, new TypeReference<Map<String, Object>>() {});
+            WriteBatch batch = db.batch();
+
+            // Iterate over each entry in the Map
+            for (Map.Entry<String, Object> entry : firestoreData.entrySet()) {
+                String collectionName = entry.getKey();
+                List<Map<String, Object>> documents = (List<Map<String, Object>>) entry.getValue();
+
+                for (Map<String, Object> document : documents) {
+                    String documentId = (String) document.get("id");
+                    batch.set(db.collection(collectionName).document(documentId), document);
+                }
+            }
+
+            // Commit the batch
+            List<WriteResult> results = batch.commit().get();
+            for (WriteResult result : results) {
+                System.out.println("Update time: " + result.getUpdateTime());
+            }
+        } catch (IOException | InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     public List<User> getAllCustomers() {
@@ -68,8 +84,6 @@ public class FirestoreService {
             for (QueryDocumentSnapshot document : querySnapshot) {
                 String email = document.getString("email");
                 String role = document.getString("role");
-
-                // Create a User object and add it to the list
                 User user = new User(email, role);
                 usersAll.add(user);
             }
@@ -106,7 +120,6 @@ public class FirestoreService {
     }
 
     public void addItemToUserCart(String uid, Package pack) {
-
         System.out.println("In addItemToUserCart: " + uid);
 
         Map<String, Object> cartItem = new HashMap<>();
@@ -116,11 +129,8 @@ public class FirestoreService {
         cartItem.put("price", pack.getPrice());
         cartItem.put("items", pack.getItems());
         cartItem.put("reservationId",pack.getReservationId());
-//        cartItem.put("uid")
-
         Timestamp currentTimeStamp = Timestamp.now();
         cartItem.put("timestamp", currentTimeStamp);
-
 
         ApiFuture<DocumentReference> future = db.collection("carts")
                 .document(uid)
@@ -136,9 +146,7 @@ public class FirestoreService {
     }
 
     public List<Package> getUserPackages(String uidString) {
-        //System.out.println("In getUserPackages with username: " + uidString);
         List<Package> userPackages = new ArrayList<>();
-
         try {
             CollectionReference cartRef = db.collection("carts")
                     .document(uidString)
@@ -154,26 +162,15 @@ public class FirestoreService {
                     boolean isFull = false;
                     System.out.println("package Id: " + document.getId());
                     Package pack = document.toObject(Package.class);
-                    //                for(Item item : pack.getItems() ){
-                    //                    Supplier supplier = item.getSupplier();
-                    //                    int id = item.getId();
-                    //                    System.out.print("Item id: " + id);;
-                    //                    System.out.println("Item supplier: " + supplier.getName());
-                    //                    // make REST Supplier request to supplier to check the availability of each item in pack
-                    ////                    if(not okay then delete the package)
-                    //
-                    //                }
                     userPackages.add(pack);
                 }
-            }
-            else{
+            } else {
                 System.out.println("****NO packages found ***");
                 return userPackages;
             }
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
-
         return userPackages;
     }
 
@@ -184,19 +181,12 @@ public class FirestoreService {
         Query query = db.collection("carts").document(uidString).collection("packages")
                 .whereEqualTo("id", itemId);
 
-        // Execute the query asynchronously
         ApiFuture<QuerySnapshot> querySnapshotApiFuture = query.get();
-
         try {
-            // Get the results of the query
             QuerySnapshot querySnapshot = querySnapshotApiFuture.get();
-
-            // Check if any documents were found
             if (!querySnapshot.isEmpty()) {
                 // Assuming you want to delete the first document found
                 DocumentSnapshot document = querySnapshot.getDocuments().get(0);
-
-                // Delete the document
                 ApiFuture<WriteResult> deleteFuture = document.getReference().delete();
 
                 try {
@@ -219,7 +209,7 @@ public class FirestoreService {
         }
     }
 
-    public List<Order> getAllOrders(){
+    public List<Order> getAllOrders() {
         System.out.println("In getAllOrders");
         List<Order> allOrders = new ArrayList<>();
         ApiFuture<QuerySnapshot> future = db.collection("orders").get();
@@ -234,42 +224,6 @@ public class FirestoreService {
             e.printStackTrace();
         }
         return allOrders;
-    }
-
-    @Autowired
-    public FirestoreService(Firestore db, ResourceLoader loader) {
-        this.db = db;
-        this.loader = loader;
-    }
-
-    @PostConstruct
-    void initializeDB() {
-        Resource resource = loader.getResource("classpath:db_data.json");
-        ObjectMapper mapper = new ObjectMapper();
-        try (InputStream inputStream = resource.getInputStream()) {
-            // Read JSON into a Map
-            Map<String, Object> firestoreData = mapper.readValue(inputStream, new TypeReference<Map<String, Object>>() {});
-            WriteBatch batch = db.batch();
-
-            // Iterate over each entry in the Map
-            for (Map.Entry<String, Object> entry : firestoreData.entrySet()) {
-                String collectionName = entry.getKey();
-                List<Map<String, Object>> documents = (List<Map<String, Object>>) entry.getValue();
-
-                for (Map<String, Object> document : documents) {
-                    String documentId = (String) document.get("id");
-                    batch.set(db.collection(collectionName).document(documentId), document);
-                }
-            }
-
-            // Commit the batch
-            List<WriteResult> results = batch.commit().get();
-            for (WriteResult result : results) {
-                System.out.println("Update time: " + result.getUpdateTime());
-            }
-        } catch (IOException | InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
     }
 
     public List<Supplier> fetchSuppliers() {
@@ -312,7 +266,6 @@ public class FirestoreService {
         Map<String,Package> packages = new HashMap<>();
         List<Item> items = this.fetchItems();
         Map<String, Item> itemsMap = new HashMap<>();
-
         for (Item item : items) {
             itemsMap.put(item.getId(), item);
         }
@@ -342,7 +295,6 @@ public class FirestoreService {
     }
 
     public void addReservationIdToPackage(Package pack, String reservationId, String uid) {
-        //System.out.println("Adding reservation ID to package: " + pack.getId());
         CollectionReference packagesRef = db.collection("carts").document(uid).collection("packages");
         System.out.println("uid:"+uid);
         // Create a query to find the document with the matching package ID
@@ -376,11 +328,8 @@ public class FirestoreService {
     }
 
     public String getReservationIdFromPackage(String id, String uid) {
-
         System.out.println("Retrieving reservation ID from package with id: " + id);
         CollectionReference packagesRef = db.collection("carts").document(uid).collection("packages");
-
-        // Create a query to find the document with the matching package ID
         Query query = packagesRef.whereEqualTo("id", id);
 
         try {
@@ -457,7 +406,7 @@ public class FirestoreService {
         }
     }
 
-    void removePackagesFromUser(String uid) {
+    public void removePackagesFromUser(String uid) {
         System.out.println("removing packages");
         Query query = db.collection("carts").document(uid).collection("packages");
         ApiFuture<QuerySnapshot> querySnapshotApiFuture = query.get();
